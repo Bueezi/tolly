@@ -47,6 +47,12 @@ const groups = [
     shots: { "t-m-light-courses": "course" } },
   { tag: "tablet", lang: "en", device: "tablet", theme: "DARK", glass: false, agenda: "WEEK",
     shots: { "t-m-dark-agenda": "agenda", "t-m-dark-courses": "course" } },
+  { tag: "tablet", lang: "nl", device: "tablet", theme: "LIGHT", glass: true, agenda: "WEEK",
+    shots: { "t-g-light-courses": "course", "t-g-light-agenda": "agenda" } },
+  { tag: "tablet", lang: "nl", device: "tablet", theme: "LIGHT", glass: false, agenda: "WEEK",
+    shots: { "t-m-light-courses": "course" } },
+  { tag: "tablet", lang: "nl", device: "tablet", theme: "DARK", glass: false, agenda: "WEEK",
+    shots: { "t-m-dark-agenda": "agenda" } },
 ];
 
 // ---- adb ----

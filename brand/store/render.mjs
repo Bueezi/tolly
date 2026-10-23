@@ -115,13 +115,20 @@ const phones = {
     ["g-dark-course", "Bestanden openen meteen, ook offline", "night"],
   ],
 };
-// English UI only; Play shows these for Dutch too, as nl-NL has none of its own.
-const tablets = [
-  ["t-g-light-courses", "Lists and details side by side", "indigo"],
-  ["t-m-dark-agenda", "Your week and its deadlines at a glance", "night"],
-  ["t-m-light-courses", "Room for every course", "indigo"],
-  ["t-g-light-agenda", "Two looks, on every screen size", "indigo"],
-];
+const tablets = {
+  en: [
+    ["t-g-light-courses", "Lists and details side by side", "indigo"],
+    ["t-m-dark-agenda", "Your week and its deadlines at a glance", "night"],
+    ["t-m-light-courses", "Room for every course", "indigo"],
+    ["t-g-light-agenda", "Two looks, on every screen size", "indigo"],
+  ],
+  nl: [
+    ["t-g-light-courses", "Lijst en details naast elkaar", "indigo"],
+    ["t-m-dark-agenda", "Je week en je deadlines in één oogopslag", "night"],
+    ["t-m-light-courses", "Ruimte voor elk vak", "indigo"],
+    ["t-g-light-agenda", "Twee stijlen, op elk schermformaat", "indigo"],
+  ],
+};
 const taglines = { en: "Toledo, the way it should be.", nl: "Toledo, zoals het hoort." };
 const locales = { en: "en-US", nl: "nl-NL" };
 
@@ -134,11 +141,13 @@ for (const [lang, shots] of Object.entries(phones)) {
   render(banner(lang, taglines[lang], 1024, 500), 1024, 500, join(dir, "featureGraphic.png"));
 }
 
-const tabletDir = join(fastlane("en-US"), "tenInchScreenshots");
-rmSync(tabletDir, { recursive: true, force: true });
-tablets.forEach(([name, title, theme], i) =>
-  render(tabletShot("en", name, title, theme), 2560, 1440, join(tabletDir, `${i + 1}_${name}.png`)),
-);
+for (const [lang, shots] of Object.entries(tablets)) {
+  const dir = join(fastlane(locales[lang]), "tenInchScreenshots");
+  rmSync(dir, { recursive: true, force: true });
+  shots.forEach(([name, title, theme], i) =>
+    render(tabletShot(lang, name, title, theme), 2560, 1440, join(dir, `${i + 1}_${name}.png`)),
+  );
+}
 
 render(poster(), 2400, 1260, join(repo, "brand/poster.png"));
 render(banner("en", taglines.en, 1200, 630), 1200, 630, join(repo, "web/public/og.png"));
