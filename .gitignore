@@ -1,0 +1,22 @@
+# Gradle / Kotlin
+.gradle/
+.kotlin/
+build/
+local.properties
+
+# Android Studio
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signing material never goes into the repo
+*.jks
+*.keystore
+keystore.properties
+
+.DS_Store
+
+# The release key, its passwords and its printable backup (see android/scripts/key-backup.sh).
+android/keys/

@@ -1,0 +1,796 @@
+---
+// The whole landing page, in either language: hero, features, the two looks, tablets, privacy
+// and download.
+import Device from "./Device.astro";
+import Icon, { type IconName } from "./Icon.astro";
+import Logo from "./Logo.astro";
+import { links, pathFor, strings, type Lang } from "../i18n/ui";
+
+import mLightCourses from "../../../brand/store/screens/en/m-light-courses.png";
+import mDarkCourses from "../../../brand/store/screens/en/m-dark-courses.png";
+import gLightCourses from "../../../brand/store/screens/en/g-light-courses.png";
+import gDarkCourses from "../../../brand/store/screens/en/g-dark-courses.png";
+import mLightCourse from "../../../brand/store/screens/en/m-light-course.png";
+import mLightAgenda from "../../../brand/store/screens/en/m-light-agenda.png";
+import mLightNews from "../../../brand/store/screens/en/m-light-news.png";
+import mDarkCourse from "../../../brand/store/screens/en/m-dark-course.png";
+import mDarkAgenda from "../../../brand/store/screens/en/m-dark-agenda.png";
+import mDarkNews from "../../../brand/store/screens/en/m-dark-news.png";
+// A course beside the course list shows the panes best; the agenda alone looks like a phone's.
+import tabletLight from "../../../brand/store/screens/en/t-g-light-courses.png";
+import tabletDark from "../../../brand/store/screens/en/t-m-dark-courses.png";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = strings(lang);
+
+const looks = [
+  { look: "material", scheme: "light", src: mLightCourses },
+  { look: "material", scheme: "dark", src: mDarkCourses },
+  { look: "glass", scheme: "light", src: gLightCourses },
+  { look: "glass", scheme: "dark", src: gDarkCourses },
+] as const;
+const lookAlt = (look: "material" | "glass", scheme: "light" | "dark") =>
+  t.looks.alt.replace("{look}", t.looks[look].name).replace("{scheme}", t.looks[scheme].toLowerCase());
+
+const big = [
+  { key: "courses", icon: "school", src: mLightCourses, dark: mDarkCourses },
+  { key: "content", icon: "folder", src: mLightCourse, dark: mDarkCourse },
+  { key: "agenda", icon: "calendar", src: mLightAgenda, dark: mDarkAgenda },
+  { key: "news", icon: "campaign", src: mLightNews, dark: mDarkNews },
+] as const;
+---
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <h1>{t.hero.title}</h1>
+      <p class="lead">{t.hero.lead}</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href={links.apk}>
+          <Icon name="android" size={22} />
+          {t.cta.apk}
+        </a>
+        <span class="btn btn-secondary btn-later" aria-disabled="true">{t.cta.play}</span>
+      </div>
+      <ul class="meta">
+        {
+          t.hero.meta.map((m) => (
+            <li>
+              <Icon name="check" size={18} />
+              {m}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="hero-visual">
+      <!-- The phone in the site's theme stands in front. -->
+      <Device
+        src={gDarkCourses}
+        dark={mLightCourses}
+        alt={t.hero.shotBack}
+        class="hero-back"
+        sizes="(min-width: 960px) 270px, 42vw"
+        eager
+      />
+      <Device
+        src={mLightCourses}
+        dark={gDarkCourses}
+        alt={t.hero.shotFront}
+        class="hero-front"
+        sizes="(min-width: 960px) 300px, 48vw"
+        eager
+      />
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">{t.features.eyebrow}</span>
+      <h2 class="section-title">{t.features.title}</h2>
+      <p class="lead">{t.features.lead}</p>
+    </div>
+
+    <div class="bento">
+      {
+        big.map(({ key, icon, src, dark }, i) => (
+          <article class:list={["card", "big", "reveal", `big-${i}`]}>
+            <div class="card-copy">
+              <span class="tile">
+                <Icon name={icon as IconName} size={22} />
+              </span>
+              <h3>{t.features[key].title}</h3>
+              <p>{t.features[key].body}</p>
+            </div>
+            <div class="peek">
+              <Device src={src} dark={dark} alt={t.features[key].alt} sizes="(min-width: 960px) 300px, 70vw" />
+            </div>
+          </article>
+        ))
+      }
+      {
+        t.features.small.map((f) => (
+          <article class="card small reveal">
+            <span class="tile">
+              <Icon name={f.icon as IconName} size={22} />
+            </span>
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Two looks -->
+<section class="section looks-section" id="looks">
+  <div class="wrap looks" data-look="material" data-scheme="light">
+    <div class="looks-copy reveal">
+      <span class="eyebrow">{t.looks.eyebrow}</span>
+      <h2 class="section-title">{t.looks.title}</h2>
+      <p class="lead">{t.looks.lead}</p>
+
+      <div class="controls">
+        <div class="segmented" role="group" aria-label={t.looks.lookLabel} data-control="look">
+          <button type="button" data-value="material" aria-pressed="true">Material</button>
+          <button type="button" data-value="glass" aria-pressed="false">Liquid Glass</button>
+        </div>
+        <div class="segmented" role="group" aria-label={t.looks.schemeLabel} data-control="scheme">
+          <button type="button" data-value="light" aria-pressed="true">{t.looks.light}</button>
+          <button type="button" data-value="dark" aria-pressed="false">{t.looks.dark}</button>
+        </div>
+      </div>
+
+      <div class="look-desc">
+        <div class="desc" data-for="material">
+          <h3>{t.looks.material.name}</h3>
+          <p>{t.looks.material.body}</p>
+        </div>
+        <div class="desc" data-for="glass">
+          <h3>{t.looks.glass.name}</h3>
+          <p>{t.looks.glass.body}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="looks-stage reveal">
+      <div class="stage-glow" aria-hidden="true"></div>
+      {
+        looks.map(({ look, scheme, src }) => (
+          <div class="shot" data-look={look} data-scheme={scheme}>
+            <Device src={src} alt={lookAlt(look, scheme)} sizes="(min-width: 960px) 320px, 70vw" />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Tablets -->
+<section class="section tablet-section">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">{t.tablet.eyebrow}</span>
+      <h2 class="section-title">{t.tablet.title}</h2>
+      <p class="lead">{t.tablet.body}</p>
+    </div>
+    <div class="tablet-wrap reveal">
+      <Device src={tabletLight} dark={tabletDark} alt={t.tablet.alt} kind="tablet" sizes="(min-width: 1160px) 1080px, 92vw" />
+    </div>
+  </div>
+</section>
+
+<!-- Privacy -->
+<section class="section privacy" id="privacy">
+  <div class="wrap">
+    <div class="privacy-card reveal">
+      <div class="privacy-head">
+        <span class="eyebrow">{t.privacy.eyebrow}</span>
+        <h2 class="section-title">{t.privacy.title}</h2>
+        <p class="lead">{t.privacy.lead}</p>
+
+        <!-- Where the data goes: straight between the phone and KU Leuven. -->
+        <div class="flow" aria-hidden="true">
+          <span class="node"><Icon name="phone" size={22} />{t.privacy.flow.phone}</span>
+          <span class="wire"><span class="pulse"></span><span class="wire-label">{t.privacy.flow.direct}</span></span>
+          <span class="node"><Icon name="school" size={22} />{t.privacy.flow.kul}</span>
+        </div>
+
+        <a class="policy-link" href={pathFor(lang, "privacy")}>
+          {t.privacy.more}
+          <Icon name="arrow" size={18} />
+        </a>
+      </div>
+      <ul class="points">
+        {
+          t.privacy.points.map((p) => (
+            <li>
+              <Icon name={p.icon as IconName} size={22} />
+              <div>
+                <h3>{p.title}</h3>
+                <p>{p.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Download -->
+<section class="section download" id="download">
+  <div class="wrap">
+    <div class="download-card reveal">
+      <div class="download-glow" aria-hidden="true"></div>
+      <Logo size={88} id="download-logo" class="download-logo" />
+      <h2 class="section-title">{t.download.title}</h2>
+      <p class="lead">{t.download.body}</p>
+      <div class="ctas center">
+        <a class="btn btn-light" href={links.apk}>
+          <Icon name="android" size={22} />
+          {t.cta.apk}
+        </a>
+        <span class="btn btn-soon" aria-disabled="true">{t.cta.play}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // The two-looks preview: segmented controls choose which of the four screenshots shows.
+  // The theme follows the site's: it starts there and changes with the toggle or the system.
+  const root = document.querySelector<HTMLElement>(".looks")!;
+  const html = document.documentElement;
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+  root.querySelectorAll<HTMLElement>("[data-control]").forEach((group) => {
+    const key = group.dataset.control as "look" | "scheme";
+    const buttons = [...group.querySelectorAll<HTMLButtonElement>("button")];
+    const select = (value: string) => {
+      root.dataset[key] = value;
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.value === value)));
+    };
+    buttons.forEach((button) => button.addEventListener("click", () => select(button.dataset.value!)));
+    if (key === "scheme") {
+      const follow = () => {
+        const dark = html.dataset.theme ? html.dataset.theme === "dark" : systemDark.matches;
+        select(dark ? "dark" : "light");
+      };
+      follow();
+      new MutationObserver(follow).observe(html, { attributes: true, attributeFilter: ["data-theme"] });
+      systemDark.addEventListener("change", follow);
+    }
+  });
+</script>
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative;
+    padding-block: clamp(48px, 8vw, 104px) clamp(64px, 9vw, 120px);
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(60% 60% at 78% 40%, var(--glow), transparent 70%),
+      radial-gradient(40% 50% at 10% 0%, color-mix(in srgb, var(--brand-1) 14%, transparent), transparent 70%);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: center;
+    gap: clamp(32px, 6vw, 72px);
+  }
+  .hero-copy {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .hero h1 {
+    font-size: clamp(2.7rem, 7.2vw, 5.4rem);
+    letter-spacing: -0.045em;
+    line-height: 1.08;
+    padding-bottom: 0.04em;
+    background: linear-gradient(180deg, var(--text) 30%, color-mix(in srgb, var(--text) 62%, var(--brand-1)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .ctas.center {
+    justify-content: center;
+  }
+  .meta {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    color: var(--muted);
+    font-size: 0.93rem;
+    font-weight: 600;
+  }
+  .meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meta :global(svg) {
+    color: var(--accent-text);
+  }
+  .hero-visual {
+    position: relative;
+    height: clamp(460px, 52vw, 640px);
+  }
+  .hero-visual :global(.hero-front) {
+    position: absolute;
+    width: min(300px, 62%);
+    left: 6%;
+    top: 4%;
+    transform: rotate(-4deg);
+    z-index: 2;
+    animation: float 9s ease-in-out infinite;
+  }
+  .hero-visual :global(.hero-back) {
+    position: absolute;
+    width: min(270px, 56%);
+    right: 2%;
+    top: 12%;
+    transform: rotate(6deg);
+    animation: float 9s ease-in-out -4.5s infinite;
+  }
+  @keyframes float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -12px;
+    }
+  }
+
+  /* Cards shared by features and privacy */
+  .tile {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--accent-soft);
+    color: var(--accent-text);
+  }
+  .card {
+    position: relative;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow:
+      0 0 0 1px var(--border) inset,
+      var(--shadow-card);
+    overflow: hidden;
+  }
+  .card h3 {
+    font-size: 1.3rem;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+  .card p {
+    color: var(--muted);
+  }
+
+  /* Features: four big cards with a screenshot peeking out, then four small ones. */
+  .bento {
+    margin-top: clamp(40px, 6vw, 64px);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .big {
+    grid-column: span 6;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 520px;
+  }
+  .big-0,
+  .big-3 {
+    grid-column: span 7;
+  }
+  .big-1,
+  .big-2 {
+    grid-column: span 5;
+  }
+  .card-copy {
+    display: grid;
+    gap: 12px;
+    padding: 32px 32px 0;
+    max-width: 30em;
+  }
+  .card-copy .tile {
+    margin-bottom: 4px;
+  }
+  /* Fills the card down to its bottom edge, however tall its neighbour in the row makes it. */
+  .peek {
+    position: relative;
+    margin-top: 28px;
+    min-height: 330px;
+    overflow: hidden;
+    background: radial-gradient(70% 90% at 50% 100%, var(--bg-tint), transparent 70%);
+  }
+  /* Starts below the top edge, so lifting it on hover doesn't clip the phone's top. */
+  .peek :global(.device) {
+    position: absolute;
+    left: 50%;
+    top: 22px;
+    width: min(300px, 78%);
+    translate: -50% 0;
+    transition: translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .big:hover .peek :global(.device) {
+    translate: -50% -14px;
+  }
+  .small {
+    grid-column: span 3;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 26px;
+  }
+  .small h3 {
+    font-size: 1.12rem;
+    margin-top: 6px;
+  }
+  .small p {
+    font-size: 0.95rem;
+  }
+
+  /* Two looks */
+  .looks-section {
+    background: linear-gradient(180deg, transparent, var(--bg-tint) 30%, var(--bg-tint) 70%, transparent);
+  }
+  .looks {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(32px, 6vw, 80px);
+  }
+  .looks-copy {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .look-desc {
+    display: grid;
+    margin-top: 6px;
+  }
+  .desc {
+    grid-area: 1 / 1;
+    display: grid;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    max-width: 30em;
+  }
+  .desc h3 {
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+  .desc p {
+    color: var(--muted);
+  }
+  .looks[data-look="material"] .desc[data-for="material"],
+  .looks[data-look="glass"] .desc[data-for="glass"] {
+    opacity: 1;
+    visibility: visible;
+  }
+  .looks-stage {
+    position: relative;
+    display: grid;
+    justify-items: center;
+  }
+  .stage-glow {
+    position: absolute;
+    inset: 10% 5%;
+    background: radial-gradient(closest-side, var(--glow), transparent);
+    filter: blur(20px);
+  }
+  .shot {
+    grid-area: 1 / 1;
+    width: min(320px, 78vw);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.97);
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s ease,
+      visibility 0.35s;
+  }
+  .looks[data-look="material"][data-scheme="light"] .shot[data-look="material"][data-scheme="light"],
+  .looks[data-look="material"][data-scheme="dark"] .shot[data-look="material"][data-scheme="dark"],
+  .looks[data-look="glass"][data-scheme="light"] .shot[data-look="glass"][data-scheme="light"],
+  .looks[data-look="glass"][data-scheme="dark"] .shot[data-look="glass"][data-scheme="dark"] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  /* Tablets */
+  .section-head.center {
+    margin-inline: auto;
+    text-align: center;
+    justify-items: center;
+  }
+  .tablet-wrap {
+    margin: clamp(40px, 6vw, 64px) auto 0;
+    max-width: 1080px;
+  }
+
+  /* Privacy: a dark indigo card in both themes, the story on the left and the facts on the right. */
+  .privacy-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 36px;
+    padding: clamp(32px, 6vw, 72px);
+    background:
+      radial-gradient(60% 80% at 100% 0%, rgb(91 91 240 / 0.45), transparent 70%),
+      linear-gradient(160deg, #1d1a5e, #0f0d33);
+    color: #f1f1fb;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: center;
+    gap: clamp(32px, 6vw, 80px);
+  }
+  .privacy-head {
+    display: grid;
+    gap: 16px;
+    justify-items: start;
+  }
+  .privacy .eyebrow {
+    color: #b9bbff;
+  }
+  .privacy .lead {
+    color: #c3c3e6;
+  }
+  .flow {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    margin: 20px 0 8px;
+  }
+  .node {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.1);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.14) inset;
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+  .wire {
+    position: relative;
+    flex: 1;
+    min-width: 56px;
+    height: 2px;
+    margin-inline: 10px;
+    background: linear-gradient(90deg, rgb(255 255 255 / 0.15), rgb(185 187 255 / 0.7), rgb(255 255 255 / 0.15));
+  }
+  .wire-label {
+    position: absolute;
+    left: 50%;
+    top: 12px;
+    translate: -50% 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #b9bbff;
+    white-space: nowrap;
+  }
+  .pulse {
+    position: absolute;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 12px 2px rgb(185 187 255 / 0.9);
+    animation: travel 2.8s ease-in-out infinite alternate;
+  }
+  @keyframes travel {
+    from {
+      left: 0;
+    }
+    to {
+      left: calc(100% - 8px);
+    }
+  }
+  .points {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .points li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 16px;
+    padding-block: 22px;
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .points li:last-child {
+    border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .points li > :global(svg) {
+    color: #b9bbff;
+    margin-top: 2px;
+  }
+  .points h3 {
+    font-size: 1.12rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .points p {
+    color: #c3c3e6;
+    font-size: 0.95rem;
+  }
+  .policy-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    font-weight: 700;
+    text-underline-offset: 4px;
+  }
+
+  /* Download */
+  .download {
+    padding-top: 0;
+  }
+  .download-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 36px;
+    padding: clamp(40px, 7vw, 88px) clamp(20px, 5vw, 64px);
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+    color: #fff;
+    background: var(--brand-gradient);
+    box-shadow: 0 30px 80px -30px rgb(59 47 184 / 0.7);
+  }
+  .download-glow {
+    position: absolute;
+    inset: -40% -10% auto;
+    height: 120%;
+    background: radial-gradient(closest-side, rgb(255 255 255 / 0.22), transparent);
+    pointer-events: none;
+  }
+  .download-card :global(.download-logo) {
+    position: relative;
+    border-radius: 24px;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.25),
+      0 20px 40px -12px rgb(0 0 0 / 0.45);
+  }
+  .download-card .lead {
+    color: rgb(255 255 255 / 0.85);
+    max-width: 34em;
+    position: relative;
+  }
+  .download-card h2 {
+    position: relative;
+  }
+  .download-card .ctas {
+    position: relative;
+    margin-top: 8px;
+  }
+  .btn-light {
+    background: #fff;
+    color: #2a2290;
+    box-shadow: 0 10px 24px -10px rgb(0 0 0 / 0.4);
+  }
+  .btn-light:hover {
+    background: #f1f0ff;
+  }
+  .btn-later {
+    cursor: default;
+    pointer-events: none;
+  }
+  .btn-soon {
+    background: transparent;
+    color: rgb(255 255 255 / 0.75);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.25) inset;
+    border: 1px dashed transparent;
+    cursor: default;
+    font-weight: 600;
+  }
+
+  /* Smaller screens */
+  @media (max-width: 960px) {
+    .hero-grid,
+    .looks {
+      grid-template-columns: 1fr;
+    }
+    .hero-visual {
+      height: clamp(420px, 110vw, 620px);
+      max-width: 560px;
+      width: 100%;
+      margin-inline: auto;
+    }
+    .big,
+    .big-0,
+    .big-1,
+    .big-2,
+    .big-3 {
+      grid-column: span 12;
+    }
+    .small {
+      grid-column: span 6;
+    }
+    .privacy-card {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .small {
+      grid-column: span 12;
+    }
+    .big {
+      min-height: 0;
+    }
+    .card-copy {
+      padding: 26px 24px 0;
+    }
+    .ctas .btn {
+      flex: 1 1 100%;
+    }
+    .node {
+      padding: 8px 12px;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
+    .node :global(svg) {
+      width: 18px;
+      height: 18px;
+    }
+    .wire {
+      min-width: 32px;
+      margin-inline: 8px;
+    }
+    .wire-label {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-visual :global(.hero-front),
+    .hero-visual :global(.hero-back),
+    .pulse {
+      animation: none;
+    }
+  }
+</style>

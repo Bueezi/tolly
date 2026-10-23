@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <!-- Debug builds only: `adb shell am start -n be.tolly.debug/be.tolly.DemoActivity`
+             fills the cache with made-up courses so the UI can be checked without signing in. -->
+        <activity
+            android:name=".DemoActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!-- The offline picker with made-up files (a real scan needs a session). -->
+        <activity
+            android:name=".OfflinePreviewActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Tolly" />
+        <!-- The video player, to check its controls with any HLS or MP4 link:
+             `adb shell am start -n be.tolly.debug/be.tolly.video.PlayerActivity -d <url>`,
+             with the string extra `title` and, for a livestream, the boolean extra `live`. -->
+        <activity
+            android:name=".video.PlayerActivity"
+            android:exported="true"
+            tools:replace="android:exported" />
+    </application>
+</manifest>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="512" height="512">
+  <!-- Play Store icon: full square, Play rounds the corners. Same shapes as the launcher icon
+       (android/app/src/main/res/drawable/ic_launcher_*.xml), scaled up from the 66dp safe zone. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5B5BF0"/>
+      <stop offset="1" stop-color="#3B2FB8"/>
+    </linearGradient>
+  </defs>
+  <rect width="108" height="108" fill="url(#bg)"/>
+  <g transform="translate(54 54) scale(1.25) translate(-54 -54)" fill="#FFFFFF">
+    <path d="M54,26 L84,40 L54,54 L24,40 Z"/>
+    <path d="M47,47.5 L54,51 L61,47.5 L61,78 Q61,82 57,82 L51,82 Q47,82 47,78 Z"/>
+    <path d="M54,40 L75,44 L75,58" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="75" cy="61" r="3.6"/>
+  </g>
+</svg>

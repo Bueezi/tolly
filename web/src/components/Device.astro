@@ -1,0 +1,90 @@
+---
+// A screenshot in a phone or tablet bezel. The image is served as AVIF/WebP in a few widths, so
+// a phone downloads a small one and a desktop a sharp one. With `dark`, that screenshot shows
+// instead while the site is dark (unless `eager`, the hidden one is never downloaded).
+import type { ImageMetadata } from "astro";
+import { Picture } from "astro:assets";
+
+interface Props {
+  src: ImageMetadata;
+  dark?: ImageMetadata;
+  alt: string;
+  kind?: "phone" | "tablet";
+  /** The `sizes` attribute: how wide the device shows at each viewport width. */
+  sizes: string;
+  eager?: boolean;
+  class?: string;
+}
+
+const { src, dark, alt, kind = "phone", sizes, eager = false, class: className } = Astro.props;
+const widths = kind === "phone" ? [280, 420, 640, 860] : [640, 960, 1440, 1920];
+---
+
+<div class:list={["device", kind, className]}>
+  <div class="bezel"><div class="screen">
+    {
+      [src, dark].map(
+        (image, i) =>
+          image && (
+            <Picture
+              src={image}
+              alt={alt}
+              widths={widths}
+              sizes={sizes}
+              formats={["avif"]}
+              fallbackFormat="webp"
+              loading={eager ? "eager" : "lazy"}
+              fetchpriority={eager && i === 0 ? "high" : undefined}
+              class={dark ? (i === 0 ? "only-light" : "only-dark") : undefined}
+            />
+          ),
+      )
+    }
+  </div></div>
+</div>
+
+<style>
+  .device {
+    container-type: inline-size;
+  }
+  .bezel {
+    position: relative;
+    background: #0c0c12;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.06) inset,
+      0 1px 2px rgb(10 10 40 / 0.12),
+      0 12px 24px -6px rgb(30 25 110 / 0.22),
+      0 40px 80px -20px rgb(30 25 110 / 0.35);
+  }
+  /* Phone screenshots (1080 × 2400) lose their 74 px status bar, which only showed a fake clock:
+     the screen is cut to the rest, and the image is pulled up by the bar's height (a margin in
+     percent is a share of the width, hence 74 / 1080). */
+  .phone .bezel {
+    padding: 2.6cqi;
+    border-radius: 11.6cqi;
+  }
+  .phone .screen {
+    overflow: hidden;
+    aspect-ratio: 1080 / 2326;
+    border-radius: 9cqi;
+  }
+  .screen :global(picture) {
+    display: block;
+  }
+  .phone .screen :global(img) {
+    margin-top: -6.852%;
+  }
+  .tablet .bezel {
+    padding: 1.6cqi;
+    border-radius: 3.6cqi;
+  }
+  .bezel :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .tablet .screen {
+    overflow: hidden;
+    border-radius: 2.2cqi;
+  }
+</style>

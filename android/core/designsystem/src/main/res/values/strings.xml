@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Tolly</string>
+
+    <!-- Navigation -->
+    <string name="nav_courses">Courses</string>
+    <string name="nav_announcements">Announcements</string>
+    <!-- Short label for the navigation bar; the full word wraps on phones. -->
+    <string name="nav_announcements_short">News</string>
+    <string name="nav_downloads">Downloads</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_mail">Mail</string>
+    <string name="nav_you">You</string>
+    <string name="you_select">Pick your grades, downloads or settings</string>
+    <string name="you_app">App</string>
+    <string name="you_settings_summary">Appearance, notifications, courses and storage</string>
+    <string name="settings_title">Settings</string>
+    <string name="feedback_title">Send feedback</string>
+    <string name="feedback_summary">A bug, an idea or a question, straight to the developer</string>
+    <string name="feedback_kind_bug">Bug</string>
+    <string name="feedback_kind_idea">Idea</string>
+    <string name="feedback_kind_other">Other</string>
+    <string name="feedback_hint_bug">What happened, and what did you expect?</string>
+    <string name="feedback_hint">What would you like to tell us?</string>
+    <string name="feedback_attach_logs">Attach logs</string>
+    <string name="feedback_attach_logs_summary">Helps find bugs. Your password and session are never in them.</string>
+    <string name="feedback_send">Send by e-mail</string>
+    <string name="feedback_clear">Clear draft</string>
+    <string name="feedback_github">Open a public GitHub issue instead</string>
+    <string name="feedback_no_app">No app found to open this</string>
+    <string name="you_studies">Your studies</string>
+    <string name="you_grades_summary">Every course\'s grades in one place</string>
+    <string name="you_downloads_summary">Nothing downloaded yet</string>
+
+    <!-- Common actions -->
+    <string name="action_back">Back</string>
+    <string name="action_refresh">Refresh</string>
+    <plurals name="mail_unread">
+        <item quantity="one">%d unread</item>
+        <item quantity="other">%d unread</item>
+    </plurals>
+    <string name="action_close">Close</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_download">Download</string>
+    <string name="action_expand">Expand</string>
+    <string name="action_collapse">Collapse</string>
+    <string name="action_expand_all">Expand all</string>
+    <string name="action_collapse_all">Collapse all</string>
+    <string name="action_more">More options</string>
+    <string name="action_open">Open</string>
+    <string name="action_open_in_browser">Open in browser</string>
+    <string name="action_open_in_toledo">Open in Toledo</string>
+    <string name="action_reload">Reload</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_try_again">Try again</string>
+    <string name="action_save_to_downloads">Save a copy</string>
+    <string name="action_share">Share</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_undo">Undo</string>
+
+    <!-- Errors -->
+    <string name="error_offline">You\'re offline. Showing saved data.</string>
+    <string name="error_server">Toledo didn\'t respond as expected. Try again later.</string>
+    <string name="error_not_available">This isn\'t available (yet).</string>
+    <string name="error_session_expired">Your Toledo session expired. Sign in again.</string>
+    <string name="error_no_app">No app on this device can open this file.</string>
+    <string name="session_expired_banner">Session expired. Showing saved data.</string>
+
+    <!-- Welcome & login -->
+    <string name="welcome_tagline">An unofficial app for KU Leuven Toledo</string>
+    <string name="welcome_feature_courses">All your courses and their content</string>
+    <string name="welcome_feature_announcements">Announcements from every course in one place</string>
+    <string name="welcome_feature_offline">Download files and read them offline</string>
+    <string name="welcome_sign_in">Sign in with KU Leuven</string>
+    <string name="welcome_demo">Demo</string>
+    <string name="welcome_get_started">Get started</string>
+    <string name="welcome_privacy">You sign in on KU Leuven\'s own page. Tolly never sees or stores your password.</string>
+    <string name="login_title">KU Leuven sign in</string>
+    <string name="login_secure_connection">Secure connection</string>
+    <string name="login_failed_title">Signing in didn\'t work</string>
+    <string name="login_failed_body">Toledo didn\'t accept the session. Please try again.</string>
+
+    <!-- Courses -->
+    <string name="courses_search">Search courses</string>
+    <string name="courses_filter">Filter</string>
+    <string name="courses_show_communities">Show communities</string>
+    <string name="courses_show_past">Show earlier and unavailable courses</string>
+    <string name="courses_section_current">This academic year</string>
+    <string name="courses_section_communities">Communities</string>
+    <string name="courses_section_other">Earlier and unavailable</string>
+    <string name="courses_unavailable">Not available</string>
+    <string name="courses_empty">No courses yet</string>
+    <string name="courses_no_results">No matching courses</string>
+    <string name="courses_select">Select a course</string>
+    <string name="courses_last_synced">Updated %s</string>
+    <string name="courses_synced_just_now">Updated just now</string>
+    <plurals name="unread_announcements">
+        <item quantity="one">%d unread announcement</item>
+        <item quantity="other">%d unread announcements</item>
+    </plurals>
+
+    <!-- Course customization -->
+    <string name="action_done">Done</string>
+    <string name="action_customize">Customize</string>
+    <string name="action_reorder">Reorder courses</string>
+    <string name="customize_title">Customize course</string>
+    <string name="customize_name">Name</string>
+    <string name="customize_original_name">Use the original name</string>
+    <string name="customize_icon">Icon</string>
+    <string name="customize_color">Color</string>
+    <string name="customize_automatic">Automatic</string>
+    <string name="customize_reset">Reset to default</string>
+    <string name="reorder_title">Reorder courses</string>
+    <string name="reorder_hint">Drag courses by the handle to put them in your own order.</string>
+    <string name="course_icon_initials">Initials</string>
+    <string name="course_icon_math">Mathematics</string>
+    <string name="course_icon_statistics">Statistics</string>
+    <string name="course_icon_code">Programming</string>
+    <string name="course_icon_tools">Tools</string>
+    <string name="course_icon_database">Databases</string>
+    <string name="course_icon_logic">Logic</string>
+    <string name="course_icon_ai">Artificial intelligence</string>
+    <string name="course_icon_network">Networks</string>
+    <string name="course_icon_security">Security</string>
+    <string name="course_icon_electronics">Electronics</string>
+    <string name="course_icon_physics">Physics</string>
+    <string name="course_icon_chemistry">Chemistry</string>
+    <string name="course_icon_biology">Biology</string>
+    <string name="course_icon_medicine">Medicine</string>
+    <string name="course_icon_economics">Economics</string>
+    <string name="course_icon_law">Law</string>
+    <string name="course_icon_language">Languages</string>
+    <string name="course_icon_history">History</string>
+    <string name="course_icon_philosophy">Philosophy</string>
+    <string name="course_icon_psychology">Psychology</string>
+    <string name="course_icon_engineering">Engineering</string>
+    <string name="course_icon_architecture">Architecture</string>
+    <string name="course_icon_geography">Geography</string>
+    <string name="course_icon_art">Art</string>
+    <string name="course_icon_music">Music</string>
+    <string name="course_icon_sports">Sports</string>
+    <string name="course_icon_library">Library</string>
+    <string name="course_icon_community">Community</string>
+    <string name="course_icon_graphics">Graphics and vision</string>
+    <string name="course_icon_hci">Interaction design</string>
+    <string name="course_icon_web">Web</string>
+    <string name="course_icon_cloud">Distributed systems</string>
+    <string name="course_icon_robotics">Robotics</string>
+    <string name="course_icon_energy">Energy</string>
+    <string name="course_icon_astronomy">Astronomy</string>
+    <string name="course_icon_environment">Environment</string>
+    <string name="course_icon_agriculture">Agriculture and food</string>
+    <string name="course_icon_pharmacy">Pharmacy</string>
+    <string name="course_icon_politics">Politics</string>
+    <string name="course_icon_sociology">Social sciences</string>
+    <string name="course_icon_education">Education</string>
+    <string name="course_icon_media">Media</string>
+    <string name="course_icon_literature">Literature</string>
+    <string name="course_icon_theology">Theology</string>
+    <string name="course_icon_photography">Photography</string>
+    <string name="course_icon_project">Project</string>
+    <string name="course_icon_thesis">Thesis</string>
+    <string name="course_icon_internship">Internship</string>
+    <string name="course_icon_seminar">Seminar</string>
+    <string name="course_icon_lab">Lab</string>
+    <string name="course_icon_calculator">Exercises</string>
+    <string name="course_icon_book">Book</string>
+    <string name="course_color_red">Red</string>
+    <string name="course_color_orange">Orange</string>
+    <string name="course_color_amber">Amber</string>
+    <string name="course_color_lime">Lime</string>
+    <string name="course_color_green">Green</string>
+    <string name="course_color_teal">Teal</string>
+    <string name="course_color_cyan">Cyan</string>
+    <string name="course_color_blue">Blue</string>
+    <string name="course_color_indigo">Indigo</string>
+    <string name="course_color_purple">Purple</string>
+    <string name="course_color_pink">Pink</string>
+    <string name="course_color_brown">Brown</string>
+    <string name="course_color_grey">Grey</string>
+
+    <!-- Course detail -->
+    <string name="course_tab_content">Content</string>
+    <string name="course_tab_announcements">News</string>
+    <string name="course_outline_root">Course content</string>
+    <string name="content_empty">This folder is empty</string>
+    <string name="content_module_empty">No items in this module</string>
+    <string name="content_hidden">Hidden</string>
+    <string name="content_page">Page</string>
+    <string name="content_type_folder">Folder</string>
+    <string name="content_type_lesson">Learning module</string>
+    <string name="content_type_document">Document</string>
+    <string name="content_type_page">Page</string>
+    <string name="content_type_file">File</string>
+    <string name="content_type_link">Link</string>
+    <string name="content_type_tool">Tool</string>
+    <string name="content_type_assignment">Assignment</string>
+    <string name="content_type_test">Test</string>
+    <string name="content_type_discussion">Discussion</string>
+    <string name="content_type_other">Item</string>
+    <string name="document_empty">This item can only be viewed in Toledo</string>
+
+    <!-- Announcements -->
+    <string name="announcements_empty">No announcements yet</string>
+    <string name="announcements_empty_course">This course has no announcements</string>
+    <string name="announcements_all_read">You\'re all caught up</string>
+    <string name="announcements_select">Select an announcement</string>
+    <string name="announcement_missing">This announcement is no longer available</string>
+    <string name="action_mark_all_read">Mark all as read</string>
+    <plurals name="announcements_marked_read">
+        <item quantity="one">%d announcement marked as read</item>
+        <item quantity="other">%d announcements marked as read</item>
+    </plurals>
+    <string name="filter_all">All</string>
+    <string name="filter_unread">Unread</string>
+    <string name="filter_unread_count">Unread (%d)</string>
+
+    <!-- Downloads -->
+    <string name="download_started">Downloading…</string>
+    <string name="download_failed">Download failed</string>
+    <string name="download_status_done">Downloaded</string>
+    <string name="download_status_running">Downloading</string>
+    <string name="download_status_queued">Waiting for network</string>
+    <string name="download_status_failed">Download failed</string>
+    <string name="downloads_storage_used">%s used on this device</string>
+    <string name="downloads_progress">%1$s of %2$s</string>
+    <string name="downloads_empty_title">No downloads</string>
+    <string name="downloads_empty_body">Files you open from a course are kept here so you can read them offline.</string>
+    <string name="downloads_unknown_course">Other</string>
+    <string name="downloads_delete_all">Delete all downloads</string>
+    <string name="downloads_delete_all_title">Delete all downloads?</string>
+    <string name="downloads_delete_all_body">Downloaded files are removed from this device. You can download them again from Toledo.</string>
+    <string name="downloads_exported">Saved to Downloads</string>
+    <string name="downloads_export_failed">Couldn\'t save the file</string>
+    <string name="browser_downloading">Downloading %s to Downloads/Tolly</string>
+    <string name="downloads_deleted">Deleted “%s”</string>
+
+    <!-- Settings -->
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_dynamic_color">Dynamic color</string>
+    <string name="settings_glass">Liquid Glass</string>
+    <string name="settings_glass_summary">An iOS-style look: a floating glass tab bar you can slide along, and glass buttons over the content</string>
+    <string name="settings_shake_look">Shake to switch look</string>
+    <string name="settings_shake_look_summary">Shake the phone to switch between Liquid Glass and Material</string>
+    <string name="settings_glass_tier_liquid">On this phone: Liquid Glass, with blur, refraction and light edges.</string>
+    <string name="settings_glass_tier_blur">On this phone: blurred glass. Refraction needs Android 13.</string>
+    <string name="settings_glass_tier_tint">On this phone: frosted, without blur. Blur needs Android 12.</string>
+    <string name="settings_dynamic_color_summary">Use colors from your wallpaper</string>
+    <string name="settings_courses">Courses</string>
+    <string name="settings_communities_summary">Library, faculty and programme communities</string>
+    <string name="settings_past_summary">Courses from earlier years and courses that aren\'t open yet</string>
+    <string name="settings_storage">Storage</string>
+    <string name="settings_copy_to_downloads">Save copies of downloads</string>
+    <string name="settings_copy_to_downloads_summary">Also put a copy of every downloaded file in %s › course, where other apps can find it.</string>
+    <string name="settings_delete_downloads">Delete downloads</string>
+    <string name="settings_downloads_size">%s of downloaded files</string>
+    <string name="settings_clear_cache">Clear cache</string>
+    <string name="settings_clear_cache_summary">Forget saved courses and announcements. They\'re reloaded from Toledo.</string>
+    <string name="settings_about">About</string>
+    <string name="settings_about_source">Open the source code on GitHub</string>
+    <string name="settings_export_logs">Share logs</string>
+    <string name="settings_export_logs_summary">Send recent app logs, e.g. for a bug report, to an app or person of your choice. Your password and session are never in them.</string>
+    <string name="settings_version">Tolly %s</string>
+    <string name="settings_disclaimer">Unofficial client. Not affiliated with or endorsed by KU Leuven.</string>
+    <string name="settings_sign_out">Sign out</string>
+    <string name="settings_sign_out_title">Sign out of Tolly?</string>
+    <string name="settings_sign_out_body">Your session, saved data and downloaded files are removed from this device.</string>
+    <!-- Agenda -->
+    <string name="nav_agenda">Agenda</string>
+    <string name="agenda_subtitle">Next 8 weeks</string>
+    <string name="agenda_open_calendar">Open the calendar in Toledo</string>
+    <string name="agenda_show_deadlines">Show the deadlines</string>
+    <string name="agenda_show_calendar">Show the calendar</string>
+    <string name="agenda_view">%1$s view. Switch to %2$s</string>
+    <string name="agenda_series">Series %1$d</string>
+    <string name="agenda_series_many">Series %1$s and %2$d</string>
+    <string name="agenda_series_menu">Series shown</string>
+    <string name="agenda_series_yours">%1$s (yours)</string>
+    <string name="agenda_series_per_course">Per course…</string>
+    <string name="agenda_series_per_course_title">Series per course</string>
+    <string name="agenda_series_menu_none">None of your courses has other series.</string>
+    <string name="agenda_other_series">Other series</string>
+    <string name="agenda_other_series_yours">Other series · you\'re in %1$s</string>
+    <string name="agenda_other_series_loading">Looking up the other series…</string>
+    <string name="agenda_other_series_failed">Couldn\'t look up the other series.</string>
+    <string name="agenda_other_series_none">No other series this week.</string>
+    <string name="agenda_open_course">Open course</string>
+    <string name="agenda_filter_deadlines">Deadlines</string>
+    <string name="agenda_filter_lessons">Lessons</string>
+    <string name="agenda_empty">Nothing planned for the next 8 weeks</string>
+    <string name="agenda_today">Today</string>
+    <string name="agenda_tomorrow">Tomorrow</string>
+    <string name="agenda_all_day">All day</string>
+    <string name="agenda_due">Due</string>
+    <plurals name="agenda_deadlines_this_week">
+        <item quantity="one">%d deadline this week</item>
+        <item quantity="other">%d deadlines this week</item>
+    </plurals>
+    <string name="nav_deadlines">Deadlines</string>
+    <string name="nav_deadlines_short">Due</string>
+    <string name="agenda_mode_list">List</string>
+    <string name="agenda_mode_day">Day</string>
+    <string name="agenda_mode_week">Week</string>
+    <string name="agenda_previous_day">Previous day</string>
+    <string name="agenda_next_day">Next day</string>
+    <string name="agenda_previous_week">Previous week</string>
+    <string name="agenda_next_week">Next week</string>
+    <string name="agenda_no_classes">No classes</string>
+    <plurals name="agenda_classes_summary">
+        <item quantity="one">%1$d class · %2$s</item>
+        <item quantity="other">%1$d classes · %2$s</item>
+    </plurals>
+    <string name="agenda_duration_hm">%1$d h %2$d min</string>
+    <string name="agenda_duration_h">%1$d h</string>
+    <string name="agenda_duration_min">%1$d min</string>
+    <string name="agenda_day_empty">Nothing planned</string>
+    <string name="deadlines_overdue">Overdue</string>
+    <string name="deadlines_this_week">This week</string>
+    <string name="deadlines_later">Later</string>
+    <string name="deadlines_empty">No upcoming deadlines</string>
+    <plurals name="deadlines_upcoming">
+        <item quantity="one">%d upcoming deadline</item>
+        <item quantity="other">%d upcoming deadlines</item>
+    </plurals>
+    <!-- Grades -->
+    <string name="course_tab_grades">Grades</string>
+    <string name="course_tab_video">Video</string>
+    <string name="video_live">Live</string>
+    <string name="video_recordings">Recordings</string>
+    <string name="video_live_none">This course links to no livestream.</string>
+    <string name="video_live_loading">Looking for livestream links in the course…</string>
+    <string name="video_recordings_none">No recordings yet.</string>
+    <string name="video_recordings_loading">Loading the recordings…</string>
+    <string name="video_offline">You\'re offline.</string>
+    <string name="video_unavailable">Couldn\'t load this. Pull down to try again.</string>
+    <string name="video_live_pin">PIN %1$s</string>
+    <string name="video_not_live">This livestream isn\'t on right now.</string>
+    <string name="video_live_failed">Couldn\'t reach the livestream.</string>
+    <string name="video_open_gallery">Media gallery in Toledo</string>
+    <string name="video_play">Play</string>
+    <string name="video_pause">Pause</string>
+    <string name="video_back_10">Back 10 seconds</string>
+    <string name="video_forward_10">Forward 10 seconds</string>
+    <string name="video_speed">Playback speed</string>
+    <string name="video_error">Couldn\'t play this video.</string>
+    <string name="video_open_in_browser">Open in browser</string>
+    <string name="grades_empty">No grades yet</string>
+    <string name="grades_not_available">This course\'s grades can\'t be shown in the app.</string>
+    <plurals name="grades_more_not_graded">
+        <item quantity="one">%d not graded yet</item>
+        <item quantity="other">%d not graded yet</item>
+    </plurals>
+    <plurals name="grades_average">
+        <item quantity="one">average over %d graded item</item>
+        <item quantity="other">average over %d graded items</item>
+    </plurals>
+    <string name="grades_no_average">Grades without a score are shown as Toledo writes them.</string>
+    <string name="grades_disclaimer">Calculated in Tolly from the scores you can see; Toledo\'s own total may weigh items differently.</string>
+    <string name="grades_item">Grade item</string>
+    <string name="grades_needs_grading">Submitted, waiting for a grade</string>
+    <string name="grades_not_graded">Not graded yet</string>
+    <string name="grades_due">Due %s</string>
+    <string name="grades_has_feedback">Tap to read the feedback</string>
+    <!-- Notifications -->
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notify_announcements">New announcements</string>
+    <string name="settings_notify_announcements_summary">Get a notification when a course posts an announcement.</string>
+    <string name="settings_notify_mail">New mail</string>
+    <string name="settings_notify_mail_summary">Get a notification when KU Leuven mail arrives.</string>
+    <string name="settings_tab_badges">Unread counts on tabs</string>
+    <string name="settings_tab_badges_summary">Show how many announcements and mails are unread on the News and Mail tabs.</string>
+    <string name="notifications_prompt_title">Get notified about new announcements?</string>
+    <string name="notifications_prompt_body">Tolly checks Toledo about once an hour and lets you know.</string>
+    <string name="action_turn_on">Turn on</string>
+    <string name="action_not_now">Not now</string>
+    <string name="notifications_blocked">Notifications are blocked for Tolly. You can allow them in the system settings.</string>
+    <string name="notifications_off_for_app">Notifications are off for Tolly. Turn them on here to get them.</string>
+    <!-- Offline -->
+    <string name="offline_title">Download for offline</string>
+    <string name="offline_scanning">Looking through %s…</string>
+    <plurals name="offline_scanning_more">
+        <item quantity="one">Looking through %1$s and %2$d more…</item>
+        <item quantity="other">Looking through %1$s and %2$d more…</item>
+    </plurals>
+    <string name="offline_checking_sizes">Checking file sizes: %1$d of %2$d</string>
+    <string name="offline_scanning_hint">Tolly also saves every folder and page, so you can browse these courses without a connection.</string>
+    <string name="offline_select_all">Select all</string>
+    <string name="offline_select_none">Select none</string>
+    <string name="offline_hide_downloaded">Hide downloaded</string>
+    <string name="offline_copy_to_downloads">Also save copies outside the app, in a folder per course</string>
+    <string name="offline_free_space">%s free on this device</string>
+    <string name="offline_not_enough_space">Not enough free space for everything you picked</string>
+    <string name="offline_unknown_size">Size unknown</string>
+    <string name="offline_empty">No files found in these courses</string>
+    <string name="action_download_offline">Download for offline</string>
+    <string name="offline_all_courses">Download all courses for offline</string>
+    <plurals name="offline_courses">
+        <item quantity="one">%d course</item>
+        <item quantity="other">%d courses</item>
+    </plurals>
+    <plurals name="offline_files_found">
+        <item quantity="one">%d file found</item>
+        <item quantity="other">%d files found</item>
+    </plurals>
+    <plurals name="offline_selected">
+        <item quantity="one">%1$d file selected · %2$s</item>
+        <item quantity="other">%1$d files selected · %2$s</item>
+    </plurals>
+    <plurals name="offline_download_button">
+        <item quantity="one">Download %d file</item>
+        <item quantity="other">Download %d files</item>
+    </plurals>
+    <plurals name="offline_queued">
+        <item quantity="one">Downloading %d file in the background</item>
+        <item quantity="other">Downloading %d files in the background</item>
+    </plurals>
+
+    <!-- Folder for copies, news check interval -->
+    <string name="settings_downloads_folder">Folder for copies</string>
+    <string name="settings_downloads_folder_reset">Back to Downloads/Tolly</string>
+    <string name="downloads_exported_to">Saved to %s</string>
+    <string name="settings_news_interval">How often to check</string>
+
+    <!-- Quick setup on a new install -->
+    <string name="action_next">Next</string>
+    <string name="action_skip">Skip</string>
+    <string name="setup_step">Step %1$d of %2$d</string>
+    <string name="setup_look_title">Choose your look</string>
+    <string name="setup_look_body">You can change all of this later in Settings.</string>
+    <string name="setup_look_material">Material You</string>
+    <string name="setup_look_material_summary">Android\'s own look, in your wallpaper\'s colors</string>
+    <string name="setup_notifications_title">Stay up to date</string>
+    <string name="setup_notifications_body">Tolly can let you know when one of your courses posts an announcement, and when KU Leuven mail arrives.</string>
+    <string name="setup_finish">Continue to sign in</string>
+
+    <!-- Long press on a file -->
+    <string name="action_open_with">Open with…</string>
+    <string name="file_remove">Remove from this device</string>
+    <string name="file_removed">Removed from this device</string>
+    <string name="file_on_device_size">On this device · %s</string>
+    <string name="file_not_downloaded">Not downloaded yet</string>
+
+    <!-- Swiping rows -->
+    <string name="swipe_mark_orange">Mark orange</string>
+    <string name="swipe_clear_mark">Remove mark</string>
+    <string name="action_mark_read">Mark as read</string>
+    <string name="action_mark_unread">Mark as unread</string>
+
+    <!-- Lessons in the course list -->
+    <string name="courses_class_now">Class now · until %1$s</string>
+    <plurals name="courses_class_next_in">
+        <item quantity="one">Next class in %d min</item>
+        <item quantity="other">Next class in %d min</item>
+    </plurals>
+    <string name="courses_class_next_in_long">Next class in %1$s</string>
+    <string name="courses_exercises_now">Exercise session now · until %1$s</string>
+    <plurals name="courses_exercises_next_in">
+        <item quantity="one">Next exercise session in %d min</item>
+        <item quantity="other">Next exercise session in %d min</item>
+    </plurals>
+    <string name="courses_exercises_next_in_long">Next exercise session in %1$s</string>
+    <string name="courses_practical_now">Practical now · until %1$s</string>
+    <plurals name="courses_practical_next_in">
+        <item quantity="one">Next practical in %d min</item>
+        <item quantity="other">Next practical in %d min</item>
+    </plurals>
+    <string name="courses_practical_next_in_long">Next practical in %1$s</string>
+    <string name="duration_hours">%1$d h</string>
+    <string name="duration_hours_minutes">%1$d h %2$d min</string>
+    <string name="duration_days">%1$d d</string>
+    <string name="duration_days_hours">%1$d d %2$d h</string>
+    <string name="courses_class_room">Room</string>
+
+    <!-- Tab subtitles -->
+    <plurals name="feed_unread">
+        <item quantity="one">%d unread</item>
+        <item quantity="other">%d unread</item>
+    </plurals>
+
+    <!-- Documents -->
+    <string name="document_files">Files</string>
+    <plurals name="document_more_files">
+        <item quantity="one">%d more</item>
+        <item quantity="other">%d more</item>
+    </plurals>
+    <string name="document_show_fewer">Show fewer</string>
+    <string name="document_preview_failed">The preview couldn\'t be loaded. Tap the file to open it.</string>
+
+    <!-- Panes on tablets -->
+    <string name="action_hide_list">Hide list</string>
+    <string name="action_show_list">Show list</string>
+
+    <!-- Settings: account, look, language, about -->
+    <string name="settings_student_number">Student number</string>
+    <string name="settings_email">Email</string>
+    <string name="action_copy">Copy</string>
+    <string name="copied">%s copied</string>
+    <string name="settings_amoled">Pure black</string>
+    <string name="settings_amoled_summary">A black background in dark mode, which saves battery on OLED screens</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_system">System</string>
+    <string name="language_english" translatable="false">English</string>
+    <string name="language_dutch" translatable="false">Nederlands</string>
+    <string name="settings_license">License</string>
+    <string name="settings_license_summary">GNU AGPL v3: free to use, share and change, also in services on the web</string>
+    <!-- A few sentences about the app, shown under the app's name in Settings › About. -->
+    <string name="settings_about_text">Tolly puts your Toledo courses, announcements, agenda and files in one app that also works offline.</string>
+    <plurals name="settings_interval_hours">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="settings_interval_minutes">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d min</item>
+    </plurals>
+    <string name="agenda_filter">Filter the agenda</string>
+    <string name="settings_student_number_add">Add your student number</string>
+    <string name="settings_student_number_hint">Tolly couldn\'t find it in KU Loket. It\'s on your student card: an r and seven digits.</string>
+    <string name="action_save">Save</string>
+    <!-- One-time notices (app's NoticeSheet), by number. -->
+    <string name="notice_1_title">New in Tolly</string>
+    <string name="notice_1_body">• Notifications for new KU Leuven mail: turn them on in Settings, under Notifications.\n• Videos keep playing in a small window when you leave the app, and livestreams keep playing with the screen off, for listening on the way to class.\n• Hide the unread counts on the News and Mail tabs, in Settings.\n• Downloading a course for offline use and finding its videos are much faster.</string>
+    <string name="notice_dismiss">Got it</string>
+</resources>

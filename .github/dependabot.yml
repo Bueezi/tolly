@@ -1,0 +1,11 @@
+# Keeps the GitHub Actions in the workflows up to date. Gradle dependencies are left out: the
+# Material 3 libraries are pinned ahead of the Compose BOM on purpose (see gradle/libs.versions.toml).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

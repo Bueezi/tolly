@@ -1,0 +1,148 @@
+name: Release
+
+# Push a tag like v0.2.0, or run this workflow by hand with a version number. Either way it builds
+# a signed release APK and publishes it as a GitHub release and uploads
+# the same build as an AAB to Google Play's internal track (once the Play secret is set).
+# Tag only once CI on main is green: the unit tests ran there, so this workflow doesn't repeat them.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version name without the "v", e.g. 0.2.0
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Waits for the user's approval in the Actions tab before it starts; the signing key and the
+    # Play credentials are secrets of this environment, so an unapproved run never sees them.
+    environment: release
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Work out the version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            name="${GITHUB_REF_NAME#v}"
+          else
+            name="${INPUT_VERSION#v}"
+          fi
+          if ! printf '%s' "$name" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$'; then
+            echo "::error::'$name' is not a version like 1.2.3"
+            exit 1
+          fi
+          # versionCode from the version: 1.2.3 → 1002003. It grows with every release and, unlike
+          # a commit count, survives rewriting the history. (0.11.0 and earlier used the commit
+          # count, at most a few hundred, so this stays above them.)
+          IFS=. read -r major minor patch <<< "${name%%[-+]*}"
+          patch="${patch%%[!0-9]*}"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "code=$((major * 1000000 + minor * 1000 + patch))" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # The runner image ships an Android SDK; add the platform and build tools this project needs.
+      - name: Install SDK packages
+        run: |
+          sdkmanager="$(find "$ANDROID_HOME/cmdline-tools" -path "*/bin/sdkmanager" | sort -V | tail -n 1)"
+          yes 2>/dev/null | "$sdkmanager" --licenses > /dev/null || true
+          [ -d "$ANDROID_HOME/platforms/android-37.0" ] && [ -d "$ANDROID_HOME/build-tools/37.0.0" ] && exit 0
+          "$sdkmanager" --install "platforms;android-37.0" "build-tools;37.0.0" > /dev/null
+
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
+      - name: Restore the signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.TOLLY_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::The TOLLY_KEYSTORE_BASE64 secret is missing from the release environment; see CLAUDE.md (Releases)."
+            exit 1
+          fi
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          echo "TOLLY_KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+
+      # R8 does most of the work and shares its output between the APK and the AAB. The heap stays
+      # at gradle.properties' 4 GB: a bigger one on the command line starts a second daemon and
+      # stalled the runner (v0.12.0's first run hung for 15 minutes).
+      - name: Build the release APK and AAB
+        env:
+          TOLLY_KEYSTORE_PASSWORD: ${{ secrets.TOLLY_KEYSTORE_PASSWORD }}
+          TOLLY_KEY_ALIAS: ${{ secrets.TOLLY_KEY_ALIAS }}
+          TOLLY_KEY_PASSWORD: ${{ secrets.TOLLY_KEY_PASSWORD }}
+        run: >
+          ./gradlew assembleRelease bundleRelease
+          -Ptolly.versionName=${{ steps.version.outputs.name }}
+          -Ptolly.versionCode=${{ steps.version.outputs.code }}
+
+      - name: Check the signature
+        run: |
+          apk="tolly-${{ steps.version.outputs.name }}.apk"
+          cp app/build/outputs/apk/release/app-release.apk "$apk"
+          "$ANDROID_HOME/build-tools/37.0.0/apksigner" verify --print-certs "$apk" | tee signature.txt
+          if grep -q "CN=Android Debug" signature.txt; then
+            echo "::error::The APK is signed with the debug key."
+            exit 1
+          fi
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v${{ steps.version.outputs.name }}"
+          gh release create "$tag" "tolly-${{ steps.version.outputs.name }}.apk" \
+            --target "$GITHUB_SHA" --title "Tolly ${{ steps.version.outputs.name }}" --generate-notes
+
+      # Kept for uploading by hand (Google Play's first upload has to be done in the Play Console).
+      - name: Keep the AAB
+        uses: actions/upload-artifact@v7
+        with:
+          name: tolly-${{ steps.version.outputs.name }}-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      # Needs a Play Console service account with release rights on the app, as the
+      # PLAY_SERVICE_ACCOUNT_JSON secret. Google Play only accepts uploads through the API after the
+      # first AAB was uploaded by hand in the Play Console; until the secret exists this step skips.
+      - name: Check for Play credentials
+        id: play
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -n "$PLAY_SERVICE_ACCOUNT_JSON" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::PLAY_SERVICE_ACCOUNT_JSON is not set, so nothing is uploaded to Google Play."
+          fi
+
+      - name: Upload to Google Play (internal track)
+        if: steps.play.outputs.enabled == 'true'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: be.tolly
+          releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
+          track: internal
+          status: completed
+          mappingFile: android/app/build/outputs/mapping/release/mapping.txt
+
+      - name: Remove the signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks"

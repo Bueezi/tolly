@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The launcher foreground in one colour, which Android 13+ tints for themed icons. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M54,26 L84,40 L54,54 L24,40 Z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M47,47.5 L54,51 L61,47.5 L61,78 Q61,82 57,82 L51,82 Q47,82 47,78 Z" />
+    <path
+        android:pathData="M54,40 L75,44 L75,58"
+        android:strokeWidth="2.6"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M75,57.4 A3.6,3.6 0 1,1 75,64.6 A3.6,3.6 0 1,1 75,57.4 Z" />
+</vector>

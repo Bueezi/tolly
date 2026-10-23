@@ -1,0 +1,95 @@
+---
+import "@fontsource-variable/plus-jakarta-sans";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { otherLang, pathFor, strings, type Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+  /** The page's path below the language, `""` for home or e.g. `"privacy"`. */
+  page?: string;
+  title?: string;
+  description?: string;
+  /** Keeps the page out of search results (the 404 page). */
+  noindex?: boolean;
+  /** Structured data (schema.org) about the page, for search engines. */
+  jsonLd?: object;
+}
+
+const { lang, page = "", noindex = false, jsonLd } = Astro.props;
+const t = strings(lang);
+const title = Astro.props.title ?? t.meta.title;
+const description = Astro.props.description ?? t.meta.description;
+const site = Astro.site!;
+const canonical = new URL(pathFor(lang, page), site);
+const alternate = pathFor(otherLang(lang), page);
+const ogImage = new URL("/og.png", site);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <!-- The site has its own dark theme: Dark Reader leaves it alone. -->
+    <meta name="darkreader-lock" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={new URL(pathFor("en", page), site)} />
+    <link rel="alternate" hreflang="nl" href={new URL(pathFor("nl", page), site)} />
+    <link rel="alternate" hreflang="x-default" href={new URL(pathFor("en", page), site)} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#f6f6fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a12" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Tolly" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === "nl" ? "nl_BE" : "en_GB"} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <script is:inline>
+      // Runs before the page paints, so a theme the visitor picked earlier shows without a flash.
+      try {
+        const theme = localStorage.getItem("theme");
+        if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">{t.skip}</a>
+    <Header lang={lang} alternate={alternate} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} alternate={alternate} />
+
+    <style>
+      .skip {
+        position: absolute;
+        left: 16px;
+        top: -60px;
+        z-index: 100;
+        padding: 10px 16px;
+        border-radius: 12px;
+        background: var(--brand);
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .skip:focus {
+        top: 12px;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_news">New announcements</string>
+    <string name="notification_channel_news_description">A notification for every new announcement in your courses.</string>
+    <plurals name="notification_news_summary">
+        <item quantity="one">%d new announcement</item>
+        <item quantity="other">%d new announcements</item>
+    </plurals>
+    <string name="notification_channel_mail">New mail</string>
+    <string name="notification_channel_mail_description">A notification when new KU Leuven mail arrives.</string>
+    <plurals name="notification_mail_new">
+        <item quantity="one">%d new mail</item>
+        <item quantity="other">%d new mails</item>
+    </plurals>
+    <plurals name="notification_mail_unread">
+        <item quantity="one">%d unread in your KU Leuven mailbox</item>
+        <item quantity="other">%d unread in your KU Leuven mailbox</item>
+    </plurals>
+</resources>

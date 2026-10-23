@@ -1,0 +1,94 @@
+---
+import Logo from "./Logo.astro";
+import { links, otherLang, pathFor, strings, type Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+  /** This page in the other language. */
+  alternate: string;
+}
+
+const { lang, alternate } = Astro.props;
+const t = strings(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap grid">
+    <div class="about">
+      <a class="brand" href={pathFor(lang)}>
+        <Logo size={28} id="footer-logo" />
+        <span>Tolly</span>
+      </a>
+      <p>{t.footer.disclaimer}</p>
+      <p>{t.footer.made}</p>
+      <p>{t.footer.contact} <a href={`mailto:${links.email}`}>{links.email}</a>.</p>
+    </div>
+    <nav class="links" aria-label="Footer">
+      <a href={links.repo}>{t.footer.github}</a>
+      <a href={links.issues}>{t.footer.issues}</a>
+      <a href={pathFor(lang, "privacy")}>{t.footer.privacy}</a>
+      <a href={links.license}>{t.footer.license}</a>
+      <a href={alternate} hreflang={otherLang(lang)}>{t.langSwitch.label}</a>
+    </nav>
+  </div>
+  <div class="wrap copy">© {year} Tolly</div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-block: 48px 32px;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 40px;
+  }
+  .about {
+    display: grid;
+    gap: 12px;
+    max-width: 640px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.03em;
+    text-decoration: none;
+    width: fit-content;
+  }
+  .about a:not(.brand) {
+    color: var(--accent-text);
+    font-weight: 600;
+    text-underline-offset: 3px;
+  }
+  .links {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .links a {
+    color: var(--muted);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--text);
+  }
+  .copy {
+    margin-top: 32px;
+    color: var(--faint);
+    font-size: 0.85rem;
+  }
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

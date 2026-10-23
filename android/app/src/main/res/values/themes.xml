@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Tolly" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/tolly_background</item>
+    </style>
+
+    <style name="Theme.Tolly.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/tolly_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/tolly_icon_background</item>
+        <item name="postSplashScreenTheme">@style/Theme.Tolly</item>
+    </style>
+</resources>

@@ -1,0 +1,12 @@
+// For `npx wrangler deploy` (Workers static assets). Cloudflare Pages needs none of this: point
+// it at this folder with build command `npm run build` and output directory `dist`.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tolly",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  }
+}

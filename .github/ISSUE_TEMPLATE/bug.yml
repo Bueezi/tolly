@@ -1,0 +1,44 @@
+name: Bug report
+description: Something in Tolly doesn't work as it should
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please don't put personal details (student number, grades, mails) in a public issue. For anything private, use *You → Send feedback* in the app, which mails it to me with the app's log if you agree.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what Tolly did instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Tolly version
+      description: Under *You → Settings → About*.
+      placeholder: "0.15.0"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Phone and Android version
+      placeholder: "Pixel 8, Android 16"
+    validations:
+      required: true
+  - type: dropdown
+    id: look
+    attributes:
+      label: Look
+      options:
+        - Material
+        - Liquid Glass
+        - Both
+        - Not sure
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Optional. Blur anything personal first.

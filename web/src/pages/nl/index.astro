@@ -1,0 +1,9 @@
+---
+import Base from "../../layouts/Base.astro";
+import Landing from "../../components/Landing.astro";
+import { appJsonLd } from "../../i18n/seo";
+---
+
+<Base lang="nl" jsonLd={appJsonLd("nl", Astro.site!)}>
+  <Landing lang="nl" />
+</Base>
