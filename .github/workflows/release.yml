@@ -2,7 +2,7 @@ name: Release
 
 # Push a tag like v0.2.0, or run this workflow by hand with a version number. Either way it builds
 # a signed release APK and publishes it as a GitHub release and uploads
-# the same build as an AAB to Google Play's internal track (once the Play secret is set).
+# the same build as an AAB to Google Play's closed testing track (once the Play secret is set).
 # Tag only once CI on main is green: the unit tests ran there, so this workflow doesn't repeat them.
 on:
   push:
@@ -132,14 +132,15 @@ jobs:
             echo "::notice::PLAY_SERVICE_ACCOUNT_JSON is not set, so nothing is uploaded to Google Play."
           fi
 
-      - name: Upload to Google Play (internal track)
+      # Closed testing ("alpha" in the API) is the track that counts towards production access.
+      - name: Upload to Google Play (closed testing)
         if: steps.play.outputs.enabled == 'true'
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: be.tolly
           releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
-          track: internal
+          tracks: alpha
           status: completed
           mappingFile: android/app/build/outputs/mapping/release/mapping.txt
 

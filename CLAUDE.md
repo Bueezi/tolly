@@ -123,9 +123,9 @@ step below or a note says to.
    only) and give them the command to run themselves, in its own `bash` block:
    `git tag vX.Y.Z && git push origin vX.Y.Z`.
 4. `release.yml` (about 10 min) builds the signed APK and AAB, publishes `tolly-X.Y.Z.apk` as a
-   GitHub release with generated notes, and uploads the AAB to Play's internal track once the
-   `PLAY_SERVICE_ACCOUNT_JSON` secret is set. The versionCode comes from the version (1.2.3 →
-   1002003).
+   GitHub release with generated notes, and uploads the AAB to Play's closed testing track
+   (`alpha`) once the `PLAY_SERVICE_ACCOUNT_JSON` secret is set. The versionCode comes from the
+   version (1.2.3 → 1002003).
 
 Signing: one key signs GitHub's APKs and Play's, so they update each other:
 `android/keys/tolly-release.jks` (alias `tolly`, made 2026-10-23, certificate SHA-256
