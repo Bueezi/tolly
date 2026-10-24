@@ -11,17 +11,40 @@ object EmbeddedFiles {
 
     fun parse(html: String?): List<EmbeddedFile> {
         if (html.isNullOrBlank() || !html.contains("data-bbfile")) return emptyList()
-        return anchorTag.findAll(html).mapNotNull { tag ->
-            val json = bbFileAttr.find(tag.value)?.groupValues?.get(2)?.let(::decodeEntities) ?: return@mapNotNull null
-            val href = hrefAttr.find(tag.value)?.groupValues?.get(2)?.let(::decodeEntities)
-            val url = href?.takeIf { it.startsWith("http") }
-                ?: jsonString(json, "resourceUrl")
-                ?: jsonString(json, "viewerUrl")
-                ?: return@mapNotNull null
-            val name = jsonString(json, "displayName") ?: jsonString(json, "linkName") ?: return@mapNotNull null
-            EmbeddedFile(displayName = name, mimeType = jsonString(json, "mimeType"), url = url)
-        }.distinctBy { it.url.substringBefore('?') }.toList()
+        return anchorTag.findAll(html).mapNotNull { fileOf(it.value) }.distinctBy { it.url.substringBefore('?') }.toList()
     }
+
+    /**
+     * [html] with every embedded file's link, the tag and its text, replaced by what [button]
+     * makes of that file, so the text shows the file itself where the author linked it.
+     */
+    fun replaceLinks(html: String, button: (EmbeddedFile) -> String): String {
+        if (!html.contains("data-bbfile")) return html
+        return fileAnchor.replace(html) { anchor ->
+            val tag = anchorTag.find(anchor.value)?.value
+            tag?.let(::fileOf)?.let(button) ?: anchor.value
+        }
+    }
+
+    /** The file an `<a data-bbfile=…>` [tag] links to; null for any other link. */
+    private fun fileOf(tag: String): EmbeddedFile? {
+        val json = bbFileAttr.find(tag)?.groupValues?.get(2)?.let(::decodeEntities) ?: return null
+        val href = hrefAttr.find(tag)?.groupValues?.get(2)?.let(::decodeEntities)
+        val url = href?.takeIf { it.startsWith("http") }
+            ?: jsonString(json, "resourceUrl")
+            ?: jsonString(json, "viewerUrl")
+            ?: return null
+        val name = jsonString(json, "displayName") ?: jsonString(json, "linkName") ?: return null
+        return EmbeddedFile(displayName = name, mimeType = jsonString(json, "mimeType"), url = url)
+    }
+
+    /** [text] safe to put in HTML, as text or in a quoted attribute. */
+    fun escapeHtml(text: String): String = text
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\"", "&quot;")
+        .replace("'", "&#39;")
 
     /**
      * Whether [html] has anything to read besides its embedded file links: text, images, tables

@@ -8,7 +8,7 @@ description: What Tolly, the unofficial app for KU Leuven's Toledo, does with yo
 updated: Tolly for Toledo · last updated 23 October 2026
 ---
 
-Tolly is an unofficial app for KU Leuven's Toledo, made by Ben ([mail@b3n.me](mailto:mail@b3n.me)).
+Tolly is an unofficial app for KU Leuven's Toledo, made by Bueezi ([hello@tolly.be](mailto:hello@tolly.be)).
 Your data stays on your phone and goes only to KU Leuven's services. Tolly has no server of its
 own, no ads, no analytics and no tracking.
 
@@ -39,4 +39,4 @@ afterwards. A GitHub issue is public instead, and never includes the log.
 ## Changes and contact
 
 Changes to this policy appear here with a new date. Questions about your data:
-[mail@b3n.me](mailto:mail@b3n.me).
+[hello@tolly.be](mailto:hello@tolly.be).

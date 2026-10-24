@@ -45,7 +45,7 @@ import be.tolly.core.ui.withHaptic
  * go with it, and it works for everyone with a mail app. A GitHub issue is the alternative for
  * whoever wants to discuss it in public; the repository is public, so it never carries the log.
  */
-internal const val FEEDBACK_EMAIL = "mail@b3n.me"
+internal const val FEEDBACK_EMAIL = "hello@tolly.be"
 
 internal const val GITHUB_REPOSITORY = "https://github.com/Bueezi/tolly"
 

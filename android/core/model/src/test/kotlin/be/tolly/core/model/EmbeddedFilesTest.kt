@@ -26,6 +26,20 @@ class EmbeddedFilesTest {
     }
 
     @Test
+    fun replacesFileLinksAndTheirTextButNotOtherLinks() {
+        val replaced = EmbeddedFiles.replaceLinks(html) { "[${it.displayName}]" }
+        assertTrue(replaced.contains("<p>[Course notes.pdf]</p>"))
+        assertTrue(replaced.contains("[slides.pptx]"))
+        assertFalse(replaced.contains(">Course notes.pdf</a>"))
+        assertTrue(replaced.contains("""<a href="https://example.org">plain link</a>"""))
+    }
+
+    @Test
+    fun escapesTextForHtml() {
+        assertEquals("a &amp; b &lt;c&gt; &quot;d&quot; &#39;e&#39;", EmbeddedFiles.escapeHtml("a & b <c> \"d\" 'e'"))
+    }
+
+    @Test
     fun ignoresHtmlWithoutFiles() {
         assertTrue(EmbeddedFiles.parse("<p>No files</p>").isEmpty())
         assertTrue(EmbeddedFiles.parse(null).isEmpty())

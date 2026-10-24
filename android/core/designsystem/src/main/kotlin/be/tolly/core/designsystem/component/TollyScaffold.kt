@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.layerBackdrop
@@ -126,7 +127,8 @@ fun TollyScaffold(
 /**
  * A screen's top bar. [large] bars show a big title that collapses into the bar as the content
  * scrolls (Material 3 Expressive's flexible bar; a bold iOS large title with the glass look);
- * small ones keep their title in the bar (centred with the glass look).
+ * small ones keep their title in the bar (centred with the glass look). In landscape a large bar
+ * keeps its title in the bar too: a window that is wider than tall has no height to spare for it.
  *
  * With the glass look the bar itself is clear: content scrolling under it is blurred and fades
  * out (iOS's scroll edge), and [navigationIcon] and [actions] sit in glass. [bottom] holds what
@@ -166,14 +168,18 @@ fun TollyTopBar(
     } else {
         actions
     }
+    val window = LocalWindowInfo.current.containerSize
+    val largeTitle = large && window.height >= window.width
     val bar: @Composable ColumnScope.() -> Unit = {
         when {
-            large -> LargeFlexibleTopAppBar(
+            largeTitle -> LargeFlexibleTopAppBar(
                 title = title,
                 subtitle = subtitle,
                 navigationIcon = navigationIcon,
                 actions = barActions,
                 colors = colors,
+                // A little lower than Material's (120 and 152 dp): the title sits closer under the buttons.
+                expandedHeight = if (subtitle != null) LargeBarWithSubtitleHeight else LargeBarHeight,
                 scrollBehavior = scrollBehavior,
             )
             glass -> CenterAlignedTopAppBar(
@@ -233,6 +239,10 @@ fun TollyTopBar(
         Column(content = bar)
     }
 }
+
+/** The large bar's height while expanded. */
+private val LargeBarHeight = 108.dp
+private val LargeBarWithSubtitleHeight = 136.dp
 
 /** How far the scroll edge's fade reaches below the bar. */
 private val ScrollEdgeOverhang = 20.dp

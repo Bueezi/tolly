@@ -54,6 +54,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
+import androidx.compose.material3.ToggleButtonShapes
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -71,8 +72,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -86,7 +91,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.sp
@@ -187,6 +195,9 @@ fun TollySegmented(
     if (!Tolly.glass) {
         Row(modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
             repeat(count) { index ->
+                val interaction = remember { MutableInteractionSource() }
+                val pressed by interaction.collectIsPressedAsState()
+                val shape = segmentShape(leading = index == 0, trailing = index == count - 1, checked = index == selectedIndex, pressed = pressed)
                 ToggleButton(
                     checked = index == selectedIndex,
                     onCheckedChange = { onSelect(index) },
@@ -200,11 +211,8 @@ fun TollySegmented(
                         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     ),
                     contentPadding = PaddingValues(horizontal = 6.dp),
-                    shapes = when {
-                        index == 0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                        index == count - 1 -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                    },
+                    shapes = remember(shape) { ToggleButtonShapes(shape, shape, shape) },
+                    interactionSource = interaction,
                 ) { sizedLabel(index) }
             }
         }
@@ -265,6 +273,39 @@ fun TollySegmented(
                 }
             }
         }
+    }
+}
+
+/**
+ * The corners of one button of a connected group, as Material's: round at the group's ends and
+ * when checked, tight between buttons and tighter while pressed. Material morphs these itself, but
+ * its bouncy spring can carry a corner a fraction of a pixel below zero, which crashes (it did on
+ * a tablet). This shape bounces the same way but keeps every corner between 0 and round.
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun segmentShape(leading: Boolean, trailing: Boolean, checked: Boolean, pressed: Boolean): Shape {
+    val spec = MaterialTheme.motionScheme.fastSpatialSpec<Float>()
+    val start = animateFloatAsState(if (checked || leading) 1f else 0f, spec, label = "start corners")
+    val end = animateFloatAsState(if (checked || trailing) 1f else 0f, spec, label = "end corners")
+    val inner = animateFloatAsState(if (pressed) SegmentInnerPressed.value else SegmentInner.value, spec, label = "inner corners")
+    return remember { SegmentShape({ start.value }, { end.value }, { inner.value.dp }) }
+}
+
+/** Material's inner corners of a connected button group (small, and extra small while pressed). */
+private val SegmentInner = 8.dp
+private val SegmentInnerPressed = 4.dp
+
+/** Corners [start] and [end] go from [inner] (0) to round (1); read while drawing, so they animate without recomposing. */
+private class SegmentShape(val start: () -> Float, val end: () -> Float, val inner: () -> Dp) : Shape {
+    override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
+        val round = size.minDimension / 2
+        val innerPx = with(density) { inner().toPx() }.coerceIn(0f, round)
+        fun corner(fraction: Float) = CornerRadius((innerPx + (round - innerPx) * fraction).coerceIn(0f, round))
+        val startCorner = corner(start())
+        val endCorner = corner(end())
+        val (left, right) = if (layoutDirection == LayoutDirection.Ltr) startCorner to endCorner else endCorner to startCorner
+        return Outline.Rounded(RoundRect(size.toRect(), topLeft = left, topRight = right, bottomRight = right, bottomLeft = left))
     }
 }
 

@@ -28,6 +28,8 @@ import be.tolly.core.designsystem.theme.LocalGlass
  * Renders Blackboard HTML (announcements, Ultra documents) in a locked-down WebView: no JavaScript,
  * no file access, colours taken from the Material theme and every link handed to [onLinkClick].
  * Ultra-hosted images are fetched through [resourceLoader] so the WebView needs no session cookies.
+ * A link of class `tolly-file`, holding an `<svg>` icon and a `<span>` name, is drawn as a file
+ * button like the outlined file chips elsewhere.
  *
  * With the glass look the screen's content is recorded for the glass bars and drawn again,
  * blurred, in an offscreen layer. WebView's GPU drawing can't go into such a layer (on Vulkan the
@@ -51,7 +53,8 @@ fun HtmlContent(
     val currentLoader by rememberUpdatedState(resourceLoader)
     val layerType = if (LocalGlass.current && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) View.LAYER_TYPE_SOFTWARE else View.LAYER_TYPE_NONE
 
-    val document = remember(html, colors, contentPadding, layoutDirection, density.fontScale) {
+    val glass = LocalGlass.current
+    val document = remember(html, colors, contentPadding, layoutDirection, density.fontScale, glass) {
         wrapHtml(
             body = html,
             text = colors.onSurface,
@@ -61,6 +64,8 @@ fun HtmlContent(
             codeBackground = colors.surfaceContainerHighest,
             padding = contentPadding,
             layoutDirection = layoutDirection,
+            // The small shape of either look.
+            fileRadius = if (glass) 10 else 12,
         )
     }
 
@@ -116,6 +121,7 @@ private fun wrapHtml(
     codeBackground: Color,
     padding: PaddingValues,
     layoutDirection: LayoutDirection,
+    fileRadius: Int,
 ): String {
     val top = padding.calculateTopPadding().value
     val bottom = padding.calculateBottomPadding().value
@@ -137,6 +143,14 @@ private fun wrapHtml(
           [style*="color"] { color: inherit !important; }
           [style*="background"] { background: transparent !important; }
           a { color: ${link.css()}; }
+          a.tolly-file {
+            display: inline-flex; align-items: center; gap: 8px; box-sizing: border-box; max-width: 100%;
+            min-height: 36px; margin: 2px 0; padding: 6px 12px 6px 8px; vertical-align: middle;
+            border: 1px solid ${border.css()}; border-radius: ${fileRadius}px;
+            color: ${text.css()}; text-decoration: none; font-size: 14px; font-weight: 500; line-height: 1.3;
+          }
+          a.tolly-file svg { width: 18px; height: 18px; flex-shrink: 0; fill: ${link.css()}; }
+          a.tolly-file span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
           img, video, iframe { max-width: 100%; height: auto; border-radius: 8px; }
           table { display: block; overflow-x: auto; border-collapse: collapse; max-width: 100%; }
           td, th { border: 1px solid ${border.css()}; padding: 6px 8px; vertical-align: top; overflow-wrap: break-word; word-break: normal; }

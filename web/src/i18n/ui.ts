@@ -9,7 +9,7 @@ export const links = {
   apk: "https://github.com/Bueezi/tolly/releases/latest",
   issues: "https://github.com/Bueezi/tolly/issues",
   license: "https://github.com/Bueezi/tolly/blob/main/LICENSE",
-  email: "mail@b3n.me",
+  email: "hello@tolly.be",
   // The closed test (tolly.be/alpha): joining the group makes a Google account a tester.
   alphaGroup: "https://groups.google.com/g/tolly-alpha",
   alphaOptIn: "https://play.google.com/apps/testing/be.tolly",

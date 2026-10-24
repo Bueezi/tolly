@@ -65,6 +65,8 @@ import be.tolly.core.designsystem.component.TollyTopBar
 import be.tolly.core.designsystem.component.fileIcon
 import be.tolly.core.designsystem.component.groupItem
 import be.tolly.core.designsystem.theme.LocalBottomBarInset
+import be.tolly.core.model.EmbeddedFile
+import be.tolly.core.model.EmbeddedFiles
 import be.tolly.core.ui.DownloadStatusIcon
 import be.tolly.core.ui.FileOptionsSheet
 import be.tolly.core.ui.FileTile
@@ -156,7 +158,7 @@ fun DocumentPane(
                         HorizontalDivider()
                     }
                     HtmlContent(
-                        html = html,
+                        html = remember(html) { EmbeddedFiles.replaceLinks(html, ::fileButtonHtml) },
                         onLinkClick = viewModel::onLink,
                         baseUrl = UltraEndpoints.BASE_URL,
                         resourceLoader = viewModel::loadResource,
@@ -291,6 +293,23 @@ private fun FileChip(
         trailing?.invoke()
     }
 }
+
+/**
+ * A file the text links to, as a button in place of the link (see [HtmlContent]): its icon and
+ * name, like the [FileChip]s above. A tap goes through the same link handling, which opens it.
+ */
+private fun fileButtonHtml(file: EmbeddedFile): String {
+    val icon = if (file.mimeType?.startsWith("image/") == true) ImageIconPath else DocumentIconPath
+    return """<a class="tolly-file" href="${EmbeddedFiles.escapeHtml(file.url)}">""" +
+        """<svg viewBox="0 0 24 24" aria-hidden="true"><path d="$icon"/></svg>""" +
+        """<span>${EmbeddedFiles.escapeHtml(file.displayName)}</span></a>"""
+}
+
+/** Material's outlined description and image icons, as SVG paths. */
+private const val DocumentIconPath =
+    "M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"
+private const val ImageIconPath =
+    "M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"
 
 /** More files than this fold into a "more" chip above a document's text. */
 private const val MAX_COLLAPSED_FILES = 6

@@ -26,7 +26,9 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.MenuOpen
 import androidx.compose.material.icons.outlined.Menu
@@ -52,6 +54,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onSizeChanged
@@ -64,6 +67,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import be.tolly.core.designsystem.R
 import be.tolly.core.designsystem.theme.Tolly
 import kotlinx.coroutines.CancellationException
@@ -88,8 +92,9 @@ val LocalListPaneToggle = staticCompositionLocalOf<ListPaneToggle?> { null }
  *   plays a tenth of its transition there, and draws the screen coming back in front of the one
  *   leaving, so its fade shows through the page being swiped away.
  * - Two panes side by side: the library's scaffold, with a [PaneDivider] between them that resizes
- *   the first one, and pulls the list shut like a magnet when it gets too narrow; a button in the
- *   detail pane folds it away and back (see [LocalListPaneToggle]).
+ *   the first one (the list, or the course beside an opened item), and pulls it shut like a magnet
+ *   when it gets too narrow; a button in the second pane folds it away and back (see
+ *   [LocalListPaneToggle]). The divider can be grabbed anywhere along its height.
  */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -197,8 +202,11 @@ private fun <T> SidePanes(
     val value = navigator.scaffoldValue
     val listBesideDetail = value[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded &&
         value[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded
-    // Only the list folds away: the detail pane beside an opened item has nothing to bring it back.
-    val divider = rememberPaneDivider(key = listBesideDetail, canFold = listBesideDetail)
+    val detailBesideExtra = value[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded &&
+        value[ListDetailPaneScaffoldRole.Extra] == PaneAdaptedValue.Expanded
+    // Either first pane folds away; the pane beside it has the button that brings it back.
+    val canFold = listBesideDetail || detailBesideExtra
+    val divider = rememberPaneDivider(key = listBesideDetail, canFold = canFold)
     val expansion = rememberPaneExpansionState(keyProvider = value)
     val density = LocalDensity.current
     LaunchedEffect(expansion, divider) {
@@ -210,7 +218,7 @@ private fun <T> SidePanes(
     val direction = if (LocalLayoutDirection.current == LayoutDirection.Ltr) 1f else -1f
     val toggleLabel = stringResource(if (collapsed) R.string.action_show_list else R.string.action_hide_list)
 
-    CompositionLocalProvider(LocalListPaneToggle provides toggle.takeIf { listBesideDetail }) {
+    CompositionLocalProvider(LocalListPaneToggle provides toggle.takeIf { canFold }) {
         ListDetailPaneScaffold(
             directive = navigator.scaffoldDirective,
             scaffoldState = navigator.scaffoldState,
@@ -221,8 +229,12 @@ private fun <T> SidePanes(
             paneExpansionState = expansion,
             paneExpansionDragHandle = {
                 val interactionSource = remember { MutableInteractionSource() }
-                VerticalDragHandle(
+                // The handle only shows where to grab: the whole strip between the panes drags, so
+                // the finger doesn't have to find a 48 dp spot halfway down a tablet. Folded, there
+                // is no gap for a strip: it would lie over the other pane's buttons.
+                Box(
                     modifier = Modifier
+                        .then(if (collapsed) Modifier else Modifier.fillMaxHeight().width(DragStripWidth))
                         .draggable(
                             state = rememberDraggableState { delta ->
                                 val snapped = divider.drag(with(density) { (delta * direction).toDp().value })
@@ -235,15 +247,17 @@ private fun <T> SidePanes(
                             onDragStopped = { divider.dragStopped() },
                         )
                         .semantics {
-                            if (listBesideDetail) {
+                            if (canFold) {
                                 onClick(toggleLabel) {
                                     divider.toggle()
                                     true
                                 }
                             }
                         },
-                    interactionSource = interactionSource,
-                )
+                    contentAlignment = Alignment.Center,
+                ) {
+                    VerticalDragHandle(interactionSource = interactionSource)
+                }
             },
         )
     }
@@ -259,6 +273,9 @@ internal fun ListPaneToggleButton(toggle: ListPaneToggle) {
         )
     }
 }
+
+/** How wide the strip between two panes is that drags the divider. */
+private val DragStripWidth = 32.dp
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private val BackBehavior = BackNavigationBehavior.PopUntilScaffoldValueChange

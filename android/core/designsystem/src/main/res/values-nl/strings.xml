@@ -433,6 +433,9 @@
     <string name="setup_look_body">Je kunt dit allemaal later aanpassen in Instellingen.</string>
     <string name="setup_look_material">Material You</string>
     <string name="setup_look_material_summary">De eigen look van Android, in de kleuren van je achtergrond</string>
+    <string name="setup_look_pick_body">Tolly heeft twee volledige looks. Tik op degene die je wilt: de app verandert meteen mee, en je kunt later wisselen in Instellingen.</string>
+    <string name="setup_look_glass_short">Zoals iOS, met een zwevende glazen tabbalk</string>
+    <string name="setup_style_title">Naar jouw smaak</string>
     <string name="setup_notifications_title">Blijf op de hoogte</string>
     <string name="setup_notifications_body">Tolly kan je laten weten wanneer een van je vakken een aankondiging plaatst, en wanneer er KU Leuven-mail binnenkomt.</string>
     <string name="setup_finish">Verder naar aanmelden</string>

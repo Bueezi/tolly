@@ -8,8 +8,8 @@ description: Wat Tolly, de onofficiële app voor Toledo van KU Leuven, met je ge
 updated: Tolly voor Toledo · laatst bijgewerkt op 23 oktober 2026
 ---
 
-Tolly is een onofficiële app voor Toledo van KU Leuven, gemaakt door Ben
-([mail@b3n.me](mailto:mail@b3n.me)). Je gegevens blijven op je gsm en gaan alleen naar de diensten
+Tolly is een onofficiële app voor Toledo van KU Leuven, gemaakt door Bueezi
+([hello@tolly.be](mailto:hello@tolly.be)). Je gegevens blijven op je gsm en gaan alleen naar de diensten
 van KU Leuven. Tolly heeft geen eigen server, geen advertenties, geen analytics en geen tracking.
 
 ## Aanmelden
@@ -40,4 +40,4 @@ daar gaat de log nooit mee.
 ## Wijzigingen en contact
 
 Wijzigingen aan dit beleid verschijnen hier met een nieuwe datum. Vragen over je gegevens:
-[mail@b3n.me](mailto:mail@b3n.me).
+[hello@tolly.be](mailto:hello@tolly.be).

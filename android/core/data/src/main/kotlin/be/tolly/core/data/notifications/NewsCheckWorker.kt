@@ -19,6 +19,9 @@ import be.tolly.core.data.CourseRepository
 import be.tolly.core.data.PreferencesRepository
 import be.tolly.core.data.SyncRepository
 import be.tolly.core.data.visibleWith
+import be.tolly.core.model.UserPreferences
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -42,10 +45,16 @@ class NewsCheckWorker @AssistedInject constructor(
     private val mailNotifier: MailNotifier,
 ) : CoroutineWorker(context, params) {
 
-    override suspend fun doWork(): Result {
+    override suspend fun doWork(): Result = coroutineScope {
         val prefs = preferences.preferences.first()
-        if (prefs.notifyMail) checkMail()
-        if (!prefs.notifyAnnouncements) return Result.success()
+        // Mail and announcements at the same time: the radio wakes once, and for less long.
+        val mail = if (prefs.notifyMail) async { checkMail() } else null
+        val result = if (prefs.notifyAnnouncements) checkAnnouncements(prefs) else Result.success()
+        mail?.await()
+        result
+    }
+
+    private suspend fun checkAnnouncements(prefs: UserPreferences): Result {
         sync.refreshAnnouncements().onFailure {
             Log.w(TAG, "Announcement check failed", it)
             return if (runAttemptCount < 2) Result.retry() else Result.success()
@@ -98,7 +107,8 @@ class NewsCheckScheduler @Inject constructor(
         // The check may run anywhere in the last third of each period (at least WorkManager's 5 minutes).
         val flexMinutes = (intervalMinutes / 3L).coerceAtLeast(5)
         val request = PeriodicWorkRequestBuilder<NewsCheckWorker>(intervalMinutes.toLong(), TimeUnit.MINUTES, flexMinutes, TimeUnit.MINUTES)
-            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+            // Checks wait while the battery is low (about 15 %) and go on once it is charging or above that.
+            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).setRequiresBatteryNotLow(true).build())
             .build()
         workManager.enqueueUniquePeriodicWork(WORK_NAME, ExistingPeriodicWorkPolicy.UPDATE, request)
     }

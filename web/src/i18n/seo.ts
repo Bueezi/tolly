@@ -18,7 +18,7 @@ export function appJsonLd(lang: Lang, site: URL) {
     license: "https://www.gnu.org/licenses/agpl-3.0.html",
     isAccessibleForFree: true,
     offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-    author: { "@type": "Person", name: "Ben", email: links.email },
+    author: { "@type": "Person", name: "Bueezi", email: links.email },
     codeRepository: links.repo,
   };
 }

@@ -435,6 +435,9 @@
     <string name="setup_look_body">You can change all of this later in Settings.</string>
     <string name="setup_look_material">Material You</string>
     <string name="setup_look_material_summary">Android\'s own look, in your wallpaper\'s colors</string>
+    <string name="setup_look_pick_body">Tolly comes in two complete looks. Tap the one you like: the app switches right away, and you can change it later in Settings.</string>
+    <string name="setup_look_glass_short">Like iOS, with a floating glass tab bar</string>
+    <string name="setup_style_title">Make it yours</string>
     <string name="setup_notifications_title">Stay up to date</string>
     <string name="setup_notifications_body">Tolly can let you know when one of your courses posts an announcement, and when KU Leuven mail arrives.</string>
     <string name="setup_finish">Continue to sign in</string>

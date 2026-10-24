@@ -7,17 +7,19 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.SeekableTransitionState
 import androidx.compose.animation.core.rememberTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -311,29 +313,36 @@ private fun CourseTitle(course: Course?) {
     }
 }
 
+/**
+ * Where in the course the folder list is. The way home stays at the start; the folders after it
+ * scroll to show the deepest ones. Each folder above the current one takes at most
+ * [MaxCrumbWidth] and the current one at most the whole row, so long names end in an ellipsis
+ * instead of pushing the rest of the path out of sight.
+ */
 @Composable
 private fun Breadcrumbs(path: List<Crumb>, onSelect: (Int) -> Unit) {
-    val listState = rememberLazyListState()
-    LaunchedEffect(path.size) { listState.animateScrollToItem(path.lastIndex) }
-    LazyRow(
-        state = listState,
-        contentPadding = PaddingValues(horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        itemsIndexed(path) { index, crumb ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (index > 0) {
+    val scroll = rememberScrollState()
+    LaunchedEffect(path.size, scroll.maxValue) { scroll.animateScrollTo(scroll.maxValue) }
+    Row(Modifier.padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        TextButton(onClick = { onSelect(0) }) {
+            Icon(Icons.Outlined.Home, contentDescription = stringResource(R.string.course_outline_root))
+        }
+        BoxWithConstraints(Modifier.weight(1f)) {
+            val rowWidth = maxWidth
+            Row(Modifier.horizontalScroll(scroll).padding(end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                path.forEachIndexed { index, crumb ->
+                    if (index == 0) return@forEachIndexed
+                    val last = index == path.lastIndex
                     Icon(
                         Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                }
-                val last = index == path.lastIndex
-                TextButton(onClick = { onSelect(index) }, enabled = !last) {
-                    if (crumb.id == null) {
-                        Icon(Icons.Outlined.Home, contentDescription = stringResource(R.string.course_outline_root))
-                    } else {
+                    TextButton(
+                        onClick = { onSelect(index) },
+                        enabled = !last,
+                        modifier = Modifier.widthIn(max = if (last) rowWidth - CrumbArrowWidth else MaxCrumbWidth),
+                    ) {
                         Text(
                             crumb.title,
                             maxLines = 1,
@@ -347,6 +356,10 @@ private fun Breadcrumbs(path: List<Crumb>, onSelect: (Int) -> Unit) {
         }
     }
 }
+
+/** The widest a folder above the current one gets in the [Breadcrumbs], and the arrow before each. */
+private val MaxCrumbWidth = 160.dp
+private val CrumbArrowWidth = 32.dp
 
 @Composable
 private fun CourseAnnouncements(
