@@ -1,0 +1,144 @@
+---
+// The closed test's sign-up page (tolly.be/alpha): the three steps that make a Google account a
+// tester, each with its own button. Shared by alpha.astro and nl/alpha.astro; kept out of search.
+import Icon, { type IconName } from "./Icon.astro";
+import Logo from "./Logo.astro";
+import { links, strings, type Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = strings(lang).alpha;
+const targets: { href: string; icon: IconName }[] = [
+  { href: links.alphaGroup, icon: "school" },
+  { href: links.alphaOptIn, icon: "check" },
+  { href: links.play, icon: "play" },
+];
+---
+
+<section class="wrap alpha">
+  <header class="section-head">
+    <Logo size={72} id="alpha-logo" class="alpha-logo" />
+    <span class="eyebrow">{t.eyebrow}</span>
+    <h1 class="section-title">{t.title}</h1>
+    <p class="lead">{t.lead}</p>
+  </header>
+
+  <ol class="steps">
+    {
+      t.steps.map((step, i) => (
+        <li class="step">
+          <span class="number" aria-hidden="true">{i + 1}</span>
+          <div class="text">
+            <h2>{step.title}</h2>
+            <p>{step.body}</p>
+          </div>
+          <a class:list={["btn", i === 0 ? "btn-primary" : "btn-secondary"]} href={targets[i].href} rel="noopener">
+            <Icon name={targets[i].icon} size={20} />
+            {step.button}
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="stay">
+    <h2>{t.stay.title}</h2>
+    <p>{t.stay.body}</p>
+  </div>
+
+  <p class="feedback">
+    {t.feedback} <a href={`mailto:${links.email}`}>{links.email}</a>{" "}{t.or}{" "}
+    <a href={links.issues}>{t.issues}</a>.
+  </p>
+</section>
+
+<style>
+  .alpha {
+    max-width: 760px;
+    padding-block: clamp(48px, 8vw, 96px);
+    display: grid;
+    gap: 32px;
+  }
+  .alpha :global(.alpha-logo) {
+    border-radius: 20px;
+    box-shadow: 0 16px 36px -14px var(--glow);
+  }
+  .section-head .eyebrow {
+    margin-bottom: 0;
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 22px;
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow:
+      0 0 0 1px var(--border) inset,
+      var(--shadow-card);
+  }
+  .number {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-text);
+    font-weight: 800;
+  }
+  .text {
+    display: grid;
+    gap: 4px;
+  }
+  h2 {
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+  }
+  .text p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .stay {
+    display: grid;
+    gap: 6px;
+    padding: 20px 22px;
+    border-radius: var(--radius-md);
+    background: var(--bg-tint);
+  }
+  .stay p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .feedback {
+    margin: 0;
+    color: var(--muted);
+  }
+  .feedback a {
+    color: var(--accent-text);
+    font-weight: 600;
+    text-underline-offset: 3px;
+  }
+
+  /* On a phone the button goes under the text, full width. */
+  @media (max-width: 640px) {
+    .step {
+      grid-template-columns: auto 1fr;
+    }
+    .step .btn {
+      grid-column: 1 / -1;
+      width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,11 @@
+---
+import Base from "../../layouts/Base.astro";
+import Alpha from "../../components/Alpha.astro";
+import { strings } from "../../i18n/ui";
+
+const t = strings("nl").alpha;
+---
+
+<Base lang="nl" page="alpha" title={t.meta.title} description={t.meta.description} noindex>
+  <Alpha lang="nl" />
+</Base>

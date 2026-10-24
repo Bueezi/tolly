@@ -17,6 +17,8 @@ npm run build     # writes dist/
   `src/pages/nl/index.astro` render it in each language.
 - `src/pages/privacy.md` and `src/pages/nl/privacy.md`: the privacy policy Google Play links to,
   in Markdown with the `Policy.astro` layout. Change both, and their dates, together.
+- `src/components/Alpha.astro`: `/alpha` and `/nl/alpha`, how to join the closed test on Google
+  Play. Not indexed and not in the sitemap: it's for people who get the link.
 - `src/components/Device.astro`: a screenshot in a phone or tablet frame, served as AVIF/WebP in
   a few widths, with an optional dark-theme screenshot.
 - The app screenshots come from `../brand/store/screens/en/`, shared with the Play graphics;

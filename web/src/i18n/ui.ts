@@ -10,6 +10,10 @@ export const links = {
   issues: "https://github.com/Bueezi/tolly/issues",
   license: "https://github.com/Bueezi/tolly/blob/main/LICENSE",
   email: "mail@b3n.me",
+  // The closed test (tolly.be/alpha): joining the group makes a Google account a tester.
+  alphaGroup: "https://groups.google.com/g/tolly-alpha",
+  alphaOptIn: "https://play.google.com/apps/testing/be.tolly",
+  play: "https://play.google.com/store/apps/details?id=be.tolly",
 };
 
 const en = {
@@ -105,6 +109,40 @@ const en = {
   download: {
     title: "Get Tolly",
     body: "Install the APK from GitHub. Google Play is on its way.",
+  },
+  alpha: {
+    meta: {
+      title: "Test Tolly on Google Play",
+      description: "Join Tolly's closed test on Google Play in three steps.",
+    },
+    eyebrow: "Closed test",
+    title: "Test Tolly on Google Play",
+    lead:
+      "Tolly is in a closed test on Google Play before it goes public. Join in three steps, with the Google account that's on your phone.",
+    steps: [
+      {
+        title: "Join the testers group",
+        body: "Open the group and tap Join group. Being in it is what lets your account into the test.",
+        button: "Join the group",
+      },
+      {
+        title: "Become a tester",
+        body: "Open the test's page on Google Play and tap Become a tester.",
+        button: "Join on the web",
+      },
+      {
+        title: "Install Tolly",
+        body: "Install it from Google Play like any other app. Right after joining, it can take a few minutes before Play shows it.",
+        button: "Open in Google Play",
+      },
+    ],
+    stay: {
+      title: "Please stay for two weeks",
+      body: "Google only lets Tolly go public after at least 12 testers have stayed in the test for 14 days in a row, so please don't leave the group or the test before then.",
+    },
+    feedback: "Found a bug or have an idea? Mail me at",
+    or: "or",
+    issues: "open an issue on GitHub",
   },
   footer: {
     disclaimer:
@@ -211,6 +249,40 @@ const nl: typeof en = {
   download: {
     title: "Download Tolly",
     body: "Installeer de APK van GitHub. Google Play komt eraan.",
+  },
+  alpha: {
+    meta: {
+      title: "Test Tolly op Google Play",
+      description: "Doe in drie stappen mee aan de gesloten test van Tolly op Google Play.",
+    },
+    eyebrow: "Gesloten test",
+    title: "Test Tolly op Google Play",
+    lead:
+      "Tolly is in een gesloten test op Google Play voor het openbaar wordt. Doe mee in drie stappen, met het Google-account dat op je gsm staat.",
+    steps: [
+      {
+        title: "Word lid van de testgroep",
+        body: "Open de groep en word lid. Als lid kan je account meedoen aan de test.",
+        button: "Naar de groep",
+      },
+      {
+        title: "Word tester",
+        body: "Open de pagina van de test op Google Play en tik op de knop om tester te worden.",
+        button: "Meedoen via het web",
+      },
+      {
+        title: "Installeer Tolly",
+        body: "Installeer de app via Google Play zoals elke andere app. Vlak na het meedoen kan het een paar minuten duren voor Play hem toont.",
+        button: "Openen in Google Play",
+      },
+    ],
+    stay: {
+      title: "Blijf twee weken mee",
+      body: "Google laat Tolly pas openbaar gaan als minstens 12 testers 14 dagen na elkaar in de test zitten. Verlaat de groep of de test dus niet voor die tijd.",
+    },
+    feedback: "Een fout gevonden of een idee? Mail me op",
+    or: "of",
+    issues: "meld het op GitHub",
   },
   footer: {
     disclaimer:
