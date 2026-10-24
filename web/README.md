@@ -35,6 +35,7 @@ Either of these works:
 - **Workers (static assets):** `npm run deploy`, which builds and runs `wrangler deploy` with
   `wrangler.jsonc`.
 
-`public/_headers` sets security headers and long caching for the hashed files in `/_astro/`.
+`public/_headers` sets security headers and long caching for the hashed files in `/_astro/`;
+`public/_redirects` sends `/test` and `/beta` to `/alpha`.
 The canonical URL is `site` in `astro.config.mjs` (`https://tolly.be` for now); change it if the
 domain differs.

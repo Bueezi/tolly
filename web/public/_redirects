@@ -1,0 +1,6 @@
+# Read by Cloudflare Pages and Workers static assets. Other names people may try for the closed
+# test's sign-up page; 302 while the test runs, since these may point elsewhere later.
+/test     /alpha     302
+/beta     /alpha     302
+/nl/test  /nl/alpha  302
+/nl/beta  /nl/alpha  302
