@@ -243,7 +243,7 @@
     <string name="settings_theme_dark">Donker</string>
     <string name="settings_dynamic_color">Dynamische kleuren</string>
     <string name="settings_glass">Liquid Glass</string>
-    <string name="settings_glass_summary">Een stijl zoals iOS, met een zwevende glazen tabbalk</string>
+    <string name="settings_glass_summary">Een zwevende glazen tabbalk en glazen knoppen boven de inhoud</string>
     <string name="settings_shake_look">Schudden om van stijl te wisselen</string>
     <string name="settings_shake_look_summary">Schud met je telefoon om te wisselen tussen Liquid Glass en Material</string>
     <string name="settings_glass_tier_liquid">Op deze telefoon: Liquid Glass met vervaging en lichtbreking.</string>
@@ -435,7 +435,7 @@
     <string name="setup_look_material">Material You</string>
     <string name="setup_look_material_summary">De eigen stijl van Android, in de kleuren van je achtergrond</string>
     <string name="setup_look_pick_body">Tik op een stijl om hem te proberen. Je kunt later wisselen in de instellingen.</string>
-    <string name="setup_look_glass_short">Zoals iOS, met een zwevende glazen tabbalk</string>
+    <string name="setup_look_glass_short">Met een zwevende glazen tabbalk</string>
     <string name="setup_style_title">Thema en kleuren</string>
     <string name="setup_notifications_title">Meldingen</string>
     <string name="setup_notifications_body">Tolly kan je een melding sturen bij nieuwe aankondigingen in je vakken en bij nieuwe mail van KU Leuven.</string>

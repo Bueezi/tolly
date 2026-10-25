@@ -245,7 +245,7 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_dynamic_color">Dynamic color</string>
     <string name="settings_glass">Liquid Glass</string>
-    <string name="settings_glass_summary">An iOS-style look with a floating glass tab bar</string>
+    <string name="settings_glass_summary">A floating glass tab bar and glass buttons over the content</string>
     <string name="settings_shake_look">Shake to switch look</string>
     <string name="settings_shake_look_summary">Shake the phone to switch between Liquid Glass and Material</string>
     <string name="settings_glass_tier_liquid">On this phone: Liquid Glass with blur and refraction.</string>
@@ -437,7 +437,7 @@
     <string name="setup_look_material">Material You</string>
     <string name="setup_look_material_summary">Android\'s own look, in your wallpaper\'s colors</string>
     <string name="setup_look_pick_body">Tap one to try it. You can switch later in Settings.</string>
-    <string name="setup_look_glass_short">Like iOS, with a floating glass tab bar</string>
+    <string name="setup_look_glass_short">With a floating glass tab bar</string>
     <string name="setup_style_title">Theme and colors</string>
     <string name="setup_notifications_title">Notifications</string>
     <string name="setup_notifications_body">Tolly can notify you about new announcements in your courses and new KU Leuven mail.</string>
