@@ -27,9 +27,9 @@ const en = {
   theme: { toLight: "Switch to light mode", toDark: "Switch to dark mode" },
   langSwitch: { label: "Nederlands", short: "NL" },
   hero: {
-    title: "Toledo as a real Android app.",
+    title: "Toledo, the way it should be.",
     lead:
-      "Tolly is a modern Android client for KU Leuven's Toledo. Your courses, announcements, agenda, grades and files, also when you're offline.",
+      "Tolly is an unofficial, modern Android client for KU Leuven's Toledo. Your courses, announcements, agenda, grades and files, also when you're offline.",
     meta: ["Free and open source", "No ads or tracking"],
     shotFront: "Tolly's course list, showing which course has class now",
     shotBack: "The same course list in Tolly's other look",
@@ -167,9 +167,9 @@ const nl: typeof en = {
   theme: { toLight: "Naar lichte modus", toDark: "Naar donkere modus" },
   langSwitch: { label: "English", short: "EN" },
   hero: {
-    title: "Toledo als echte Android-app.",
+    title: "Toledo, zoals het hoort.",
     lead:
-      "Tolly is een moderne Android-client voor Toledo van KU Leuven. Je vakken, aankondigingen, agenda, punten en bestanden, ook als je offline bent.",
+      "Tolly is een onofficiële, moderne Android-client voor Toledo van KU Leuven. Je vakken, aankondigingen, agenda, punten en bestanden, ook als je offline bent.",
     meta: ["Gratis en open source", "Geen advertenties of tracking"],
     shotFront: "De vakkenlijst van Tolly, met het vak waarin je nu les hebt",
     shotBack: "Dezelfde vakkenlijst in de andere stijl van Tolly",
