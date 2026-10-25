@@ -4,7 +4,7 @@
 import Device from "./Device.astro";
 import Icon, { type IconName } from "./Icon.astro";
 import Logo from "./Logo.astro";
-import { links, pathFor, strings, type Lang } from "../i18n/ui";
+import { pathFor, strings, type Lang } from "../i18n/ui";
 
 import mLightCourses from "../../../brand/store/screens/en/m-light-courses.png";
 import mDarkCourses from "../../../brand/store/screens/en/m-dark-courses.png";
@@ -52,11 +52,7 @@ const big = [
       <h1>{t.hero.title}</h1>
       <p class="lead">{t.hero.lead}</p>
       <div class="ctas">
-        <a class="btn btn-primary" href={links.apk}>
-          <Icon name="android" size={22} />
-          {t.cta.apk}
-        </a>
-        <a class="btn btn-secondary" href={pathFor(lang, "alpha")}>
+        <a class="btn btn-primary" href={pathFor(lang, "alpha")}>
           <Icon name="play" size={22} />
           {t.cta.play}
         </a>
@@ -245,11 +241,7 @@ const big = [
       <h2 class="section-title">{t.download.title}</h2>
       <p class="lead">{t.download.body}</p>
       <div class="ctas center">
-        <a class="btn btn-light" href={links.apk}>
-          <Icon name="android" size={22} />
-          {t.cta.apk}
-        </a>
-        <a class="btn btn-outline-light" href={pathFor(lang, "alpha")}>
+        <a class="btn btn-light" href={pathFor(lang, "alpha")}>
           <Icon name="play" size={22} />
           {t.cta.play}
         </a>
@@ -908,14 +900,6 @@ const big = [
   }
   .btn-light:hover {
     background: #f1f0ff;
-  }
-  .btn-outline-light {
-    background: rgb(255 255 255 / 0.08);
-    color: #fff;
-    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.4) inset;
-  }
-  .btn-outline-light:hover {
-    background: rgb(255 255 255 / 0.16);
   }
 
   /* Smaller screens */

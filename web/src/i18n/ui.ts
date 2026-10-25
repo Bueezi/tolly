@@ -6,7 +6,6 @@ export type Lang = keyof typeof languages;
 
 export const links = {
   repo: "https://github.com/Bueezi/tolly",
-  apk: "https://github.com/Bueezi/tolly/releases/latest",
   issues: "https://github.com/Bueezi/tolly/issues",
   license: "https://github.com/Bueezi/tolly/blob/main/LICENSE",
   email: "hello@tolly.be",
@@ -35,7 +34,6 @@ const en = {
     shotBack: "The same course list in Tolly's other look",
   },
   cta: {
-    apk: "Download the APK",
     play: "Join the alpha test",
   },
   features: {
@@ -108,7 +106,7 @@ const en = {
   },
   download: {
     title: "Get Tolly",
-    body: "Install the APK from GitHub, or join the alpha test on Google Play.",
+    body: "Tolly is in a closed test on Google Play. Join it in three steps with your Google account.",
   },
   alpha: {
     meta: {
@@ -175,7 +173,6 @@ const nl: typeof en = {
     shotBack: "Dezelfde vakkenlijst in de andere stijl van Tolly",
   },
   cta: {
-    apk: "Download de APK",
     play: "Doe mee aan de alfatest",
   },
   features: {
@@ -248,7 +245,7 @@ const nl: typeof en = {
   },
   download: {
     title: "Download Tolly",
-    body: "Installeer de APK van GitHub, of doe mee aan de alfatest op Google Play.",
+    body: "Tolly is in een gesloten test op Google Play. Doe mee in drie stappen met je Google-account.",
   },
   alpha: {
     meta: {

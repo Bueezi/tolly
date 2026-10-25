@@ -13,7 +13,7 @@ export function appJsonLd(lang: Lang, site: URL) {
     inLanguage: lang,
     operatingSystem: "Android 8.0+",
     applicationCategory: "EducationalApplication",
-    downloadUrl: links.apk,
+    downloadUrl: new URL(pathFor(lang, "alpha"), site).href,
     license: "https://www.gnu.org/licenses/agpl-3.0.html",
     isAccessibleForFree: true,
     offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
