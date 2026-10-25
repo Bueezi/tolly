@@ -8,5 +8,7 @@
     "directory": "./dist",
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
-  }
+  },
+  // Lets Cloudflare build previews of other branches with `wrangler preview`; empty on purpose.
+  "previews": {}
 }
