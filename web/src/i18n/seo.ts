@@ -7,7 +7,6 @@ export function appJsonLd(lang: Lang, site: URL) {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "Tolly",
-    alternateName: lang === "nl" ? "Tolly voor Toledo" : "Tolly for Toledo",
     description: t.meta.description,
     url: new URL(pathFor(lang), site).href,
     image: new URL("/og.png", site).href,

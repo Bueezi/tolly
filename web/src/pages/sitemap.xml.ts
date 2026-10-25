@@ -1,8 +1,9 @@
 import type { APIRoute } from "astro";
 import { languages, pathFor, type Lang } from "../i18n/ui";
 
-// Every page in both languages, each listing its other-language version, for search engines.
-const pages = ["", "privacy"];
+// The pages worth finding in a search, in both languages, each listing its other-language
+// version. The privacy policy and /alpha are left out (and noindex): people reach them by link.
+const pages = [""];
 const langs = Object.keys(languages) as Lang[];
 
 export const GET: APIRoute = ({ site }) => {

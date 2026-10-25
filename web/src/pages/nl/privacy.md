@@ -5,7 +5,8 @@ page: privacy
 title: Privacybeleid · Tolly
 heading: Privacybeleid
 description: Wat Tolly, de onofficiële app voor Toledo van KU Leuven, met je gegevens doet.
-updated: Tolly voor Toledo · laatst bijgewerkt op 23 oktober 2026
+updated: Laatst bijgewerkt op 25 oktober 2026
+noindex: true
 ---
 
 Tolly is een onofficiële app voor Toledo van KU Leuven, gemaakt door Bueezi

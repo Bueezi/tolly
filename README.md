@@ -2,7 +2,7 @@
   <img src="brand/icon.svg" alt="Tolly" width="96" />
   <h1>Tolly</h1>
 
-A fast Android app for KU Leuven's Toledo.
+A modern Android native client for KU Leuven's Toledo.
 
 [![Release](https://img.shields.io/github/v/release/Bueezi/tolly?label=release)](https://github.com/Bueezi/tolly/releases/latest)
 [![CI](https://github.com/Bueezi/tolly/actions/workflows/ci.yml/badge.svg)](https://github.com/Bueezi/tolly/actions/workflows/ci.yml)
@@ -16,7 +16,7 @@ A fast Android app for KU Leuven's Toledo.
 ![Tolly in both looks, light and dark](brand/poster.png)
 
 > [!NOTE]
-> Tolly is an unofficial, independent project. It is not made, endorsed or supported by KU Leuven.
+> AI was involved in the development of the application.
 
 ## Features
 
@@ -41,29 +41,16 @@ A fast Android app for KU Leuven's Toledo.
 
 ## Download
 
-Get the APK from [GitHub Releases](https://github.com/Bueezi/tolly/releases/latest). Google Play
-is coming.
-
-## How it's made
-
-Built with Claude by a student.
-
-## Feedback
-
-Bug reports and ideas are very welcome as [issues](https://github.com/Bueezi/tolly/issues), or
-from the app under *You → Send feedback*. Because the code is AI-written, I'm not looking for code
-contributions; an issue that describes the problem helps most.
+Get the APK from [GitHub Releases](https://github.com/Bueezi/tolly/releases/latest), or join the
+alpha test on Google Play at [tolly.be/alpha](https://tolly.be/alpha).
 
 ## Building
 
-You need JDK 21 and the Android SDK (Platform 37, Build-Tools 37.0.0). Then, in `android/`:
+Building requires JDK 21 and the Android SDK (Platform 37, Build-Tools 37.0.0). In `android/`:
 
 ```bash
 ./gradlew assembleDebug
 ```
-
-To look around without a KU Leuven account, install the debug build and start the demo with
-`adb shell am start -n be.tolly.debug/be.tolly.DemoActivity`.
 
 ## Star history
 

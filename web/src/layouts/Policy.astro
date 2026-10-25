@@ -12,13 +12,15 @@ interface Props {
     heading: string;
     description: string;
     updated: string;
+    /** Keeps the page out of search results. */
+    noindex?: boolean;
   };
 }
 
-const { lang, page, title, heading, description, updated } = Astro.props.frontmatter;
+const { lang, page, title, heading, description, updated, noindex } = Astro.props.frontmatter;
 ---
 
-<Base lang={lang} page={page} title={title} description={description}>
+<Base lang={lang} page={page} title={title} description={description} noindex={noindex}>
   <article class="wrap policy">
     <header>
       <h1>{heading}</h1>

@@ -14,20 +14,20 @@
     <string name="you_settings_summary">Weergave, meldingen, vakken en opslag</string>
     <string name="settings_title">Instellingen</string>
     <string name="feedback_title">Feedback sturen</string>
-    <string name="feedback_summary">Een fout, idee of vraag, rechtstreeks naar de ontwikkelaar</string>
-    <string name="feedback_kind_bug">Fout</string>
+    <string name="feedback_summary">Meld een bug of stel een idee voor</string>
+    <string name="feedback_kind_bug">Bug</string>
     <string name="feedback_kind_idea">Idee</string>
     <string name="feedback_kind_other">Andere</string>
     <string name="feedback_hint_bug">Wat gebeurde er, en wat verwachtte je?</string>
     <string name="feedback_hint">Wat wil je ons laten weten?</string>
     <string name="feedback_attach_logs">Logs bijvoegen</string>
-    <string name="feedback_attach_logs_summary">Helpt fouten vinden. Je wachtwoord en sessie staan er nooit in.</string>
+    <string name="feedback_attach_logs_summary">Helpt bugs opsporen. Wachtwoorden en aanmeldgegevens worden weggelaten.</string>
     <string name="feedback_send">Versturen via e-mail</string>
     <string name="feedback_clear">Concept wissen</string>
     <string name="feedback_github">Liever een openbare GitHub-issue openen</string>
     <string name="feedback_no_app">Geen app gevonden om dit te openen</string>
     <string name="you_studies">Je studie</string>
-    <string name="you_grades_summary">De punten van al je vakken op één plek</string>
+    <string name="you_grades_summary">De punten van al je vakken</string>
     <string name="you_downloads_summary">Nog niets gedownload</string>
 
     <!-- Algemene acties -->
@@ -243,10 +243,10 @@
     <string name="settings_theme_dark">Donker</string>
     <string name="settings_dynamic_color">Dynamische kleuren</string>
     <string name="settings_glass">Liquid Glass</string>
-    <string name="settings_glass_summary">Een iOS-look: een zwevende glazen tabbalk waarover je kunt schuiven, en glazen knoppen boven de inhoud</string>
+    <string name="settings_glass_summary">Een iOS-look met een zwevende glazen tabbalk</string>
     <string name="settings_shake_look">Schudden wisselt stijl</string>
     <string name="settings_shake_look_summary">Schud je telefoon om te wisselen tussen Liquid Glass en Material</string>
-    <string name="settings_glass_tier_liquid">Op deze telefoon: Liquid Glass, met vervaging, breking en lichte randen.</string>
+    <string name="settings_glass_tier_liquid">Op deze telefoon: Liquid Glass met vervaging en breking.</string>
     <string name="settings_glass_tier_blur">Op deze telefoon: vervaagd glas. Breking vraagt Android 13.</string>
     <string name="settings_glass_tier_tint">Op deze telefoon: matglas zonder vervaging. Vervaging vraagt Android 12.</string>
     <string name="settings_dynamic_color_summary">Kleuren van je achtergrond gebruiken</string>
@@ -255,17 +255,17 @@
     <string name="settings_past_summary">Vakken van vorige jaren en vakken die nog niet open zijn</string>
     <string name="settings_storage">Opslag</string>
     <string name="settings_copy_to_downloads">Kopieën van downloads bewaren</string>
-    <string name="settings_copy_to_downloads_summary">Zet ook een kopie van elk gedownload bestand in %s › vak, waar andere apps het vinden.</string>
+    <string name="settings_copy_to_downloads_summary">Gedownloade bestanden komen ook in %s, in een map per vak</string>
     <string name="settings_delete_downloads">Downloads verwijderen</string>
     <string name="settings_downloads_size">%s aan gedownloade bestanden</string>
     <string name="settings_clear_cache">Cache wissen</string>
-    <string name="settings_clear_cache_summary">Opgeslagen vakken en aankondigingen vergeten. Ze worden opnieuw uit Toledo geladen.</string>
+    <string name="settings_clear_cache_summary">Wist de opgeslagen vakgegevens. Gedownloade bestanden blijven.</string>
     <string name="settings_about">Over</string>
     <string name="settings_about_source">Open de broncode op GitHub</string>
     <string name="settings_export_logs">Logs delen</string>
-    <string name="settings_export_logs_summary">Stuur recente app-logs, bv. voor een bugmelding, naar een app of persoon naar keuze. Je wachtwoord en sessie staan er nooit in.</string>
+    <string name="settings_export_logs_summary">Recente app-logs, om bij een bugmelding te voegen. Wachtwoorden en aanmeldgegevens worden weggelaten.</string>
     <string name="settings_version">Tolly %s</string>
-    <string name="settings_disclaimer">Onofficiële app. Niet verbonden aan of goedgekeurd door KU Leuven.</string>
+    <string name="settings_disclaimer">Onofficieel, niet verbonden aan of goedgekeurd door KU Leuven.</string>
     <string name="settings_sign_out">Afmelden</string>
     <string name="settings_sign_out_title">Afmelden bij Tolly?</string>
     <string name="settings_sign_out_body">Je sessie, opgeslagen gegevens en gedownloade bestanden worden van dit toestel verwijderd.</string>
@@ -358,8 +358,9 @@
         <item quantity="one">gemiddelde over %d beoordeeld item</item>
         <item quantity="other">gemiddelde over %d beoordeelde items</item>
     </plurals>
-    <string name="grades_no_average">Punten zonder score staan er zoals Toledo ze toont.</string>
-    <string name="grades_disclaimer">Berekend in Tolly uit de scores die je kunt zien; het totaal in Toledo kan items anders wegen.</string>
+    <string name="grades_no_average">Nog geen gemiddelde</string>
+    <string name="grades_no_average_body">Alleen punten met een score tellen mee voor het gemiddelde.</string>
+    <string name="grades_disclaimer">Berekend door Tolly. Het totaal in Toledo kan items anders wegen.</string>
     <string name="grades_item">Puntenitem</string>
     <string name="grades_needs_grading">Ingediend, wacht op beoordeling</string>
     <string name="grades_not_graded">Nog niet beoordeeld</string>
@@ -368,9 +369,9 @@
     <!-- Meldingen -->
     <string name="settings_notifications">Meldingen</string>
     <string name="settings_notify_announcements">Nieuwe aankondigingen</string>
-    <string name="settings_notify_announcements_summary">Krijg een melding wanneer een vak een aankondiging plaatst.</string>
+    <string name="settings_notify_announcements_summary">Als een vak een aankondiging plaatst</string>
     <string name="settings_notify_mail">Nieuwe mail</string>
-    <string name="settings_notify_mail_summary">Krijg een melding wanneer er KU Leuven-mail binnenkomt.</string>
+    <string name="settings_notify_mail_summary">Als er nieuwe mail in je KU Leuven-mailbox komt</string>
     <string name="settings_tab_badges">Aantal ongelezen op tabs</string>
     <string name="settings_tab_badges_summary">Toon op de tabs Nieuws en Mail hoeveel aankondigingen en mails ongelezen zijn.</string>
     <string name="notifications_prompt_title">Meldingen voor nieuwe aankondigingen?</string>
@@ -433,11 +434,11 @@
     <string name="setup_look_body">Je kunt dit allemaal later aanpassen in Instellingen.</string>
     <string name="setup_look_material">Material You</string>
     <string name="setup_look_material_summary">De eigen look van Android, in de kleuren van je achtergrond</string>
-    <string name="setup_look_pick_body">Tolly heeft twee volledige looks. Tik op degene die je wilt: de app verandert meteen mee, en je kunt later wisselen in Instellingen.</string>
+    <string name="setup_look_pick_body">Tik op een look om hem te proberen. Je kunt later wisselen in Instellingen.</string>
     <string name="setup_look_glass_short">Zoals iOS, met een zwevende glazen tabbalk</string>
-    <string name="setup_style_title">Naar jouw smaak</string>
-    <string name="setup_notifications_title">Blijf op de hoogte</string>
-    <string name="setup_notifications_body">Tolly kan je laten weten wanneer een van je vakken een aankondiging plaatst, en wanneer er KU Leuven-mail binnenkomt.</string>
+    <string name="setup_style_title">Thema en kleuren</string>
+    <string name="setup_notifications_title">Meldingen</string>
+    <string name="setup_notifications_body">Tolly kan je een melding geven bij nieuwe aankondigingen in je vakken en nieuwe KU Leuven-mail.</string>
     <string name="setup_finish">Verder naar aanmelden</string>
 
     <!-- Long press on a file -->
@@ -503,12 +504,12 @@
     <string name="action_copy">Kopiëren</string>
     <string name="copied">%s gekopieerd</string>
     <string name="settings_amoled">Puur zwart</string>
-    <string name="settings_amoled_summary">Een zwarte achtergrond in de donkere modus, wat batterij spaart op OLED-schermen</string>
+    <string name="settings_amoled_summary">Zwarte achtergrond in de donkere modus. Spaart batterij op OLED-schermen</string>
     <string name="settings_language">Taal</string>
     <string name="settings_language_system">Systeem</string>
     <string name="settings_license">Licentie</string>
-    <string name="settings_license_summary">GNU AGPL v3: vrij te gebruiken, delen en aanpassen, ook in diensten op het web</string>
-    <string name="settings_about_text">Tolly zet je Toledo-vakken, aankondigingen, agenda en bestanden samen in één app die ook offline werkt.</string>
+    <string name="settings_license_summary">Open source onder de GNU AGPL v3</string>
+    <string name="settings_about_text">Een moderne Android-client voor Toledo van KU Leuven.</string>
     <plurals name="settings_interval_hours">
         <item quantity="one">%d uur</item>
         <item quantity="other">%d uur</item>
@@ -523,6 +524,6 @@
     <string name="action_save">Opslaan</string>
     <!-- One-time notices (app's NoticeSheet), by number. -->
     <string name="notice_1_title">Nieuw in Tolly</string>
-    <string name="notice_1_body">• Meldingen voor nieuwe KU Leuven-mail: zet ze aan in Instellingen, onder Meldingen.\n• Video\'s spelen verder in een klein venster als je de app verlaat, en livestreams spelen verder met het scherm uit, om te luisteren onderweg naar de les.\n• Verberg het aantal ongelezen op de tabs Nieuws en Mail, in Instellingen.\n• Een vak offline downloaden en de video\'s ervan vinden gaat veel sneller.</string>
+    <string name="notice_1_body">• Meldingen voor nieuwe KU Leuven-mail: zet ze aan in Instellingen, onder Meldingen.\n• Video\'s spelen verder in een klein venster als je de app verlaat, en livestreams spelen verder met het scherm uit.\n• Verberg het aantal ongelezen op de tabs Nieuws en Mail, in Instellingen.\n• Een vak offline downloaden en de video\'s ervan vinden gaat veel sneller.</string>
     <string name="notice_dismiss">Begrepen</string>
 </resources>

@@ -16,7 +16,8 @@ npm run build     # writes dist/
 - `src/components/Landing.astro`: the page's sections; `src/pages/index.astro` and
   `src/pages/nl/index.astro` render it in each language.
 - `src/pages/privacy.md` and `src/pages/nl/privacy.md`: the privacy policy Google Play links to,
-  in Markdown with the `Policy.astro` layout. Change both, and their dates, together.
+  in Markdown with the `Policy.astro` layout. Change both, and their dates, together. Not indexed
+  and not in the sitemap: Play and the site link to it, and nobody searches for it.
 - `src/components/Alpha.astro`: `/alpha` and `/nl/alpha`, how to join the closed test on Google
   Play. Not indexed and not in the sitemap: it's for people who get the link.
 - `src/components/Device.astro`: a screenshot in a phone or tablet frame, served as AVIF/WebP in

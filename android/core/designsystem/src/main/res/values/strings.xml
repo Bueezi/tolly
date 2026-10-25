@@ -16,20 +16,20 @@
     <string name="you_settings_summary">Appearance, notifications, courses and storage</string>
     <string name="settings_title">Settings</string>
     <string name="feedback_title">Send feedback</string>
-    <string name="feedback_summary">A bug, an idea or a question, straight to the developer</string>
+    <string name="feedback_summary">Report a bug or suggest an idea</string>
     <string name="feedback_kind_bug">Bug</string>
     <string name="feedback_kind_idea">Idea</string>
     <string name="feedback_kind_other">Other</string>
     <string name="feedback_hint_bug">What happened, and what did you expect?</string>
     <string name="feedback_hint">What would you like to tell us?</string>
     <string name="feedback_attach_logs">Attach logs</string>
-    <string name="feedback_attach_logs_summary">Helps find bugs. Your password and session are never in them.</string>
+    <string name="feedback_attach_logs_summary">Helps track down bugs. Passwords and sign-in details are left out.</string>
     <string name="feedback_send">Send by e-mail</string>
     <string name="feedback_clear">Clear draft</string>
     <string name="feedback_github">Open a public GitHub issue instead</string>
     <string name="feedback_no_app">No app found to open this</string>
     <string name="you_studies">Your studies</string>
-    <string name="you_grades_summary">Every course\'s grades in one place</string>
+    <string name="you_grades_summary">Grades for all your courses</string>
     <string name="you_downloads_summary">Nothing downloaded yet</string>
 
     <!-- Common actions -->
@@ -245,10 +245,10 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_dynamic_color">Dynamic color</string>
     <string name="settings_glass">Liquid Glass</string>
-    <string name="settings_glass_summary">An iOS-style look: a floating glass tab bar you can slide along, and glass buttons over the content</string>
+    <string name="settings_glass_summary">An iOS-style look with a floating glass tab bar</string>
     <string name="settings_shake_look">Shake to switch look</string>
     <string name="settings_shake_look_summary">Shake the phone to switch between Liquid Glass and Material</string>
-    <string name="settings_glass_tier_liquid">On this phone: Liquid Glass, with blur, refraction and light edges.</string>
+    <string name="settings_glass_tier_liquid">On this phone: Liquid Glass with blur and refraction.</string>
     <string name="settings_glass_tier_blur">On this phone: blurred glass. Refraction needs Android 13.</string>
     <string name="settings_glass_tier_tint">On this phone: frosted, without blur. Blur needs Android 12.</string>
     <string name="settings_dynamic_color_summary">Use colors from your wallpaper</string>
@@ -257,17 +257,17 @@
     <string name="settings_past_summary">Courses from earlier years and courses that aren\'t open yet</string>
     <string name="settings_storage">Storage</string>
     <string name="settings_copy_to_downloads">Save copies of downloads</string>
-    <string name="settings_copy_to_downloads_summary">Also put a copy of every downloaded file in %s › course, where other apps can find it.</string>
+    <string name="settings_copy_to_downloads_summary">Downloaded files also go to %s, in a folder per course</string>
     <string name="settings_delete_downloads">Delete downloads</string>
     <string name="settings_downloads_size">%s of downloaded files</string>
     <string name="settings_clear_cache">Clear cache</string>
-    <string name="settings_clear_cache_summary">Forget saved courses and announcements. They\'re reloaded from Toledo.</string>
+    <string name="settings_clear_cache_summary">Deletes saved course data. Downloaded files stay.</string>
     <string name="settings_about">About</string>
     <string name="settings_about_source">Open the source code on GitHub</string>
     <string name="settings_export_logs">Share logs</string>
-    <string name="settings_export_logs_summary">Send recent app logs, e.g. for a bug report, to an app or person of your choice. Your password and session are never in them.</string>
+    <string name="settings_export_logs_summary">Recent app logs, to attach to a bug report. Passwords and sign-in details are left out.</string>
     <string name="settings_version">Tolly %s</string>
-    <string name="settings_disclaimer">Unofficial client. Not affiliated with or endorsed by KU Leuven.</string>
+    <string name="settings_disclaimer">Unofficial, not affiliated with or endorsed by KU Leuven.</string>
     <string name="settings_sign_out">Sign out</string>
     <string name="settings_sign_out_title">Sign out of Tolly?</string>
     <string name="settings_sign_out_body">Your session, saved data and downloaded files are removed from this device.</string>
@@ -334,7 +334,7 @@
     <string name="video_live">Live</string>
     <string name="video_recordings">Recordings</string>
     <string name="video_live_none">This course links to no livestream.</string>
-    <string name="video_live_loading">Looking for livestream links in the course…</string>
+    <string name="video_live_loading">Searching for livestream links in the course…</string>
     <string name="video_recordings_none">No recordings yet.</string>
     <string name="video_recordings_loading">Loading the recordings…</string>
     <string name="video_offline">You\'re offline.</string>
@@ -360,8 +360,9 @@
         <item quantity="one">average over %d graded item</item>
         <item quantity="other">average over %d graded items</item>
     </plurals>
-    <string name="grades_no_average">Grades without a score are shown as Toledo writes them.</string>
-    <string name="grades_disclaimer">Calculated in Tolly from the scores you can see; Toledo\'s own total may weigh items differently.</string>
+    <string name="grades_no_average">No average yet</string>
+    <string name="grades_no_average_body">Only grades with a score count toward the average.</string>
+    <string name="grades_disclaimer">Calculated by Tolly. Toledo\'s own total may weigh items differently.</string>
     <string name="grades_item">Grade item</string>
     <string name="grades_needs_grading">Submitted, waiting for a grade</string>
     <string name="grades_not_graded">Not graded yet</string>
@@ -370,9 +371,9 @@
     <!-- Notifications -->
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notify_announcements">New announcements</string>
-    <string name="settings_notify_announcements_summary">Get a notification when a course posts an announcement.</string>
+    <string name="settings_notify_announcements_summary">When a course posts an announcement</string>
     <string name="settings_notify_mail">New mail</string>
-    <string name="settings_notify_mail_summary">Get a notification when KU Leuven mail arrives.</string>
+    <string name="settings_notify_mail_summary">When new mail arrives in your KU Leuven inbox</string>
     <string name="settings_tab_badges">Unread counts on tabs</string>
     <string name="settings_tab_badges_summary">Show how many announcements and mails are unread on the News and Mail tabs.</string>
     <string name="notifications_prompt_title">Get notified about new announcements?</string>
@@ -435,11 +436,11 @@
     <string name="setup_look_body">You can change all of this later in Settings.</string>
     <string name="setup_look_material">Material You</string>
     <string name="setup_look_material_summary">Android\'s own look, in your wallpaper\'s colors</string>
-    <string name="setup_look_pick_body">Tolly comes in two complete looks. Tap the one you like: the app switches right away, and you can change it later in Settings.</string>
+    <string name="setup_look_pick_body">Tap one to try it. You can switch later in Settings.</string>
     <string name="setup_look_glass_short">Like iOS, with a floating glass tab bar</string>
-    <string name="setup_style_title">Make it yours</string>
-    <string name="setup_notifications_title">Stay up to date</string>
-    <string name="setup_notifications_body">Tolly can let you know when one of your courses posts an announcement, and when KU Leuven mail arrives.</string>
+    <string name="setup_style_title">Theme and colors</string>
+    <string name="setup_notifications_title">Notifications</string>
+    <string name="setup_notifications_body">Tolly can notify you about new announcements in your courses and new KU Leuven mail.</string>
     <string name="setup_finish">Continue to sign in</string>
 
     <!-- Long press on a file -->
@@ -505,15 +506,15 @@
     <string name="action_copy">Copy</string>
     <string name="copied">%s copied</string>
     <string name="settings_amoled">Pure black</string>
-    <string name="settings_amoled_summary">A black background in dark mode, which saves battery on OLED screens</string>
+    <string name="settings_amoled_summary">Black background in dark mode. Saves battery on OLED screens</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_system">System</string>
     <string name="language_english" translatable="false">English</string>
     <string name="language_dutch" translatable="false">Nederlands</string>
     <string name="settings_license">License</string>
-    <string name="settings_license_summary">GNU AGPL v3: free to use, share and change, also in services on the web</string>
+    <string name="settings_license_summary">Open source under the GNU AGPL v3</string>
     <!-- A few sentences about the app, shown under the app's name in Settings › About. -->
-    <string name="settings_about_text">Tolly puts your Toledo courses, announcements, agenda and files in one app that also works offline.</string>
+    <string name="settings_about_text">A modern Android client for KU Leuven\'s Toledo.</string>
     <plurals name="settings_interval_hours">
         <item quantity="one">%d hour</item>
         <item quantity="other">%d hours</item>
@@ -528,6 +529,6 @@
     <string name="action_save">Save</string>
     <!-- One-time notices (app's NoticeSheet), by number. -->
     <string name="notice_1_title">New in Tolly</string>
-    <string name="notice_1_body">• Notifications for new KU Leuven mail: turn them on in Settings, under Notifications.\n• Videos keep playing in a small window when you leave the app, and livestreams keep playing with the screen off, for listening on the way to class.\n• Hide the unread counts on the News and Mail tabs, in Settings.\n• Downloading a course for offline use and finding its videos are much faster.</string>
+    <string name="notice_1_body">• Notifications for new KU Leuven mail: turn them on in Settings, under Notifications.\n• Videos keep playing in a small window when you leave the app, and livestreams keep playing with the screen off.\n• Hide the unread counts on the News and Mail tabs, in Settings.\n• Downloading a course for offline use and finding its videos are much faster.</string>
     <string name="notice_dismiss">Got it</string>
 </resources>

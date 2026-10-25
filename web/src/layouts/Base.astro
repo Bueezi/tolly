@@ -11,7 +11,7 @@ interface Props {
   page?: string;
   title?: string;
   description?: string;
-  /** Keeps the page out of search results (the 404 page). */
+  /** Keeps the page out of search results (the 404, alpha and privacy pages). */
   noindex?: boolean;
   /** Structured data (schema.org) about the page, for search engines. */
   jsonLd?: object;
@@ -59,7 +59,9 @@ const ogImage = new URL("/og.png", site);
     <link rel="sitemap" href="/sitemap.xml" />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     <script is:inline>
-      // Runs before the page paints, so a theme the visitor picked earlier shows without a flash.
+      // Runs before the page paints, so a theme the visitor picked earlier shows without a flash,
+      // and so .reveal elements start hidden instead of showing and then vanishing.
+      if ("IntersectionObserver" in window) document.documentElement.classList.add("js");
       try {
         const theme = localStorage.getItem("theme");
         if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
@@ -73,6 +75,21 @@ const ogImage = new URL("/og.png", site);
       <slot />
     </main>
     <Footer lang={lang} alternate={alternate} />
+
+    <script>
+      // Shows each .reveal element (see global.css) once a little of it has scrolled into view.
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            entry.target.classList.add("in");
+            observer.unobserve(entry.target);
+          }
+        },
+        { rootMargin: "0px 0px -8% 0px" },
+      );
+      document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+    </script>
 
     <style>
       .skip {

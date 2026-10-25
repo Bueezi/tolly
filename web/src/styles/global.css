@@ -175,10 +175,16 @@ svg {
     box-shadow 0.2s ease,
     background-color 0.2s ease;
 }
+.btn:hover {
+  transform: translateY(-2px);
+}
 .btn:active {
   transform: scale(0.97);
 }
 .btn-primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   background: var(--brand-gradient);
   color: #fff;
   box-shadow:
@@ -190,6 +196,22 @@ svg {
     0 1px 0 rgb(255 255 255 / 0.25) inset,
     0 14px 30px -8px rgb(75 69 214 / 0.8);
 }
+/* A sheen that sweeps across on hover. */
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.3) 50%, transparent 70%);
+  translate: -110% 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .btn-primary:hover::after {
+    translate: 110% 0;
+    transition: translate 0.7s ease;
+  }
+}
 .btn-secondary {
   background: var(--surface);
   color: var(--text);
@@ -199,13 +221,6 @@ svg {
 }
 .btn-secondary:hover {
   background: var(--surface-2);
-}
-.btn-ghost {
-  background: transparent;
-  color: var(--muted);
-  box-shadow: 0 0 0 1px dashed var(--border) inset;
-  cursor: default;
-  font-weight: 600;
 }
 
 /* Content that only shows in one theme (see Device.astro). */
@@ -241,6 +256,7 @@ svg {
 
 /* Segmented control, like the app's TollySegmented. */
 .segmented {
+  position: relative;
   display: inline-flex;
   padding: 4px;
   gap: 4px;
@@ -249,6 +265,8 @@ svg {
   box-shadow: 0 0 0 1px var(--border) inset;
 }
 .segmented button {
+  position: relative;
+  z-index: 1;
   font: inherit;
   font-size: 0.95rem;
   font-weight: 650;
@@ -267,31 +285,58 @@ svg {
   color: #fff;
   box-shadow: 0 4px 12px -4px rgb(75 69 214 / 0.6);
 }
-
-/* Elements that fade up as they scroll into view. Scroll-driven, so there is no script to wait
-   for, and browsers without it simply show them. */
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(32px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+/* With the script, one thumb slides between the buttons (data-thumb, --thumb-x, --thumb-w). */
+.segmented[data-thumb]::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: var(--thumb-w);
+  translate: var(--thumb-x) 0;
+  border-radius: 999px;
+  background: var(--brand);
+  box-shadow: 0 4px 12px -4px rgb(75 69 214 / 0.6);
+  transition:
+    translate 0.4s cubic-bezier(0.3, 1.25, 0.5, 1),
+    width 0.4s cubic-bezier(0.3, 1.25, 0.5, 1);
 }
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal {
-      animation: reveal linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 30%;
-    }
+.segmented[data-thumb] button[aria-pressed="true"] {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Elements that rise into place the first time they scroll into view. The script in Base.astro
+   adds .js to <html> and .in to each element; without it everything simply shows. --i staggers
+   neighbours, such as cards in a row. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal {
+    opacity: 0;
+    translate: 0 36px;
+    scale: 0.98;
+    transition:
+      opacity 0.7s ease,
+      translate 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+      scale 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 1.1s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .js .reveal.in {
+    opacity: 1;
+    translate: none;
+    scale: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .btn,
+  .segmented[data-thumb]::before {
+    transition: none;
+  }
+  .btn:hover {
+    transform: none;
   }
 }

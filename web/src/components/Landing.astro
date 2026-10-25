@@ -56,7 +56,10 @@ const big = [
           <Icon name="android" size={22} />
           {t.cta.apk}
         </a>
-        <span class="btn btn-secondary btn-later" aria-disabled="true">{t.cta.play}</span>
+        <a class="btn btn-secondary" href={pathFor(lang, "alpha")}>
+          <Icon name="play" size={22} />
+          {t.cta.play}
+        </a>
       </div>
       <ul class="meta">
         {
@@ -70,23 +73,28 @@ const big = [
       </ul>
     </div>
     <div class="hero-visual">
-      <!-- The phone in the site's theme stands in front. -->
-      <Device
-        src={gDarkCourses}
-        dark={mLightCourses}
-        alt={t.hero.shotBack}
-        class="hero-back"
-        sizes="(min-width: 960px) 270px, 42vw"
-        eager
-      />
-      <Device
-        src={mLightCourses}
-        dark={gDarkCourses}
-        alt={t.hero.shotFront}
-        class="hero-front"
-        sizes="(min-width: 960px) 300px, 48vw"
-        eager
-      />
+      <!-- The phone in the site's theme stands in front. Each sits in a layer that follows the
+           pointer by its own amount, so the two drift apart a little as it moves. -->
+      <div class="layer layer-back">
+        <Device
+          src={gDarkCourses}
+          dark={mLightCourses}
+          alt={t.hero.shotBack}
+          class="hero-back"
+          sizes="(min-width: 960px) 270px, 42vw"
+          eager
+        />
+      </div>
+      <div class="layer layer-front">
+        <Device
+          src={mLightCourses}
+          dark={gDarkCourses}
+          alt={t.hero.shotFront}
+          class="hero-front"
+          sizes="(min-width: 960px) 300px, 48vw"
+          eager
+        />
+      </div>
     </div>
   </div>
 </section>
@@ -103,7 +111,7 @@ const big = [
     <div class="bento">
       {
         big.map(({ key, icon, src, dark }, i) => (
-          <article class:list={["card", "big", "reveal", `big-${i}`]}>
+          <article class:list={["card", "big", "reveal", `big-${i}`]} style={`--i: ${i % 2}`}>
             <div class="card-copy">
               <span class="tile">
                 <Icon name={icon as IconName} size={22} />
@@ -118,8 +126,8 @@ const big = [
         ))
       }
       {
-        t.features.small.map((f) => (
-          <article class="card small reveal">
+        t.features.small.map((f, i) => (
+          <article class="card small reveal" style={`--i: ${i}`}>
             <span class="tile">
               <Icon name={f.icon as IconName} size={22} />
             </span>
@@ -241,7 +249,10 @@ const big = [
           <Icon name="android" size={22} />
           {t.cta.apk}
         </a>
-        <span class="btn btn-soon" aria-disabled="true">{t.cta.play}</span>
+        <a class="btn btn-outline-light" href={pathFor(lang, "alpha")}>
+          <Icon name="play" size={22} />
+          {t.cta.play}
+        </a>
       </div>
     </div>
   </div>
@@ -256,10 +267,21 @@ const big = [
   root.querySelectorAll<HTMLElement>("[data-control]").forEach((group) => {
     const key = group.dataset.control as "look" | "scheme";
     const buttons = [...group.querySelectorAll<HTMLButtonElement>("button")];
+    // A thumb behind the buttons slides to the pressed one, like the app's TollySegmented.
+    const moveThumb = () => {
+      const pressed = buttons.find((b) => b.getAttribute("aria-pressed") === "true");
+      if (!pressed) return;
+      group.style.setProperty("--thumb-x", `${pressed.offsetLeft}px`);
+      group.style.setProperty("--thumb-w", `${pressed.offsetWidth}px`);
+    };
     const select = (value: string) => {
       root.dataset[key] = value;
       buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.value === value)));
+      moveThumb();
     };
+    moveThumb();
+    new ResizeObserver(moveThumb).observe(group);
+    requestAnimationFrame(() => (group.dataset.thumb = ""));
     buttons.forEach((button) => button.addEventListener("click", () => select(button.dataset.value!)));
     if (key === "scheme") {
       const follow = () => {
@@ -271,6 +293,30 @@ const big = [
       systemDark.addEventListener("change", follow);
     }
   });
+
+  // Pointer effects, only with a mouse and when motion is welcome: the hero's phones lean
+  // towards the pointer, and a soft light follows it over the feature cards.
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const motionOk = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+  if (finePointer && motionOk) {
+    const hero = document.querySelector<HTMLElement>(".hero")!;
+    hero.addEventListener("pointermove", (e) => {
+      const box = hero.getBoundingClientRect();
+      hero.style.setProperty("--px", ((e.clientX - box.left) / box.width - 0.5).toFixed(3));
+      hero.style.setProperty("--py", ((e.clientY - box.top) / box.height - 0.5).toFixed(3));
+    });
+    hero.addEventListener("pointerleave", () => {
+      hero.style.setProperty("--px", "0");
+      hero.style.setProperty("--py", "0");
+    });
+    document.querySelectorAll<HTMLElement>(".card").forEach((card) => {
+      card.addEventListener("pointermove", (e) => {
+        const box = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${e.clientX - box.left}px`);
+        card.style.setProperty("--my", `${e.clientY - box.top}px`);
+      });
+    });
+  }
 </script>
 
 <style>
@@ -287,6 +333,13 @@ const big = [
     background:
       radial-gradient(60% 60% at 78% 40%, var(--glow), transparent 70%),
       radial-gradient(40% 50% at 10% 0%, color-mix(in srgb, var(--brand-1) 14%, transparent), transparent 70%);
+    animation: drift 20s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    to {
+      translate: -3% 2%;
+      scale: 1.08;
+    }
   }
   .hero-grid {
     display: grid;
@@ -298,6 +351,25 @@ const big = [
     display: grid;
     gap: 24px;
     justify-items: start;
+  }
+  /* The title, lead, buttons and checks rise in one after another on load. */
+  .hero-copy > * {
+    animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .hero-copy > :nth-child(2) {
+    animation-delay: 0.08s;
+  }
+  .hero-copy > :nth-child(3) {
+    animation-delay: 0.16s;
+  }
+  .hero-copy > :nth-child(4) {
+    animation-delay: 0.24s;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 24px;
+    }
   }
   .hero h1 {
     font-size: clamp(2.7rem, 7.2vw, 5.4rem);
@@ -340,22 +412,48 @@ const big = [
     position: relative;
     height: clamp(460px, 52vw, 640px);
   }
-  .hero-visual :global(.hero-front) {
+  /* The layers place the phones and follow the pointer (--px, --py from the script); the phones
+     inside tilt, swing in on load and float. */
+  .layer {
     position: absolute;
+    transition: translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .layer-front {
     width: min(300px, 62%);
     left: 6%;
     top: 4%;
-    transform: rotate(-4deg);
     z-index: 2;
-    animation: float 9s ease-in-out infinite;
+    translate: calc(var(--px, 0) * 28px) calc(var(--py, 0) * 20px);
   }
-  .hero-visual :global(.hero-back) {
-    position: absolute;
+  .layer-back {
     width: min(270px, 56%);
     right: 2%;
     top: 12%;
+    translate: calc(var(--px, 0) * -14px) calc(var(--py, 0) * -10px);
+  }
+  .hero-visual :global(.hero-front) {
+    transform: rotate(-4deg);
+    animation:
+      enter-front 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both,
+      float 9s ease-in-out infinite;
+  }
+  .hero-visual :global(.hero-back) {
     transform: rotate(6deg);
-    animation: float 9s ease-in-out -4.5s infinite;
+    animation:
+      enter-back 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both,
+      float 9s ease-in-out -4.5s infinite;
+  }
+  @keyframes enter-front {
+    from {
+      opacity: 0;
+      transform: translateY(70px) rotate(-12deg) scale(0.94);
+    }
+  }
+  @keyframes enter-back {
+    from {
+      opacity: 0;
+      transform: translateY(90px) rotate(16deg) scale(0.94);
+    }
   }
   @keyframes float {
     0%,
@@ -376,6 +474,13 @@ const big = [
     border-radius: 14px;
     background: var(--accent-soft);
     color: var(--accent-text);
+    transition:
+      scale 0.45s cubic-bezier(0.3, 1.5, 0.5, 1),
+      rotate 0.45s cubic-bezier(0.3, 1.5, 0.5, 1);
+  }
+  .card:hover .tile {
+    scale: 1.1;
+    rotate: -8deg;
   }
   .card {
     position: relative;
@@ -385,6 +490,26 @@ const big = [
       0 0 0 1px var(--border) inset,
       var(--shadow-card);
     overflow: hidden;
+  }
+  /* A soft light under the pointer (--mx, --my from the script). */
+  @media (hover: hover) {
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(
+        380px circle at var(--mx, 50%) var(--my, 0%),
+        color-mix(in srgb, var(--brand-1) 13%, transparent),
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .card:hover::after {
+      opacity: 1;
+    }
   }
   .card h3 {
     font-size: 1.3rem;
@@ -491,7 +616,11 @@ const big = [
     gap: 8px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease;
+    translate: 0 8px;
+    transition:
+      opacity 0.35s ease,
+      translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+      visibility 0.35s;
     max-width: 30em;
   }
   .desc h3 {
@@ -505,6 +634,7 @@ const big = [
   .looks[data-look="glass"] .desc[data-for="glass"] {
     opacity: 1;
     visibility: visible;
+    translate: none;
   }
   .looks-stage {
     position: relative;
@@ -522,11 +652,13 @@ const big = [
     width: min(320px, 78vw);
     opacity: 0;
     visibility: hidden;
-    transform: scale(0.97);
+    transform: translateY(14px) scale(0.94);
+    filter: blur(10px);
     transition:
-      opacity 0.35s ease,
-      transform 0.35s ease,
-      visibility 0.35s;
+      opacity 0.45s ease,
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+      filter 0.45s ease,
+      visibility 0.45s;
   }
   .looks[data-look="material"][data-scheme="light"] .shot[data-look="material"][data-scheme="light"],
   .looks[data-look="material"][data-scheme="dark"] .shot[data-look="material"][data-scheme="dark"],
@@ -535,6 +667,7 @@ const big = [
     opacity: 1;
     visibility: visible;
     transform: none;
+    filter: none;
   }
 
   /* Tablets */
@@ -546,6 +679,12 @@ const big = [
   .tablet-wrap {
     margin: clamp(40px, 6vw, 64px) auto 0;
     max-width: 1080px;
+  }
+  /* The tablet tips up from lying back as it comes into view. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .tablet-wrap:not(.in) {
+      transform: perspective(1800px) rotateX(18deg) scale(0.94);
+    }
   }
 
   /* Privacy: a dark indigo card in both themes, the story on the left and the facts on the right. */
@@ -592,6 +731,22 @@ const big = [
     font-weight: 700;
     font-size: 0.95rem;
     white-space: nowrap;
+    animation: glow 2.8s linear infinite alternate;
+  }
+  /* Each end lights up as the pulse reaches it. */
+  .node:first-child {
+    animation-direction: alternate-reverse;
+  }
+  @keyframes glow {
+    0%,
+    70% {
+      box-shadow: 0 0 0 1px rgb(255 255 255 / 0.14) inset;
+    }
+    100% {
+      box-shadow:
+        0 0 0 1px rgb(185 187 255 / 0.6) inset,
+        0 0 24px -2px rgb(185 187 255 / 0.55);
+    }
   }
   .wire {
     position: relative;
@@ -641,6 +796,29 @@ const big = [
     padding-block: 22px;
     border-top: 1px solid rgb(255 255 255 / 0.12);
   }
+  /* The three points slide in one by one after the card appears. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .points li {
+      opacity: 0;
+      translate: 24px 0;
+      transition:
+        opacity 0.6s ease,
+        translate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    :global(.js) .privacy-card.in .points li {
+      opacity: 1;
+      translate: none;
+    }
+    .points li:nth-child(1) {
+      transition-delay: 0.2s;
+    }
+    .points li:nth-child(2) {
+      transition-delay: 0.32s;
+    }
+    .points li:nth-child(3) {
+      transition-delay: 0.44s;
+    }
+  }
   .points li:last-child {
     border-bottom: 1px solid rgb(255 255 255 / 0.12);
   }
@@ -689,6 +867,13 @@ const big = [
     height: 120%;
     background: radial-gradient(closest-side, rgb(255 255 255 / 0.22), transparent);
     pointer-events: none;
+    animation: breathe 7s ease-in-out infinite alternate;
+  }
+  @keyframes breathe {
+    to {
+      opacity: 0.55;
+      scale: 1.12;
+    }
   }
   .download-card :global(.download-logo) {
     position: relative;
@@ -696,6 +881,13 @@ const big = [
     box-shadow:
       0 0 0 1px rgb(255 255 255 / 0.25),
       0 20px 40px -12px rgb(0 0 0 / 0.45);
+    animation: bob 6s ease-in-out infinite;
+  }
+  @keyframes bob {
+    50% {
+      translate: 0 -8px;
+      rotate: -3deg;
+    }
   }
   .download-card .lead {
     color: rgb(255 255 255 / 0.85);
@@ -717,17 +909,13 @@ const big = [
   .btn-light:hover {
     background: #f1f0ff;
   }
-  .btn-later {
-    cursor: default;
-    pointer-events: none;
+  .btn-outline-light {
+    background: rgb(255 255 255 / 0.08);
+    color: #fff;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.4) inset;
   }
-  .btn-soon {
-    background: transparent;
-    color: rgb(255 255 255 / 0.75);
-    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.25) inset;
-    border: 1px dashed transparent;
-    cursor: default;
-    font-weight: 600;
+  .btn-outline-light:hover {
+    background: rgb(255 255 255 / 0.16);
   }
 
   /* Smaller screens */
@@ -787,10 +975,20 @@ const big = [
     }
   }
   @media (prefers-reduced-motion: reduce) {
+    .hero-bg,
+    .hero-copy > *,
     .hero-visual :global(.hero-front),
     .hero-visual :global(.hero-back),
-    .pulse {
+    .pulse,
+    .node,
+    .download-glow,
+    .download-card :global(.download-logo) {
       animation: none;
+    }
+    .tile,
+    .desc,
+    .shot {
+      transition: none;
     }
   }
 </style>

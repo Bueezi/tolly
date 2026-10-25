@@ -120,10 +120,10 @@ private fun GradeSummary(grades: List<Grade>, onOpenInToledo: () -> Unit) {
                 }
                 LinearProgressIndicator(progress = { average.first / 100f }, modifier = Modifier.fillMaxWidth())
             } else {
-                Text(stringResource(R.string.grades_no_average), style = MaterialTheme.typography.bodyMedium)
+                Text(stringResource(R.string.grades_no_average), style = MaterialTheme.typography.titleMedium)
             }
             Text(
-                stringResource(R.string.grades_disclaimer),
+                stringResource(if (average != null) R.string.grades_disclaimer else R.string.grades_no_average_body),
                 style = MaterialTheme.typography.bodySmall,
                 color = LocalContentColor.current.copy(alpha = 0.7f),
             )

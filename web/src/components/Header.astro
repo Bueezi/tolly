@@ -68,6 +68,12 @@ const home = pathFor(lang);
     } catch {}
     label();
   });
+
+  // The line under the bar shows once the page has scrolled away from the top.
+  const header = document.querySelector<HTMLElement>(".header")!;
+  const onScroll = () => header.classList.toggle("top", window.scrollY < 8);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
 </script>
 
 <style>
@@ -79,6 +85,13 @@ const home = pathFor(lang);
     backdrop-filter: saturate(1.6) blur(18px);
     -webkit-backdrop-filter: saturate(1.6) blur(18px);
     border-bottom: 1px solid var(--border);
+    transition:
+      border-color 0.3s ease,
+      background-color 0.3s ease;
+  }
+  .header.top {
+    border-bottom-color: transparent;
+    background: color-mix(in srgb, var(--bg) 40%, transparent);
   }
   .bar {
     display: flex;
@@ -156,7 +169,19 @@ const home = pathFor(lang);
     margin-left: 6px;
   }
 
-  /* The icon shows the theme you'd switch to. */
+  /* The icon shows the theme you'd switch to, and turns in when it changes. */
+  @media (prefers-reduced-motion: no-preference) {
+    .theme-toggle :global(svg) {
+      animation: turn-in 0.5s cubic-bezier(0.3, 1.4, 0.5, 1);
+    }
+  }
+  @keyframes turn-in {
+    from {
+      opacity: 0;
+      rotate: -90deg;
+      scale: 0.6;
+    }
+  }
   .theme-toggle :global(.sun) {
     display: none;
   }
