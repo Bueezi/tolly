@@ -9,8 +9,8 @@
     <string name="notification_channel_mail">New mail</string>
     <string name="notification_channel_mail_description">A notification when new KU Leuven mail arrives.</string>
     <plurals name="notification_mail_new">
-        <item quantity="one">%d new mail</item>
-        <item quantity="other">%d new mails</item>
+        <item quantity="one">%d new email</item>
+        <item quantity="other">%d new emails</item>
     </plurals>
     <plurals name="notification_mail_unread">
         <item quantity="one">%d unread in your KU Leuven mailbox</item>

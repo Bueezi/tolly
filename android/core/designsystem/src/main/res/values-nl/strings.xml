@@ -504,7 +504,7 @@
     <string name="action_copy">Kopiëren</string>
     <string name="copied">%s gekopieerd</string>
     <string name="settings_amoled">Puur zwart</string>
-    <string name="settings_amoled_summary">Zwarte achtergrond in het donkere thema. Bespaart batterij op oledschermen</string>
+    <string name="settings_amoled_summary">Zwarte achtergrond in het donkere thema. Bespaart batterij op oledschermen.</string>
     <string name="settings_language">Taal</string>
     <string name="settings_language_system">Systeem</string>
     <string name="settings_license">Licentie</string>

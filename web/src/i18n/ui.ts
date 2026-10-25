@@ -19,7 +19,7 @@ const en = {
   meta: {
     title: "Tolly: KU Leuven's Toledo on Android",
     description:
-      "A modern Android client for KU Leuven's Toledo: courses, announcements, agenda, grades and files, also offline. Free and open source.",
+      "A modern Android client for KU Leuven's Toledo: courses, announcements, agenda, grades and files, offline too. Free and open source.",
   },
   skip: "Skip to content",
   nav: { features: "Features", looks: "Two looks", privacy: "Privacy", download: "Download" },
@@ -28,7 +28,7 @@ const en = {
   hero: {
     title: "Toledo, the way it should be.",
     lead:
-      "Tolly is an unofficial, modern Android client for KU Leuven's Toledo. Your courses, announcements, agenda, grades and files, also when you're offline.",
+      "Tolly is an unofficial, modern Android client for KU Leuven's Toledo. Your courses, announcements, agenda, grades and files, even when you're offline.",
     meta: ["Free and open source", "No ads or tracking"],
     shotFront: "Tolly's course list, showing which course has class now",
     shotBack: "The same course list in Tolly's other look",
@@ -82,7 +82,7 @@ const en = {
     },
     glass: {
       name: "Liquid Glass",
-      body: "After iOS 26: a floating glass tab bar with a lens you can drag, and glass buttons over the content.",
+      body: "A floating glass tab bar with a lens you can drag, and glass buttons over the content.",
     },
     alt: "Tolly's course list in the {look} look, {scheme} theme",
   },
@@ -98,7 +98,7 @@ const en = {
     lead: "Your data goes between your phone and KU Leuven, and nowhere else.",
     points: [
       { icon: "lock", title: "KU Leuven's own sign-in", body: "You sign in on KU Leuven's login page, two-factor authentication included." },
-      { icon: "block", title: "No servers of our own", body: "No accounts, ads, analytics or tracking." },
+      { icon: "block", title: "No servers of its own", body: "No accounts, ads, analytics or tracking." },
       { icon: "code", title: "Open source", body: "The code is public under the AGPL-3.0, so anyone can check what the app does." },
     ],
     flow: { phone: "Your phone", kul: "KU Leuven", direct: "Direct connection" },
@@ -145,7 +145,7 @@ const en = {
   footer: {
     disclaimer:
       "Tolly is an unofficial, independent project. It is not made, endorsed or supported by KU Leuven. Toledo and KU Leuven are names of KU Leuven, used here only to say what Tolly works with.",
-    made: "AI was involved in the development of the application.",
+    made: "AI was used in the development of the app.",
     contact: "Questions or ideas? Mail me at",
     github: "GitHub",
     issues: "Report a bug",
@@ -221,7 +221,7 @@ const nl: typeof en = {
     },
     glass: {
       name: "Liquid Glass",
-      body: "Naar iOS 26: een zwevende glazen tabbalk met een versleepbare lens en glazen knoppen boven de inhoud.",
+      body: "Een zwevende glazen tabbalk met een versleepbare lens en glazen knoppen boven de inhoud.",
     },
     alt: "De vakkenlijst van Tolly in de stijl {look}, thema {scheme}",
   },

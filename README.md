@@ -16,7 +16,7 @@ A modern Android native client for KU Leuven's Toledo.
 ![Tolly in both looks, light and dark](brand/poster.png)
 
 > [!NOTE]
-> AI was involved in the development of the application.
+> AI was used in the development of the app.
 
 ## Features
 

@@ -24,7 +24,7 @@
     <string name="feedback_hint">What would you like to tell us?</string>
     <string name="feedback_attach_logs">Attach logs</string>
     <string name="feedback_attach_logs_summary">Helps track down bugs. Passwords and sign-in details are left out.</string>
-    <string name="feedback_send">Send by e-mail</string>
+    <string name="feedback_send">Send by email</string>
     <string name="feedback_clear">Clear draft</string>
     <string name="feedback_github">Open a public GitHub issue instead</string>
     <string name="feedback_no_app">No app found to open this</string>
@@ -250,7 +250,7 @@
     <string name="settings_shake_look_summary">Shake the phone to switch between Liquid Glass and Material</string>
     <string name="settings_glass_tier_liquid">On this phone: Liquid Glass with blur and refraction.</string>
     <string name="settings_glass_tier_blur">On this phone: blurred glass. Refraction needs Android 13.</string>
-    <string name="settings_glass_tier_tint">On this phone: frosted, without blur. Blur needs Android 12.</string>
+    <string name="settings_glass_tier_tint">On this phone: frosted glass, without blur. Blur needs Android 12.</string>
     <string name="settings_dynamic_color_summary">Use colors from your wallpaper</string>
     <string name="settings_courses">Courses</string>
     <string name="settings_communities_summary">Library, faculty and programme communities</string>
@@ -274,9 +274,9 @@
     <!-- Agenda -->
     <string name="nav_agenda">Agenda</string>
     <string name="agenda_subtitle">Next 8 weeks</string>
-    <string name="agenda_open_calendar">Open the calendar in Toledo</string>
-    <string name="agenda_show_deadlines">Show the deadlines</string>
-    <string name="agenda_show_calendar">Show the calendar</string>
+    <string name="agenda_open_calendar">Open calendar in Toledo</string>
+    <string name="agenda_show_deadlines">Show deadlines</string>
+    <string name="agenda_show_calendar">Show calendar</string>
     <string name="agenda_view">%1$s view. Switch to %2$s</string>
     <string name="agenda_series">Series %1$d</string>
     <string name="agenda_series_many">Series %1$s and %2$d</string>
@@ -284,7 +284,7 @@
     <string name="agenda_series_yours">%1$s (yours)</string>
     <string name="agenda_series_per_course">Per course…</string>
     <string name="agenda_series_per_course_title">Series per course</string>
-    <string name="agenda_series_menu_none">None of your courses has other series.</string>
+    <string name="agenda_series_menu_none">None of your courses have other series.</string>
     <string name="agenda_other_series">Other series</string>
     <string name="agenda_other_series_yours">Other series · you\'re in %1$s</string>
     <string name="agenda_other_series_loading">Looking up the other series…</string>
@@ -333,7 +333,7 @@
     <string name="course_tab_video">Video</string>
     <string name="video_live">Live</string>
     <string name="video_recordings">Recordings</string>
-    <string name="video_live_none">This course links to no livestream.</string>
+    <string name="video_live_none">This course has no livestream link.</string>
     <string name="video_live_loading">Searching for livestream links in the course…</string>
     <string name="video_recordings_none">No recordings yet.</string>
     <string name="video_recordings_loading">Loading the recordings…</string>
@@ -375,7 +375,7 @@
     <string name="settings_notify_mail">New mail</string>
     <string name="settings_notify_mail_summary">When new mail arrives in your KU Leuven inbox</string>
     <string name="settings_tab_badges">Unread counts on tabs</string>
-    <string name="settings_tab_badges_summary">Show how many announcements and mails are unread on the News and Mail tabs.</string>
+    <string name="settings_tab_badges_summary">Show how many announcements and emails are unread on the News and Mail tabs.</string>
     <string name="notifications_prompt_title">Get notified about new announcements?</string>
     <string name="notifications_prompt_body">Tolly checks Toledo about once an hour and lets you know.</string>
     <string name="action_turn_on">Turn on</string>
@@ -506,7 +506,7 @@
     <string name="action_copy">Copy</string>
     <string name="copied">%s copied</string>
     <string name="settings_amoled">Pure black</string>
-    <string name="settings_amoled_summary">Black background in dark mode. Saves battery on OLED screens</string>
+    <string name="settings_amoled_summary">Black background in dark mode. Saves battery on OLED screens.</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_system">System</string>
     <string name="language_english" translatable="false">English</string>

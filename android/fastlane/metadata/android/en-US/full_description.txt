@@ -1,4 +1,4 @@
-Tolly is a modern Android client for KU Leuven's Toledo, with your courses, announcements, agenda, grades and files in one app.
+Tolly is an unofficial, modern Android client for KU Leuven's Toledo, with your courses, announcements, agenda, grades and files in one app.
 
 • Courses with their content, grades and recordings
 • Which class is on now, and in which room
@@ -11,4 +11,4 @@ Tolly is a modern Android client for KU Leuven's Toledo, with your courses, anno
 
 You sign in on KU Leuven's own login page, so Tolly never sees your password. No ads, no tracking, no accounts.
 
-AI was involved in the development of the application. Tolly is open source: https://github.com/Bueezi/tolly
+AI was used in the development of the app. Tolly is open source: https://github.com/Bueezi/tolly

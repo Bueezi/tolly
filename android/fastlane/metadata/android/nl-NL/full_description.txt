@@ -1,4 +1,4 @@
-Tolly is een moderne Android-app voor Toledo van KU Leuven, met je vakken, aankondigingen, agenda, punten en bestanden in één app.
+Tolly is een onofficiële, moderne Android-app voor Toledo van KU Leuven, met je vakken, aankondigingen, agenda, punten en bestanden in één app.
 
 • Vakken met hun inhoud, punten en opnames
 • Welke les nu bezig is en in welk lokaal
