@@ -1,33 +1,14 @@
-Tolly brengt Toledo van KU Leuven naar je gsm en tablet: je vakken, aankondigingen, agenda, punten en bestanden in één app die ook offline blijft werken.
+Tolly is een moderne Android-app voor Toledo van KU Leuven, met je vakken, aankondigingen, agenda, punten en bestanden in één app.
 
-Tolly is een onofficiële app. Ze is niet gemaakt, goedgekeurd of ondersteund door KU Leuven.
+• Vakken met hun inhoud, punten en opnames
+• Welke les nu bezig is en in welk lokaal
+• Aankondigingen met meldingen
+• Je uurrooster en de deadlines uit Toledo in één agenda
+• Je KU Leuven-mail in een eigen tabblad
+• Downloads, en volledige vakken voor offline gebruik
+• Twee stijlen: Material 3 Expressive of Liquid Glass, licht of donker
+• Gemaakt voor telefoons, tablets en vouwbare toestellen, in het Nederlands en Engels
 
-VAKKEN
-• De vakken en communities van dit academiejaar, elk met een icoon en kleur; geef ze een andere naam of een ander icoon, sleep ze in je eigen volgorde of markeer ze.
-• Zie meteen in welk vak je nu les hebt, tot wanneer en in welk lokaal, en wanneer de volgende les begint.
-• Mappen, leermodules, pagina's, documenten, bestanden en links, zoals in Toledo. Toetsen en opdrachten openen in een ingebouwde browser zonder opnieuw aan te melden.
-• Punten per vak met feedback, en al je resultaten samen.
-• Lesopnames in een ingebouwde speler.
+Je meldt je aan op de eigen inlogpagina van KU Leuven, waardoor Tolly je wachtwoord nooit ziet. Geen reclame, geen tracking, geen accounts.
 
-AANKONDIGINGEN
-• Per vak en allemaal samen, met ongelezen in het vet en een filter daarvoor.
-• Meldingen voor nieuwe aankondigingen als je wilt, zo vaak als je wilt.
-• Veeg om als gelezen te markeren of te markeren met een vlag, zoals in een mailapp.
-
-AGENDA
-• Je lessen uit het uurrooster van KU Leuven samen met de deadlines en activiteiten uit Toledo, als lijst, dag of week.
-• De deadlines op een eigen scherm.
-
-BESTANDEN EN OFFLINE
-• Downloads op de achtergrond die verder gaan waar ze stopten; open ze in elke app, deel ze of bewaar een kopie, als je wilt automatisch in een map per vak.
-• Download een heel vak voor offline gebruik, zonder de grote bestanden die je niet nodig hebt.
-• Alles wat je gezien hebt, blijft beschikbaar zonder verbinding.
-
-TWEE STIJLEN
-• Material 3 Expressive met dynamische kleuren, of Liquid Glass met een zwevende glazen tabbalk.
-• Licht en donker, in het Nederlands en het Engels, en ook gemaakt voor tablets en plooitoestellen, met panelen naast elkaar die je groter en kleiner kunt maken.
-
-PRIVACY
-Je meldt aan via de aanmeldpagina van KU Leuven zelf, met tweestapsverificatie; Tolly ziet je wachtwoord nooit. Je gegevens gaan alleen tussen je toestel en de diensten van KU Leuven: geen advertenties, geen tracking, geen eigen accounts.
-
-Tolly is open source: https://github.com/Bueezi/tolly
+Bij de ontwikkeling van deze app is AI gebruikt. Tolly is open source: https://github.com/Bueezi/tolly

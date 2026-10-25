@@ -18,16 +18,16 @@
     <string name="feedback_kind_bug">Bug</string>
     <string name="feedback_kind_idea">Idee</string>
     <string name="feedback_kind_other">Andere</string>
-    <string name="feedback_hint_bug">Wat gebeurde er, en wat verwachtte je?</string>
+    <string name="feedback_hint_bug">Wat gebeurde er en wat had je verwacht?</string>
     <string name="feedback_hint">Wat wil je ons laten weten?</string>
-    <string name="feedback_attach_logs">Logs bijvoegen</string>
-    <string name="feedback_attach_logs_summary">Helpt bugs opsporen. Wachtwoorden en aanmeldgegevens worden weggelaten.</string>
+    <string name="feedback_attach_logs">Logbestand meesturen</string>
+    <string name="feedback_attach_logs_summary">Helpt om bugs op te sporen. Wachtwoorden en aanmeldgegevens worden weggelaten.</string>
     <string name="feedback_send">Versturen via e-mail</string>
     <string name="feedback_clear">Concept wissen</string>
-    <string name="feedback_github">Liever een openbare GitHub-issue openen</string>
+    <string name="feedback_github">Liever een openbaar GitHub-issue aanmaken</string>
     <string name="feedback_no_app">Geen app gevonden om dit te openen</string>
     <string name="you_studies">Je studie</string>
-    <string name="you_grades_summary">De punten van al je vakken</string>
+    <string name="you_grades_summary">Punten voor al je vakken</string>
     <string name="you_downloads_summary">Nog niets gedownload</string>
 
     <!-- Algemene acties -->
@@ -42,10 +42,10 @@
     <string name="action_clear">Wissen</string>
     <string name="action_delete">Verwijderen</string>
     <string name="action_download">Downloaden</string>
-    <string name="action_expand">Uitvouwen</string>
-    <string name="action_collapse">Samenvouwen</string>
-    <string name="action_expand_all">Alles uitvouwen</string>
-    <string name="action_collapse_all">Alles samenvouwen</string>
+    <string name="action_expand">Uitklappen</string>
+    <string name="action_collapse">Inklappen</string>
+    <string name="action_expand_all">Alles uitklappen</string>
+    <string name="action_collapse_all">Alles inklappen</string>
     <string name="action_more">Meer opties</string>
     <string name="action_open">Openen</string>
     <string name="action_open_in_browser">Openen in browser</string>
@@ -63,13 +63,13 @@
     <string name="error_server">Toledo reageerde niet zoals verwacht. Probeer het later opnieuw.</string>
     <string name="error_not_available">Dit is (nog) niet beschikbaar.</string>
     <string name="error_session_expired">Je Toledo-sessie is verlopen. Meld je opnieuw aan.</string>
-    <string name="error_no_app">Geen app op dit toestel kan dit bestand openen.</string>
+    <string name="error_no_app">Geen enkele app op dit toestel kan dit bestand openen.</string>
     <string name="session_expired_banner">Sessie verlopen. Opgeslagen gegevens worden getoond.</string>
 
     <!-- Welkom & aanmelden -->
     <string name="welcome_tagline">Een onofficiële app voor KU Leuven Toledo</string>
     <string name="welcome_feature_courses">Al je vakken en hun inhoud</string>
-    <string name="welcome_feature_announcements">Aankondigingen van alle vakken op één plek</string>
+    <string name="welcome_feature_announcements">Aankondigingen van elk vak op één plek</string>
     <string name="welcome_feature_offline">Bestanden downloaden en offline lezen</string>
     <string name="welcome_sign_in">Aanmelden met KU Leuven</string>
     <string name="welcome_demo">Demo</string>
@@ -83,14 +83,14 @@
     <!-- Vakken -->
     <string name="courses_search">Vakken zoeken</string>
     <string name="courses_filter">Filteren</string>
-    <string name="courses_show_communities">Community\'s tonen</string>
-    <string name="courses_show_past">Vroegere en onbeschikbare vakken tonen</string>
+    <string name="courses_show_communities">Communities tonen</string>
+    <string name="courses_show_past">Eerdere en onbeschikbare vakken tonen</string>
     <string name="courses_section_current">Dit academiejaar</string>
-    <string name="courses_section_communities">Community\'s</string>
-    <string name="courses_section_other">Vroeger en onbeschikbaar</string>
+    <string name="courses_section_communities">Communities</string>
+    <string name="courses_section_other">Eerder en niet beschikbaar</string>
     <string name="courses_unavailable">Niet beschikbaar</string>
     <string name="courses_empty">Nog geen vakken</string>
-    <string name="courses_no_results">Geen overeenkomende vakken</string>
+    <string name="courses_no_results">Geen vakken gevonden</string>
     <string name="courses_select">Kies een vak</string>
     <string name="courses_last_synced">Bijgewerkt %s</string>
     <string name="courses_synced_just_now">Zonet bijgewerkt</string>
@@ -102,7 +102,7 @@
     <!-- Vakken aanpassen -->
     <string name="action_done">Klaar</string>
     <string name="action_customize">Aanpassen</string>
-    <string name="action_reorder">Vakken herschikken</string>
+    <string name="action_reorder">Volgorde wijzigen</string>
     <string name="customize_title">Vak aanpassen</string>
     <string name="customize_name">Naam</string>
     <string name="customize_original_name">Oorspronkelijke naam gebruiken</string>
@@ -110,13 +110,13 @@
     <string name="customize_color">Kleur</string>
     <string name="customize_automatic">Automatisch</string>
     <string name="customize_reset">Standaard herstellen</string>
-    <string name="reorder_title">Vakken herschikken</string>
-    <string name="reorder_hint">Sleep vakken aan de greep om ze in je eigen volgorde te zetten.</string>
+    <string name="reorder_title">Volgorde wijzigen</string>
+    <string name="reorder_hint">Versleep vakken aan het greepje om ze in je eigen volgorde te zetten.</string>
     <string name="course_icon_initials">Initialen</string>
     <string name="course_icon_math">Wiskunde</string>
     <string name="course_icon_statistics">Statistiek</string>
     <string name="course_icon_code">Programmeren</string>
-    <string name="course_icon_tools">Werktuigen</string>
+    <string name="course_icon_tools">Tools</string>
     <string name="course_icon_database">Databanken</string>
     <string name="course_icon_logic">Logica</string>
     <string name="course_icon_ai">Artificiële intelligentie</string>
@@ -128,7 +128,7 @@
     <string name="course_icon_biology">Biologie</string>
     <string name="course_icon_medicine">Geneeskunde</string>
     <string name="course_icon_economics">Economie</string>
-    <string name="course_icon_law">Recht</string>
+    <string name="course_icon_law">Rechten</string>
     <string name="course_icon_language">Talen</string>
     <string name="course_icon_history">Geschiedenis</string>
     <string name="course_icon_philosophy">Filosofie</string>
@@ -140,8 +140,8 @@
     <string name="course_icon_music">Muziek</string>
     <string name="course_icon_sports">Sport</string>
     <string name="course_icon_library">Bibliotheek</string>
-    <string name="course_icon_community">Gemeenschap</string>
-    <string name="course_icon_graphics">Grafiek en beeld</string>
+    <string name="course_icon_community">Community</string>
+    <string name="course_icon_graphics">Computergraphics en -visie</string>
     <string name="course_icon_hci">Interactieontwerp</string>
     <string name="course_icon_web">Web</string>
     <string name="course_icon_cloud">Gedistribueerde systemen</string>
@@ -162,15 +162,15 @@
     <string name="course_icon_thesis">Thesis</string>
     <string name="course_icon_internship">Stage</string>
     <string name="course_icon_seminar">Seminarie</string>
-    <string name="course_icon_lab">Labo</string>
-    <string name="course_icon_calculator">Oefeningen</string>
+    <string name="course_icon_lab">Practicum</string>
+    <string name="course_icon_calculator">Oefenzitting</string>
     <string name="course_icon_book">Boek</string>
     <string name="course_color_red">Rood</string>
     <string name="course_color_orange">Oranje</string>
     <string name="course_color_amber">Amber</string>
     <string name="course_color_lime">Limoen</string>
     <string name="course_color_green">Groen</string>
-    <string name="course_color_teal">Petrol</string>
+    <string name="course_color_teal">Blauwgroen</string>
     <string name="course_color_cyan">Cyaan</string>
     <string name="course_color_blue">Blauw</string>
     <string name="course_color_indigo">Indigo</string>
@@ -182,7 +182,7 @@
     <!-- Vakdetail -->
     <string name="course_tab_content">Inhoud</string>
     <string name="course_tab_announcements">Nieuws</string>
-    <string name="course_outline_root">Cursusinhoud</string>
+    <string name="course_outline_root">Vakinhoud</string>
     <string name="content_empty">Deze map is leeg</string>
     <string name="content_module_empty">Geen items in deze module</string>
     <string name="content_hidden">Verborgen</string>
@@ -198,7 +198,7 @@
     <string name="content_type_test">Toets</string>
     <string name="content_type_discussion">Discussie</string>
     <string name="content_type_other">Item</string>
-    <string name="document_empty">Dit item kan enkel in Toledo bekeken worden</string>
+    <string name="document_empty">Dit item kan alleen in Toledo worden bekeken</string>
 
     <!-- Aankondigingen -->
     <string name="announcements_empty">Nog geen aankondigingen</string>
@@ -211,28 +211,28 @@
         <item quantity="one">%d aankondiging als gelezen gemarkeerd</item>
         <item quantity="other">%d aankondigingen als gelezen gemarkeerd</item>
     </plurals>
-    <string name="filter_all">Alle</string>
+    <string name="filter_all">Alles</string>
     <string name="filter_unread">Ongelezen</string>
     <string name="filter_unread_count">Ongelezen (%d)</string>
 
     <!-- Downloads -->
-    <string name="download_started">Bezig met downloaden…</string>
+    <string name="download_started">Downloaden…</string>
     <string name="download_failed">Downloaden mislukt</string>
     <string name="download_status_done">Gedownload</string>
-    <string name="download_status_running">Bezig met downloaden</string>
-    <string name="download_status_queued">Wacht op netwerk</string>
+    <string name="download_status_running">Aan het downloaden</string>
+    <string name="download_status_queued">Wachten op netwerk</string>
     <string name="download_status_failed">Downloaden mislukt</string>
     <string name="downloads_storage_used">%s gebruikt op dit toestel</string>
     <string name="downloads_progress">%1$s van %2$s</string>
     <string name="downloads_empty_title">Geen downloads</string>
-    <string name="downloads_empty_body">Bestanden die je opent vanuit een vak worden hier bewaard, zodat je ze offline kunt lezen.</string>
+    <string name="downloads_empty_body">Bestanden die je vanuit een vak opent, worden hier bewaard zodat je ze offline kunt lezen.</string>
     <string name="downloads_unknown_course">Andere</string>
     <string name="downloads_delete_all">Alle downloads verwijderen</string>
     <string name="downloads_delete_all_title">Alle downloads verwijderen?</string>
     <string name="downloads_delete_all_body">Gedownloade bestanden worden van dit toestel verwijderd. Je kunt ze opnieuw downloaden uit Toledo.</string>
     <string name="downloads_exported">Opgeslagen in Downloads</string>
-    <string name="downloads_export_failed">Het bestand kon niet opgeslagen worden</string>
-    <string name="browser_downloading">%s wordt gedownload naar Downloads/Tolly</string>
+    <string name="downloads_export_failed">Kon het bestand niet opslaan</string>
+    <string name="browser_downloading">%s downloaden naar Downloads/Tolly</string>
     <string name="downloads_deleted">“%s” verwijderd</string>
 
     <!-- Instellingen -->
@@ -243,29 +243,29 @@
     <string name="settings_theme_dark">Donker</string>
     <string name="settings_dynamic_color">Dynamische kleuren</string>
     <string name="settings_glass">Liquid Glass</string>
-    <string name="settings_glass_summary">Een iOS-look met een zwevende glazen tabbalk</string>
-    <string name="settings_shake_look">Schudden wisselt stijl</string>
-    <string name="settings_shake_look_summary">Schud je telefoon om te wisselen tussen Liquid Glass en Material</string>
-    <string name="settings_glass_tier_liquid">Op deze telefoon: Liquid Glass met vervaging en breking.</string>
-    <string name="settings_glass_tier_blur">Op deze telefoon: vervaagd glas. Breking vraagt Android 13.</string>
-    <string name="settings_glass_tier_tint">Op deze telefoon: matglas zonder vervaging. Vervaging vraagt Android 12.</string>
+    <string name="settings_glass_summary">Een stijl zoals iOS, met een zwevende glazen tabbalk</string>
+    <string name="settings_shake_look">Schudden om van stijl te wisselen</string>
+    <string name="settings_shake_look_summary">Schud met je telefoon om te wisselen tussen Liquid Glass en Material</string>
+    <string name="settings_glass_tier_liquid">Op deze telefoon: Liquid Glass met vervaging en lichtbreking.</string>
+    <string name="settings_glass_tier_blur">Op deze telefoon: matglas met vervaging. Lichtbreking vereist Android 13.</string>
+    <string name="settings_glass_tier_tint">Op deze telefoon: matglas zonder vervaging. Vervaging vereist Android 12.</string>
     <string name="settings_dynamic_color_summary">Kleuren van je achtergrond gebruiken</string>
     <string name="settings_courses">Vakken</string>
-    <string name="settings_communities_summary">Community\'s van bibliotheek, faculteit en opleiding</string>
-    <string name="settings_past_summary">Vakken van vorige jaren en vakken die nog niet open zijn</string>
+    <string name="settings_communities_summary">Communities van bibliotheek, faculteit en opleiding</string>
+    <string name="settings_past_summary">Vakken uit eerdere jaren en vakken die nog niet openstaan</string>
     <string name="settings_storage">Opslag</string>
-    <string name="settings_copy_to_downloads">Kopieën van downloads bewaren</string>
-    <string name="settings_copy_to_downloads_summary">Gedownloade bestanden komen ook in %s, in een map per vak</string>
+    <string name="settings_copy_to_downloads">Kopieën van downloads opslaan</string>
+    <string name="settings_copy_to_downloads_summary">Gedownloade bestanden komen ook in %s terecht, in een map per vak</string>
     <string name="settings_delete_downloads">Downloads verwijderen</string>
     <string name="settings_downloads_size">%s aan gedownloade bestanden</string>
     <string name="settings_clear_cache">Cache wissen</string>
-    <string name="settings_clear_cache_summary">Wist de opgeslagen vakgegevens. Gedownloade bestanden blijven.</string>
+    <string name="settings_clear_cache_summary">Verwijdert opgeslagen vakgegevens. Gedownloade bestanden blijven bewaard.</string>
     <string name="settings_about">Over</string>
-    <string name="settings_about_source">Open de broncode op GitHub</string>
-    <string name="settings_export_logs">Logs delen</string>
-    <string name="settings_export_logs_summary">Recente app-logs, om bij een bugmelding te voegen. Wachtwoorden en aanmeldgegevens worden weggelaten.</string>
+    <string name="settings_about_source">Broncode openen op GitHub</string>
+    <string name="settings_export_logs">Logbestanden delen</string>
+    <string name="settings_export_logs_summary">Recente logbestanden van de app, om bij een bugmelding te voegen. Wachtwoorden en aanmeldgegevens worden weggelaten.</string>
     <string name="settings_version">Tolly %s</string>
-    <string name="settings_disclaimer">Onofficieel, niet verbonden aan of goedgekeurd door KU Leuven.</string>
+    <string name="settings_disclaimer">Onofficieel, niet verbonden met of ondersteund door KU Leuven.</string>
     <string name="settings_sign_out">Afmelden</string>
     <string name="settings_sign_out_title">Afmelden bij Tolly?</string>
     <string name="settings_sign_out_body">Je sessie, opgeslagen gegevens en gedownloade bestanden worden van dit toestel verwijderd.</string>
@@ -275,13 +275,13 @@
     <string name="agenda_open_calendar">Kalender openen in Toledo</string>
     <string name="agenda_show_deadlines">Deadlines tonen</string>
     <string name="agenda_show_calendar">Kalender tonen</string>
-    <string name="agenda_view">Weergave %1$s. Naar %2$s</string>
+    <string name="agenda_view">Weergave: %1$s. Wisselen naar %2$s</string>
     <string name="agenda_series">Reeks %1$d</string>
     <string name="agenda_series_many">Reeks %1$s en %2$d</string>
     <string name="agenda_series_menu">Getoonde reeksen</string>
     <string name="agenda_series_yours">%1$s (jouw reeks)</string>
     <string name="agenda_series_per_course">Per vak…</string>
-    <string name="agenda_series_per_course_title">Reeksen per vak</string>
+    <string name="agenda_series_per_course_title">Reeks per vak</string>
     <string name="agenda_series_menu_none">Geen van je vakken heeft andere reeksen.</string>
     <string name="agenda_other_series">Andere reeksen</string>
     <string name="agenda_other_series_yours">Andere reeksen · jij zit in %1$s</string>
@@ -291,7 +291,7 @@
     <string name="agenda_open_course">Vak openen</string>
     <string name="agenda_filter_deadlines">Deadlines</string>
     <string name="agenda_filter_lessons">Lessen</string>
-    <string name="agenda_empty">Niets gepland in de komende 8 weken</string>
+    <string name="agenda_empty">Niets gepland voor de komende 8 weken</string>
     <string name="agenda_today">Vandaag</string>
     <string name="agenda_tomorrow">Morgen</string>
     <string name="agenda_all_day">Hele dag</string>
@@ -309,7 +309,7 @@
     <string name="agenda_next_day">Volgende dag</string>
     <string name="agenda_previous_week">Vorige week</string>
     <string name="agenda_next_week">Volgende week</string>
-    <string name="agenda_no_classes">Geen lessen</string>
+    <string name="agenda_no_classes">Geen les</string>
     <plurals name="agenda_classes_summary">
         <item quantity="one">%1$d les · %2$s</item>
         <item quantity="other">%1$d lessen · %2$s</item>
@@ -318,26 +318,26 @@
     <string name="agenda_duration_h">%1$d u</string>
     <string name="agenda_duration_min">%1$d min</string>
     <string name="agenda_day_empty">Niets gepland</string>
-    <string name="deadlines_overdue">Verlopen</string>
+    <string name="deadlines_overdue">Te laat</string>
     <string name="deadlines_this_week">Deze week</string>
     <string name="deadlines_later">Later</string>
-    <string name="deadlines_empty">Geen deadlines op komst</string>
+    <string name="deadlines_empty">Geen komende deadlines</string>
     <plurals name="deadlines_upcoming">
-        <item quantity="one">%d deadline op komst</item>
-        <item quantity="other">%d deadlines op komst</item>
+        <item quantity="one">%d komende deadline</item>
+        <item quantity="other">%d komende deadlines</item>
     </plurals>
     <!-- Punten -->
     <string name="course_tab_grades">Punten</string>
     <string name="course_tab_video">Video</string>
     <string name="video_live">Live</string>
     <string name="video_recordings">Opnames</string>
-    <string name="video_live_none">Dit vak linkt naar geen livestream.</string>
-    <string name="video_live_loading">Livestreamlinks in het vak zoeken…</string>
+    <string name="video_live_none">Dit vak heeft geen link naar een livestream.</string>
+    <string name="video_live_loading">Links naar livestreams zoeken in het vak…</string>
     <string name="video_recordings_none">Nog geen opnames.</string>
     <string name="video_recordings_loading">Opnames laden…</string>
     <string name="video_offline">Je bent offline.</string>
-    <string name="video_unavailable">Kon dit niet laden. Trek omlaag om het opnieuw te proberen.</string>
-    <string name="video_live_pin">PIN %1$s</string>
+    <string name="video_unavailable">Kon dit niet laden. Trek omlaag om opnieuw te proberen.</string>
+    <string name="video_live_pin">Pincode %1$s</string>
     <string name="video_not_live">Deze livestream is nu niet bezig.</string>
     <string name="video_live_failed">Kon de livestream niet bereiken.</string>
     <string name="video_open_gallery">Mediagalerij in Toledo</string>
@@ -349,55 +349,55 @@
     <string name="video_error">Kon deze video niet afspelen.</string>
     <string name="video_open_in_browser">Openen in browser</string>
     <string name="grades_empty">Nog geen punten</string>
-    <string name="grades_not_available">De punten van dit vak kunnen niet in de app getoond worden.</string>
+    <string name="grades_not_available">De punten van dit vak kunnen niet in de app worden getoond.</string>
     <plurals name="grades_more_not_graded">
-        <item quantity="one">%d nog zonder punten</item>
-        <item quantity="other">%d nog zonder punten</item>
+        <item quantity="one">%d nog niet beoordeeld</item>
+        <item quantity="other">%d nog niet beoordeeld</item>
     </plurals>
     <plurals name="grades_average">
-        <item quantity="one">gemiddelde over %d beoordeeld item</item>
-        <item quantity="other">gemiddelde over %d beoordeelde items</item>
+        <item quantity="one">gemiddelde van %d beoordeeld item</item>
+        <item quantity="other">gemiddelde van %d beoordeelde items</item>
     </plurals>
     <string name="grades_no_average">Nog geen gemiddelde</string>
     <string name="grades_no_average_body">Alleen punten met een score tellen mee voor het gemiddelde.</string>
     <string name="grades_disclaimer">Berekend door Tolly. Het totaal in Toledo kan items anders wegen.</string>
-    <string name="grades_item">Puntenitem</string>
-    <string name="grades_needs_grading">Ingediend, wacht op beoordeling</string>
+    <string name="grades_item">Beoordelingsitem</string>
+    <string name="grades_needs_grading">Ingediend, wacht op punten</string>
     <string name="grades_not_graded">Nog niet beoordeeld</string>
     <string name="grades_due">Deadline %s</string>
     <string name="grades_has_feedback">Tik om de feedback te lezen</string>
     <!-- Meldingen -->
     <string name="settings_notifications">Meldingen</string>
     <string name="settings_notify_announcements">Nieuwe aankondigingen</string>
-    <string name="settings_notify_announcements_summary">Als een vak een aankondiging plaatst</string>
+    <string name="settings_notify_announcements_summary">Wanneer een vak een aankondiging plaatst</string>
     <string name="settings_notify_mail">Nieuwe mail</string>
-    <string name="settings_notify_mail_summary">Als er nieuwe mail in je KU Leuven-mailbox komt</string>
-    <string name="settings_tab_badges">Aantal ongelezen op tabs</string>
-    <string name="settings_tab_badges_summary">Toon op de tabs Nieuws en Mail hoeveel aankondigingen en mails ongelezen zijn.</string>
-    <string name="notifications_prompt_title">Meldingen voor nieuwe aankondigingen?</string>
-    <string name="notifications_prompt_body">Tolly kijkt ongeveer elk uur in Toledo en laat het je weten.</string>
-    <string name="action_turn_on">Aanzetten</string>
-    <string name="action_not_now">Niet nu</string>
+    <string name="settings_notify_mail_summary">Wanneer er nieuwe mail binnenkomt op je KU Leuven-adres</string>
+    <string name="settings_tab_badges">Aantal ongelezen op tabbladen</string>
+    <string name="settings_tab_badges_summary">Toon hoeveel ongelezen aankondigingen en mails er zijn op de tabbladen Nieuws en Mail.</string>
+    <string name="notifications_prompt_title">Meldingen krijgen bij nieuwe aankondigingen?</string>
+    <string name="notifications_prompt_body">Tolly controleert Toledo ongeveer elk uur en laat je iets weten.</string>
+    <string name="action_turn_on">Inschakelen</string>
+    <string name="action_not_now">Nu niet</string>
     <string name="notifications_blocked">Meldingen zijn geblokkeerd voor Tolly. Je kunt ze toestaan in de systeeminstellingen.</string>
-    <string name="notifications_off_for_app">Meldingen staan uit voor Tolly. Zet ze hier aan om ze te krijgen.</string>
+    <string name="notifications_off_for_app">Meldingen staan uit voor Tolly. Schakel ze hier in om ze te ontvangen.</string>
     <!-- Offline -->
     <string name="offline_title">Downloaden voor offline</string>
-    <string name="offline_scanning">%s wordt doorzocht…</string>
+    <string name="offline_scanning">%s doorzoeken…</string>
     <plurals name="offline_scanning_more">
-        <item quantity="one">%1$s en %2$d ander vak worden doorzocht…</item>
-        <item quantity="other">%1$s en %2$d andere vakken worden doorzocht…</item>
+        <item quantity="one">%1$s en %2$d ander vak doorzoeken…</item>
+        <item quantity="other">%1$s en %2$d andere vakken doorzoeken…</item>
     </plurals>
-    <string name="offline_checking_sizes">Bestandsgroottes nagaan: %1$d van %2$d</string>
+    <string name="offline_checking_sizes">Bestandsgroottes controleren: %1$d van %2$d</string>
     <string name="offline_scanning_hint">Tolly bewaart ook elke map en pagina, zodat je deze vakken zonder verbinding kunt bekijken.</string>
     <string name="offline_select_all">Alles selecteren</string>
     <string name="offline_select_none">Niets selecteren</string>
     <string name="offline_hide_downloaded">Gedownloade verbergen</string>
-    <string name="offline_copy_to_downloads">Ook kopieën buiten de app bewaren, in een map per vak</string>
+    <string name="offline_copy_to_downloads">Ook kopieën buiten de app opslaan, in een map per vak</string>
     <string name="offline_free_space">%s vrij op dit toestel</string>
-    <string name="offline_not_enough_space">Niet genoeg vrije ruimte voor alles wat je koos</string>
+    <string name="offline_not_enough_space">Niet genoeg vrije ruimte voor alles wat je hebt gekozen</string>
     <string name="offline_unknown_size">Grootte onbekend</string>
     <string name="offline_empty">Geen bestanden gevonden in deze vakken</string>
-    <string name="action_download_offline">Downloaden voor offline</string>
+    <string name="action_download_offline">Offline downloaden</string>
     <string name="offline_all_courses">Alle vakken downloaden voor offline</string>
     <plurals name="offline_courses">
         <item quantity="one">%d vak</item>
@@ -424,35 +424,35 @@
     <string name="settings_downloads_folder">Map voor kopieën</string>
     <string name="settings_downloads_folder_reset">Terug naar Downloads/Tolly</string>
     <string name="downloads_exported_to">Opgeslagen in %s</string>
-    <string name="settings_news_interval">Hoe vaak zoeken</string>
+    <string name="settings_news_interval">Hoe vaak controleren</string>
 
     <!-- Snelle instelling bij een nieuwe installatie -->
     <string name="action_next">Volgende</string>
     <string name="action_skip">Overslaan</string>
     <string name="setup_step">Stap %1$d van %2$d</string>
-    <string name="setup_look_title">Kies je look</string>
-    <string name="setup_look_body">Je kunt dit allemaal later aanpassen in Instellingen.</string>
+    <string name="setup_look_title">Kies je stijl</string>
+    <string name="setup_look_body">Je kunt dit later allemaal aanpassen in de instellingen.</string>
     <string name="setup_look_material">Material You</string>
-    <string name="setup_look_material_summary">De eigen look van Android, in de kleuren van je achtergrond</string>
-    <string name="setup_look_pick_body">Tik op een look om hem te proberen. Je kunt later wisselen in Instellingen.</string>
+    <string name="setup_look_material_summary">De eigen stijl van Android, in de kleuren van je achtergrond</string>
+    <string name="setup_look_pick_body">Tik op een stijl om hem te proberen. Je kunt later wisselen in de instellingen.</string>
     <string name="setup_look_glass_short">Zoals iOS, met een zwevende glazen tabbalk</string>
     <string name="setup_style_title">Thema en kleuren</string>
     <string name="setup_notifications_title">Meldingen</string>
-    <string name="setup_notifications_body">Tolly kan je een melding geven bij nieuwe aankondigingen in je vakken en nieuwe KU Leuven-mail.</string>
-    <string name="setup_finish">Verder naar aanmelden</string>
+    <string name="setup_notifications_body">Tolly kan je een melding sturen bij nieuwe aankondigingen in je vakken en bij nieuwe mail van KU Leuven.</string>
+    <string name="setup_finish">Doorgaan naar aanmelden</string>
 
     <!-- Long press on a file -->
     <string name="action_open_with">Openen met…</string>
-    <string name="file_remove">Van dit toestel verwijderen</string>
-    <string name="file_removed">Van dit toestel verwijderd</string>
+    <string name="file_remove">Verwijderen van dit toestel</string>
+    <string name="file_removed">Verwijderd van dit toestel</string>
     <string name="file_on_device_size">Op dit toestel · %s</string>
     <string name="file_not_downloaded">Nog niet gedownload</string>
 
     <!-- Swiping rows -->
     <string name="swipe_mark_orange">Oranje markeren</string>
-    <string name="swipe_clear_mark">Markering weghalen</string>
-    <string name="action_mark_read">Markeren als gelezen</string>
-    <string name="action_mark_unread">Markeren als ongelezen</string>
+    <string name="swipe_clear_mark">Markering wissen</string>
+    <string name="action_mark_read">Als gelezen markeren</string>
+    <string name="action_mark_unread">Als ongelezen markeren</string>
 
     <!-- Lessons in the course list -->
     <string name="courses_class_now">Nu les · tot %1$s</string>
@@ -492,7 +492,7 @@
         <item quantity="other">nog %d</item>
     </plurals>
     <string name="document_show_fewer">Minder tonen</string>
-    <string name="document_preview_failed">Het voorbeeld kon niet geladen worden. Tik op het bestand om het te openen.</string>
+    <string name="document_preview_failed">Het voorbeeld kon niet worden geladen. Tik op het bestand om het te openen.</string>
 
     <!-- Panes on tablets -->
     <string name="action_hide_list">Lijst verbergen</string>
@@ -504,12 +504,12 @@
     <string name="action_copy">Kopiëren</string>
     <string name="copied">%s gekopieerd</string>
     <string name="settings_amoled">Puur zwart</string>
-    <string name="settings_amoled_summary">Zwarte achtergrond in de donkere modus. Spaart batterij op OLED-schermen</string>
+    <string name="settings_amoled_summary">Zwarte achtergrond in het donkere thema. Bespaart batterij op oledschermen</string>
     <string name="settings_language">Taal</string>
     <string name="settings_language_system">Systeem</string>
     <string name="settings_license">Licentie</string>
     <string name="settings_license_summary">Open source onder de GNU AGPL v3</string>
-    <string name="settings_about_text">Een moderne Android-client voor Toledo van KU Leuven.</string>
+    <string name="settings_about_text">Een moderne Android-app voor Toledo van KU Leuven.</string>
     <plurals name="settings_interval_hours">
         <item quantity="one">%d uur</item>
         <item quantity="other">%d uur</item>
@@ -520,10 +520,10 @@
     </plurals>
     <string name="agenda_filter">Agenda filteren</string>
     <string name="settings_student_number_add">Studentennummer toevoegen</string>
-    <string name="settings_student_number_hint">Tolly vond het niet in KU Loket. Het staat op je studentenkaart: een r en zeven cijfers.</string>
+    <string name="settings_student_number_hint">Tolly kon het niet vinden in KU Loket. Het staat op je studentenkaart: een r en zeven cijfers.</string>
     <string name="action_save">Opslaan</string>
     <!-- One-time notices (app's NoticeSheet), by number. -->
     <string name="notice_1_title">Nieuw in Tolly</string>
-    <string name="notice_1_body">• Meldingen voor nieuwe KU Leuven-mail: zet ze aan in Instellingen, onder Meldingen.\n• Video\'s spelen verder in een klein venster als je de app verlaat, en livestreams spelen verder met het scherm uit.\n• Verberg het aantal ongelezen op de tabs Nieuws en Mail, in Instellingen.\n• Een vak offline downloaden en de video\'s ervan vinden gaat veel sneller.</string>
+    <string name="notice_1_body">• Meldingen voor nieuwe KU Leuven-mail: zet ze aan in Instellingen, onder Meldingen.\n• Video\'s spelen verder in een klein venster wanneer je de app verlaat, en livestreams spelen door met het scherm uit.\n• Verberg het aantal ongelezen items op de tabbladen Nieuws en Mail via Instellingen.\n• Een vak downloaden voor offline gebruik en de video\'s ervan zoeken gaat veel sneller.</string>
     <string name="notice_dismiss">Begrepen</string>
 </resources>

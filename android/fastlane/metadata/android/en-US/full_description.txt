@@ -1,33 +1,14 @@
-Tolly brings KU Leuven's Toledo to your phone and tablet: your courses, announcements, agenda, grades and files in one app that keeps working offline.
+Tolly is a modern Android client for KU Leuven's Toledo, with your courses, announcements, agenda, grades and files in one app.
 
-Tolly is an unofficial app. It is not made, endorsed or supported by KU Leuven.
+• Courses with their content, grades and recordings
+• Which class is on now, and in which room
+• Announcements with notifications
+• Your timetable and Toledo's deadlines in one agenda
+• Your KU Leuven mail in its own tab
+• Downloads, and whole courses for offline use
+• Two looks: Material 3 Expressive or Liquid Glass, light or dark
+• Made for phones, tablets and foldables, in English and Dutch
 
-COURSES
-• This academic year's courses and communities, each with a subject icon and colour; rename them, pick another icon, drag them into your own order or flag them.
-• See at a glance which course you have class in right now, until when and in which room, and when the next class starts.
-• Folders, learning modules, pages, documents, files and links, as in Toledo. Tests and assignments open in a built-in browser without signing in again.
-• Grades per course with feedback, and all your results together.
-• Course recordings in a built-in player.
+You sign in on KU Leuven's own login page, so Tolly never sees your password. No ads, no tracking, no accounts.
 
-ANNOUNCEMENTS
-• Per course and all together, with unread ones in bold and a filter for them.
-• Optional notifications for new announcements, checked as often as you like.
-• Swipe to mark as read or flag, as in a mail app.
-
-AGENDA
-• Your lessons from the KU Leuven timetable together with Toledo's deadlines and events, as a list, a day or a week.
-• Deadlines on a screen of their own.
-
-FILES AND OFFLINE
-• Background downloads that resume, open in any app, share or save a copy, optionally automatically in a folder per course.
-• Download a whole course for offline use, leaving out the big files you don't need.
-• Everything you've seen stays available without a connection.
-
-TWO LOOKS
-• Material 3 Expressive with dynamic colour, or Liquid Glass with a floating glass tab bar.
-• Light and dark, in English and Dutch, and built for tablets and foldables too, with resizable side-by-side panes.
-
-PRIVACY
-You sign in with KU Leuven's own login page, including two-factor authentication; Tolly never sees your password. Your data goes only between your device and KU Leuven's services: no ads, no tracking, no accounts of our own.
-
-Tolly is open source: https://github.com/Bueezi/tolly
+AI was involved in the development of the application. Tolly is open source: https://github.com/Bueezi/tolly

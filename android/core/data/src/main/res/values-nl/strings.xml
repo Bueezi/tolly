@@ -7,7 +7,7 @@
         <item quantity="other">%d nieuwe aankondigingen</item>
     </plurals>
     <string name="notification_channel_mail">Nieuwe mail</string>
-    <string name="notification_channel_mail_description">Een melding wanneer er nieuwe KU Leuven-mail binnenkomt.</string>
+    <string name="notification_channel_mail_description">Een melding wanneer er nieuwe mail van KU Leuven binnenkomt.</string>
     <plurals name="notification_mail_new">
         <item quantity="one">%d nieuwe mail</item>
         <item quantity="other">%d nieuwe mails</item>
