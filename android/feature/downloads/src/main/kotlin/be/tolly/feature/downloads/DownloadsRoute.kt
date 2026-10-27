@@ -115,7 +115,7 @@ fun DownloadsRoute(
         snackbarHostState = snackbarHostState,
         topBar = {
             TollyTopBar(
-                large = false,
+                detail = true,
                 title = { Text(stringResource(R.string.nav_downloads)) },
                 navigationIcon = { PaneNavigationIcon(navigation, onNavigate) },
                 subtitle = if (state.storageUsed > 0) {

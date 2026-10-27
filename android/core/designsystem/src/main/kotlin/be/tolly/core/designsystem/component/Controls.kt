@@ -232,7 +232,8 @@ fun TollySegmented(
             label = "segment",
         )
         Box(Modifier.fillMaxWidth().height(36.dp).clip(Capsule()).background(track)) {
-            Box(
+            // Nothing chosen yet (an index of -1): no thumb.
+            if (selectedIndex >= 0 || position != null) Box(
                 Modifier
                     .then(
                         if (position != null) {

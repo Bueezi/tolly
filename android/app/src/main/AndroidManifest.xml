@@ -84,6 +84,20 @@
             </intent-filter>
         </activity>
 
+        <!-- Tolly's own viewer for downloaded PDFs, pictures and text; started by core/ui's file events. -->
+        <activity
+            android:name=".viewer.FileViewerActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|density|keyboardHidden|uiMode"
+            android:exported="false"
+            android:resizeableActivity="true"
+            android:theme="@style/Theme.Tolly">
+            <intent-filter>
+                <action android:name="be.tolly.action.VIEW_FILE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" android:mimeType="*/*" />
+            </intent-filter>
+        </activity>
+
         <!-- WorkManager is initialised by TollyApplication so workers can use Hilt. -->
         <provider
             android:name="androidx.startup.InitializationProvider"

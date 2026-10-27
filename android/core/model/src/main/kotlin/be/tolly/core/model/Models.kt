@@ -172,6 +172,9 @@ data class DownloadRequest(
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
+/** Where a downloaded file opens: Tolly's own viewer (PDFs, images, text) or another app. */
+enum class FileViewer { IN_APP, EXTERNAL }
+
 data class UserPreferences(
     val themeMode: ThemeMode = ThemeMode.LIGHT,
     val dynamicColor: Boolean = true,
@@ -203,6 +206,8 @@ data class UserPreferences(
     val amoled: Boolean = false,
     /** The user's student number (`r0123456`), from KU Loket; Toledo's user name is another id. */
     val studentNumber: String? = null,
+    /** Where files open; null until the user picked, the first time they open one. */
+    val fileViewer: FileViewer? = null,
 )
 
 /** The choices for [UserPreferences.newsCheckMinutes], in minutes; 15 is WorkManager's shortest period. */

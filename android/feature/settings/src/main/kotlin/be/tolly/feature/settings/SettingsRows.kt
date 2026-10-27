@@ -33,6 +33,7 @@ import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.NotificationsActive
+import androidx.compose.material.icons.outlined.Preview
 import androidx.compose.material.icons.outlined.RestartAlt
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.outlined.Schedule
@@ -93,6 +94,7 @@ import be.tolly.core.designsystem.component.TollySheet
 import be.tolly.core.designsystem.component.TollySlider
 import be.tolly.core.designsystem.component.TollySwitch
 import be.tolly.core.designsystem.component.groupItem
+import be.tolly.core.model.FileViewer
 import be.tolly.core.model.NEWS_CHECK_INTERVALS
 import be.tolly.core.model.ThemeMode
 import be.tolly.core.model.UserPreferences
@@ -134,6 +136,38 @@ internal fun ThemeRow(position: ItemPosition, selected: ThemeMode, onSelect: (Th
                         ThemeMode.SYSTEM -> R.string.settings_theme_system
                         ThemeMode.LIGHT -> R.string.settings_theme_light
                         ThemeMode.DARK -> R.string.settings_theme_dark
+                    },
+                ),
+            )
+        }
+    }
+}
+
+/** Where files open, in Tolly or in another app; nothing is marked until the user picked. */
+@Composable
+internal fun FileViewerRow(position: ItemPosition, selected: FileViewer?, onSelect: (FileViewer) -> Unit) {
+    val haptics = LocalHapticFeedback.current
+    val viewers = FileViewer.entries
+    Column(Modifier.groupItem(position).padding(bottom = 16.dp)) {
+        TollyListItem(
+            leading = { IconTile(Icons.Outlined.Preview, TileColor.Blue) },
+            headline = { Text(stringResource(R.string.settings_file_viewer)) },
+            supporting = { Text(stringResource(R.string.settings_file_viewer_summary)) },
+        )
+        TollySegmented(
+            count = viewers.size,
+            selectedIndex = viewers.indexOf(selected),
+            onSelect = { index ->
+                haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                onSelect(viewers[index])
+            },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        ) { index ->
+            SegmentLabel(
+                stringResource(
+                    when (viewers[index]) {
+                        FileViewer.IN_APP -> R.string.viewer_in_app
+                        FileViewer.EXTERNAL -> R.string.settings_file_viewer_external
                     },
                 ),
             )

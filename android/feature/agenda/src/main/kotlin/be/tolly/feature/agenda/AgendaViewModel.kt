@@ -124,6 +124,8 @@ class AgendaViewModel @Inject constructor(
             preferences.agendaMode()?.let { saved -> AgendaMode.entries.firstOrNull { it.name == saved } }?.let { mode.value = it }
             refresh()
         }
+        // The lessons come in once the timetable link is known.
+        viewModelScope.launch { repository.timetableFound.collect { refresh() } }
     }
 
     /** Fetches what the current view shows: the coming weeks for the list, else the selected week. */

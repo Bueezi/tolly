@@ -12,10 +12,12 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import be.tolly.core.model.DEFAULT_NEWS_CHECK_MINUTES
+import be.tolly.core.model.FileViewer
 import be.tolly.core.model.NEWS_CHECK_INTERVALS
 import be.tolly.core.model.ThemeMode
 import be.tolly.core.model.UserPreferences
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -47,11 +49,16 @@ class PreferencesRepository @Inject constructor(
             setupDone = prefs[SETUP_DONE] ?: false,
             amoled = prefs[AMOLED] ?: false,
             studentNumber = prefs[STUDENT_NUMBER],
+            fileViewer = prefs[FILE_VIEWER]?.let { runCatching { FileViewer.valueOf(it) }.getOrNull() },
         )
     }
 
     suspend fun setThemeMode(mode: ThemeMode) {
         context.preferencesStore.edit { it[THEME] = mode.name }
+    }
+
+    suspend fun setFileViewer(viewer: FileViewer) {
+        context.preferencesStore.edit { it[FILE_VIEWER] = viewer.name }
     }
 
     suspend fun setDynamicColor(enabled: Boolean) {
@@ -179,6 +186,9 @@ class PreferencesRepository @Inject constructor(
     /** The user's timetable feed (an iCalendar URL from KU Loket), once found. */
     suspend fun timetableFeed(): String? = context.preferencesStore.data.first()[TIMETABLE_FEED]
 
+    /** [timetableFeed] as it changes. */
+    val timetableFeedChanges: Flow<String?> = context.preferencesStore.data.map { it[TIMETABLE_FEED] }.distinctUntilChanged()
+
     suspend fun setTimetableFeed(url: String?) {
         context.preferencesStore.edit { if (url == null) it.remove(TIMETABLE_FEED) else it[TIMETABLE_FEED] = url }
     }
@@ -227,6 +237,7 @@ class PreferencesRepository @Inject constructor(
         val SETUP_DONE = booleanPreferencesKey("setup_done")
         val AMOLED = booleanPreferencesKey("amoled")
         val NEWS_BASELINE = longPreferencesKey("news_baseline")
+        val FILE_VIEWER = stringPreferencesKey("file_viewer")
         val TIMETABLE_FEED = stringPreferencesKey("timetable_feed")
         val STUDENT_NUMBER = stringPreferencesKey("student_number")
         val AGENDA_MODE = stringPreferencesKey("agenda_mode")

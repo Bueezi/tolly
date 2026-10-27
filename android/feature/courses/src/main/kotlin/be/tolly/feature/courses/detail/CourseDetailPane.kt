@@ -150,7 +150,7 @@ fun CourseDetailPane(
         snackbarHostState = snackbarHostState,
         topBar = {
             TollyTopBar(
-                large = false,
+                detail = true,
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         course?.let { c ->

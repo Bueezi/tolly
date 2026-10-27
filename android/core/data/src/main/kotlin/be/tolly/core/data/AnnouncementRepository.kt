@@ -1,5 +1,7 @@
 package be.tolly.core.data
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import be.tolly.core.database.AnnouncementDao
 import be.tolly.core.database.CourseDao
 import be.tolly.core.database.SyncStateDao
@@ -17,6 +19,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AnnouncementRepository @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val api: UltraApi,
     private val announcementDao: AnnouncementDao,
     private val courseDao: CourseDao,
@@ -98,13 +101,18 @@ class AnnouncementRepository @Inject constructor(
     }
 
     /**
-     * Announcements posted before this count as read when they first show up. Set on the first
-     * refresh after signing in, so the feed starts out read; an older install that already has
-     * announcements keeps their state (baseline 0).
+     * Announcements posted before this count as read when they first show up: the first refresh
+     * after signing in, so the feed starts out read. Announcements of a course that only shows up
+     * later (communities turned on, say) follow the same rule, so its old news starts out read too.
+     * Installs from before the baseline (stored as 0) use the day Tolly was installed: what they
+     * already have keeps its state, and older news showing up now is read.
      */
     private suspend fun newsBaseline(): Long =
-        preferences.newsBaseline() ?: (if (announcementDao.count() > 0) 0L else System.currentTimeMillis())
-            .also { preferences.setNewsBaseline(it) }
+        preferences.newsBaseline()?.takeIf { it > 0 }
+            ?: (if (announcementDao.count() > 0) installedAt() else System.currentTimeMillis()).also { preferences.setNewsBaseline(it) }
+
+    private fun installedAt(): Long =
+        runCatching { context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime }.getOrDefault(0L)
 
     private suspend fun fetchCourse(courseId: String, baseline: Long) {
         val entities = try {

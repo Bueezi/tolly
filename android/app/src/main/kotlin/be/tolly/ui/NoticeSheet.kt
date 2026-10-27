@@ -25,6 +25,7 @@ import be.tolly.core.model.Notices
 /** Each notice's title and text, by its number (see [Notices]). Old ones stay, for the test. */
 internal val noticeTexts: Map<Int, Pair<Int, Int>> = mapOf(
     1 to (R.string.notice_1_title to R.string.notice_1_body),
+    2 to (R.string.notice_2_title to R.string.notice_2_body),
 )
 
 /** A one-time notice ([Notices]): its title and text, and a button that puts it away for good. */

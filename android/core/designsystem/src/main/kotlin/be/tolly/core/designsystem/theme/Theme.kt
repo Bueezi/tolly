@@ -206,15 +206,15 @@ private val GlassShapes = Shapes(
 )
 
 /**
- * iOS's text styles on Android's font: bold large titles, 17 sp body text with tighter tracking,
+ * iOS's text styles on Android's font: bold titles, 17 sp body text with tighter tracking,
  * 15 sp secondary text and small grey section labels.
  */
 private val GlassTypography = Typography().run {
     copy(
-        // The large title of a screen (TollyTopBar).
         displaySmall = TextStyle(fontSize = 34.sp, lineHeight = 41.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.sp),
+        // A tab's title (TollyTopBar).
         headlineSmall = headlineSmall.copy(fontWeight = FontWeight.Bold),
-        // A collapsed or inline screen title.
+        // A detail pane's title.
         titleLarge = TextStyle(fontSize = 18.sp, lineHeight = 24.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.2).sp),
         titleMedium = TextStyle(fontSize = 17.sp, lineHeight = 22.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.2).sp),
         titleSmall = TextStyle(fontSize = 15.sp, lineHeight = 20.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.1).sp),
@@ -330,7 +330,13 @@ fun TollyTheme(
     // (the open tab, scroll positions).
     val backdrop = rememberLayerBackdrop()
     val spec = remember(glass, darkTheme, backdrop) { if (glass) GlassSpec(dark = darkTheme, backdrop = backdrop) else null }
-    CompositionLocalProvider(LocalGlass provides glass, LocalGlassSpec provides spec, LocalTollyColors provides tolly) {
+    val unrecorded = remember { UnrecordedContent() }
+    CompositionLocalProvider(
+        LocalGlass provides glass,
+        LocalGlassSpec provides spec,
+        LocalUnrecordedContent provides unrecorded,
+        LocalTollyColors provides tolly,
+    ) {
         MaterialExpressiveTheme(
             colorScheme = colors,
             motionScheme = if (glass) MotionScheme.standard() else MotionScheme.expressive(),

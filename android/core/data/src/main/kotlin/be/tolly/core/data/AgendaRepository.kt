@@ -17,7 +17,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -48,6 +51,13 @@ class AgendaRepository @Inject constructor(
         }
 
     fun observeLastSynced(): Flow<Long?> = syncStateDao.observe(SYNC_KEY)
+
+    /**
+     * Emits when the timetable link is found (or renewed) after the agenda was shown: the lookup
+     * after signing in can take a while on a slow phone, and the agenda's first refresh may have
+     * gone without it.
+     */
+    val timetableFound: Flow<Unit> = preferences.timetableFeedChanges.drop(1).filterNotNull().map { }
 
     /**
      * Refreshes both sources. They don't depend on each other: lessons still update when the

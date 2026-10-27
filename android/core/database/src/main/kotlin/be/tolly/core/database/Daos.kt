@@ -279,6 +279,24 @@ interface GradeDao {
 }
 
 @Dao
+interface WatchProgressDao {
+    @Query("SELECT * FROM watch_progress")
+    fun observeAll(): Flow<List<WatchProgressEntity>>
+
+    @Query("SELECT * FROM watch_progress WHERE `key` = :key")
+    suspend fun get(key: String): WatchProgressEntity?
+
+    @Upsert
+    suspend fun upsert(progress: WatchProgressEntity)
+
+    @Query("DELETE FROM watch_progress WHERE `key` = :key")
+    suspend fun delete(key: String)
+
+    @Query("DELETE FROM watch_progress")
+    suspend fun deleteAll()
+}
+
+@Dao
 interface MaintenanceDao {
     @Query("DELETE FROM courses") suspend fun deleteCourses()
     @Query("DELETE FROM contents") suspend fun deleteContents()

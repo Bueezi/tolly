@@ -151,3 +151,15 @@ data class GradeEntity(
     val dueDate: Long?,
     val position: Int,
 )
+
+/**
+ * How far the user got in a lesson recording ([key] is its Kaltura entry id). It lives on this
+ * device only, like the read state of announcements, and stays when the cache is cleared.
+ */
+@Entity(tableName = "watch_progress")
+data class WatchProgressEntity(
+    @PrimaryKey val key: String,
+    val position: Long,
+    val duration: Long,
+    val updatedAt: Long,
+)

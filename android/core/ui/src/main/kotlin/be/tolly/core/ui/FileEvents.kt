@@ -11,23 +11,49 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import be.tolly.core.auth.UltraEndpoints
 import be.tolly.core.data.DataError
 import be.tolly.core.designsystem.R
+import be.tolly.core.model.FileViewer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.coroutineScope
 
-/** Collects [events] while composed: launches viewers, opens links and shows snackbars. */
+/**
+ * Collects [events] while composed: launches viewers, opens links and shows snackbars. The first
+ * file Tolly can show itself asks where files should open ([ViewerChoiceSheet]).
+ */
 @Composable
 fun HandleFileEvents(events: Flow<FileEvent>, snackbarHostState: SnackbarHostState) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    // A file waiting for the user to say where files open.
+    var choosing by remember { mutableStateOf<FileEvent.View?>(null) }
+    val showMessage: (String) -> Unit = { message ->
+        scope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Short)
+        }
+    }
     LaunchedEffect(events) {
         coroutineScope {
             events.collect { event ->
                 val message: String? = when (event) {
                     is FileEvent.Launch -> if (context.tryStart(event.intent)) null else context.getString(R.string.error_no_app)
+                    is FileEvent.View -> when {
+                        !viewsInApp(event.intent) -> if (context.tryStart(event.intent)) null else context.getString(R.string.error_no_app)
+                        event.viewer == null -> {
+                            choosing = event
+                            null
+                        }
+                        else -> if (context.view(event.intent, event.viewer)) null else context.getString(R.string.error_no_app)
+                    }
                     is FileEvent.Browse -> {
                         context.openInBrowser(event.url)
                         null
@@ -40,16 +66,25 @@ fun HandleFileEvents(events: Flow<FileEvent>, snackbarHostState: SnackbarHostSta
                     FileEvent.SaveFailed -> context.getString(R.string.downloads_export_failed)
                     FileEvent.Removed -> context.getString(R.string.file_removed)
                 }
-                if (message != null) {
-                    launch {
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Short)
-                    }
-                }
+                if (message != null) showMessage(message)
             }
         }
     }
+    choosing?.let { pending ->
+        ViewerChoiceSheet(
+            onPick = { viewer ->
+                choosing = null
+                pending.remember(viewer)
+                if (!context.view(pending.intent, viewer)) showMessage(context.getString(R.string.error_no_app))
+            },
+            onDismiss = { choosing = null },
+        )
+    }
 }
+
+/** Opens the file of [intent] in Tolly's own viewer or in another app, as [viewer] says. */
+private fun Context.view(intent: Intent, viewer: FileViewer): Boolean =
+    tryStart(if (viewer == FileViewer.IN_APP) inAppViewer(intent) else intent)
 
 @StringRes
 fun dataErrorMessage(error: DataError): Int = when (error) {
@@ -106,16 +141,19 @@ const val ACTION_PLAY_VIDEO = "be.tolly.action.PLAY_VIDEO"
 const val EXTRA_VIDEO_TITLE = "title"
 const val EXTRA_VIDEO_WEB_URL = "webUrl"
 const val EXTRA_VIDEO_LIVE = "live"
+const val EXTRA_VIDEO_KEY = "key"
 
 /**
  * Plays the HLS stream [url] in the app's player. [webUrl] is the video's page, for the player's
- * "open in browser"; a [live] stream starts at the live edge.
+ * "open in browser"; a [live] stream starts at the live edge. A recording with a [key] (its entry
+ * id) continues where the user left it, and keeps how far they got.
  */
-fun Context.playVideo(url: String, title: String, webUrl: String?, live: Boolean = false) {
+fun Context.playVideo(url: String, title: String, webUrl: String?, live: Boolean = false, key: String? = null) {
     val intent = Intent(ACTION_PLAY_VIDEO, Uri.parse(url)).setPackage(packageName)
         .putExtra(EXTRA_VIDEO_TITLE, title)
         .putExtra(EXTRA_VIDEO_WEB_URL, webUrl)
         .putExtra(EXTRA_VIDEO_LIVE, live)
+        .putExtra(EXTRA_VIDEO_KEY, key)
     if (this !is Activity) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     tryStart(intent)
 }

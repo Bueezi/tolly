@@ -99,12 +99,15 @@ fun DocumentPane(
     val context = LocalContext.current
     HandleFileEvents(viewModel.files.events, snackbarHostState)
     var optionsFor by rememberSaveable { mutableStateOf<String?>(null) }
+    val haptics = LocalHapticFeedback.current
 
     TollyScaffold(
         snackbarHostState = snackbarHostState,
+        // The page is a WebView, which stays out of the glass's recordings (see HtmlContent).
+        recordContent = false,
         topBar = {
             TollyTopBar(
-                large = false,
+                detail = true,
                 title = { Text(state.node?.title ?: title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
                 navigationIcon = { PaneNavigationIcon(navigation, onNavigate) },
                 actions = {
@@ -160,6 +163,16 @@ fun DocumentPane(
                     HtmlContent(
                         html = remember(html) { EmbeddedFiles.replaceLinks(html, ::fileButtonHtml) },
                         onLinkClick = viewModel::onLink,
+                        // A long press on a file button opens its options, like on the chips above.
+                        onLinkLongClick = { url ->
+                            // The WebView reports the link resolved; a file's own URL may be relative.
+                            val file = state.files.firstOrNull { it.file.url == url } ?: state.files.firstOrNull { url.endsWith(it.file.url) }
+                            if (file != null) {
+                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                optionsFor = file.file.url
+                            }
+                            file != null
+                        },
                         baseUrl = UltraEndpoints.BASE_URL,
                         resourceLoader = viewModel::loadResource,
                         contentPadding = htmlPadding,

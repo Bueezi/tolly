@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.LocalContentColor
@@ -59,7 +58,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.layerBackdrop
@@ -82,8 +80,8 @@ val LocalTopBarScrollBehavior = staticCompositionLocalOf<TopAppBarScrollBehavior
  * padding as their content padding (see [scrollingContentPadding]) scroll under the top bar and
  * the floating tab bar instead of stopping at them; with the glass look the bars refract them.
  *
- * Without a [scrollBehavior] a large title collapses as the content scrolls. Snackbars of
- * [snackbarHostState] show above the floating tab bar.
+ * Without a [scrollBehavior] the bar darkens or blurs once content scrolls under it. Snackbars
+ * of [snackbarHostState] show above the floating tab bar.
  *
  * Content that must not be drawn into an offscreen layer, like a WebView (drawn twice it runs out
  * of tile memory and flickers), passes [recordContent] = false: the top bar's glass then refracts
@@ -99,7 +97,7 @@ fun TollyScaffold(
     recordContent: Boolean = true,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    val behavior = scrollBehavior ?: TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val behavior = scrollBehavior ?: TopAppBarDefaults.pinnedScrollBehavior()
     val screen = Tolly.colors.screen
     // With the glass look the content is recorded, for the top bar's glass to refract.
     val backdrop = if (glassSpec != null) rememberLayerBackdrop() else null
@@ -125,10 +123,10 @@ fun TollyScaffold(
 }
 
 /**
- * A screen's top bar. [large] bars show a big title that collapses into the bar as the content
- * scrolls (Material 3 Expressive's flexible bar; a bold iOS large title with the glass look);
- * small ones keep their title in the bar (centred with the glass look). In landscape a large bar
- * keeps its title in the bar too: a window that is wider than tall has no height to spare for it.
+ * A screen's top bar, with its title in the bar: big titles above the content cost a phone a fifth
+ * of its height, and nothing in Tolly needs them. A tab's own bar shows its title at the start, a
+ * little larger; a [detail] pane's bar shows the item's title (centred with the glass look, as iOS
+ * does for a pushed screen).
  *
  * With the glass look the bar itself is clear: content scrolling under it is blurred and fades
  * out (iOS's scroll edge), and [navigationIcon] and [actions] sit in glass. [bottom] holds what
@@ -143,7 +141,7 @@ fun TollyTopBar(
     subtitle: (@Composable () -> Unit)? = null,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    large: Boolean = true,
+    detail: Boolean = false,
     scrollBehavior: TopAppBarScrollBehavior? = LocalTopBarScrollBehavior.current,
     bottom: (@Composable ColumnScope.() -> Unit)? = null,
     refreshing: Boolean = false,
@@ -168,21 +166,12 @@ fun TollyTopBar(
     } else {
         actions
     }
-    val window = LocalWindowInfo.current.containerSize
-    val largeTitle = large && window.height >= window.width
+    val barTitle: @Composable () -> Unit = {
+        if (detail) title() else ProvideTextStyle(MaterialTheme.typography.headlineSmall, title)
+    }
     val bar: @Composable ColumnScope.() -> Unit = {
         when {
-            largeTitle -> LargeFlexibleTopAppBar(
-                title = title,
-                subtitle = subtitle,
-                navigationIcon = navigationIcon,
-                actions = barActions,
-                colors = colors,
-                // A little lower than Material's (120 and 152 dp): the title sits closer under the buttons.
-                expandedHeight = if (subtitle != null) LargeBarWithSubtitleHeight else LargeBarHeight,
-                scrollBehavior = scrollBehavior,
-            )
-            glass -> CenterAlignedTopAppBar(
+            glass && detail -> CenterAlignedTopAppBar(
                 title = {
                     if (subtitle == null) {
                         title()
@@ -201,7 +190,7 @@ fun TollyTopBar(
                 scrollBehavior = scrollBehavior,
             )
             subtitle != null -> TopAppBar(
-                title = title,
+                title = barTitle,
                 subtitle = subtitle,
                 navigationIcon = navigationIcon,
                 actions = barActions,
@@ -209,7 +198,7 @@ fun TollyTopBar(
                 scrollBehavior = scrollBehavior,
             )
             else -> TopAppBar(
-                title = title,
+                title = barTitle,
                 navigationIcon = navigationIcon,
                 actions = barActions,
                 colors = colors,
@@ -239,10 +228,6 @@ fun TollyTopBar(
         Column(content = bar)
     }
 }
-
-/** The large bar's height while expanded. */
-private val LargeBarHeight = 108.dp
-private val LargeBarWithSubtitleHeight = 136.dp
 
 /** How far the scroll edge's fade reaches below the bar. */
 private val ScrollEdgeOverhang = 20.dp

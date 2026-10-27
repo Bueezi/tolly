@@ -213,6 +213,8 @@ private fun MainScaffold(sessionValid: Boolean, user: User, viewModel: MainViewM
         if (!openMail) return@LaunchedEffect
         back = false
         stack = listOf(HOME, tabKey(TopLevel.MAIL))
+        // The notification is about mail Outlook may not show yet.
+        mail.refreshInbox()
         viewModel.openMailHandled()
     }
     val current = tabOf(top)

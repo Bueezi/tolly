@@ -57,16 +57,16 @@ themselves unless a component can't hide the difference.
 
 - **Material 3 Expressive** (glass off), after RikkaHub, ObtainX and Morphe: grouped lists with
   22 dp outer and 6 dp inner corners and 2 dp gaps on a tinted screen, tonal icon circles,
-  connected button groups, large flexible top bars, `LoadingIndicator`, dynamic colour.
+  connected button groups, `LoadingIndicator`, dynamic colour.
 - **Liquid Glass** (glass on), after iOS 26: inset grouped lists joined by hairline separators,
-  iOS colours and type (bold 34 sp large titles, 17 sp body), and glass only on the navigation
+  iOS colours and type (bold titles, 17 sp body), and glass only on the navigation
   layer: the floating `TollyTabBar` with its draggable lens, glass circles/capsules for top-bar
   buttons, the blurred scroll edge under top bars, translucent sheets. Content itself is never
   glass.
 
 Build screens from these, not from raw Material components:
 
-- `TollyScaffold` + `TollyTopBar` (`large = false` for detail panes; `subtitle`, `bottom` for a
+- `TollyScaffold` + `TollyTopBar` (titles stay in the bar; `detail = true` for detail panes; `subtitle`, `bottom` for a
   search field or `TollySegmented` under the title). Lists take `scrollingContentPadding(padding)`
   so they scroll under the bars and leave room for the floating tab bar (`LocalBottomBarInset`).
 - Lists: `Modifier.groupItem(ItemPosition(index, count), selected, onClick, …)` on a
@@ -119,6 +119,10 @@ step below or a note says to.
 
 1. Commit and push to `main` (pushing is not a release).
 2. Check CI on that commit (`gh run list --commit <sha>`); never suggest releasing a red build.
+   Every release has a changelog: `android/fastlane/metadata/android/{en-US,nl-NL}/changelogs/<versionCode>.txt`
+   (at most 500 characters; Google Play's "What's new" and the top of the GitHub release). A
+   feature release also shows it in the app once, as the next one-time notice (raise
+   `Notices.LATEST`, add `notice_N_title`/`notice_N_body` with the same text, map it in `NoticeSheet`).
 3. When the user wants a release, suggest the version (minor bump for features, patch for fixes
    only) and give them the command to run themselves, in its own `bash` block:
    `git tag vX.Y.Z && git push origin vX.Y.Z`.

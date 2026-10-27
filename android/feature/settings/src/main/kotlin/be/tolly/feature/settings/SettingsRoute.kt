@@ -252,7 +252,7 @@ fun SettingsPane(
     TollyScaffold(
         topBar = {
             TollyTopBar(
-                large = false,
+                detail = true,
                 title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = { PaneNavigationIcon(navigation, onNavigate) },
             )
@@ -365,6 +365,7 @@ fun SettingsPane(
 
             SettingsGroup(
                 R.string.settings_storage,
+                { position -> FileViewerRow(position, state.preferences.fileViewer, viewModel::setFileViewer) },
                 *copyToDownloadsRows(
                     preferences = state.preferences,
                     folderLabel = state.downloadsFolder,

@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,8 +35,16 @@ internal class PaneDivider(
     var openWidth = openWidth
         private set
 
-    /** The pane's width in dp, animated when it snaps; the spring may not take it below 0. */
-    val width = Animatable(initialWidth).apply { updateBounds(lowerBound = 0f) }
+    /**
+     * Where the pane is headed, in dp: where the finger holds it, or where it snaps to. Set right
+     * away on each move, so the panes follow the finger in the same frame.
+     */
+    var target by mutableFloatStateOf(initialWidth)
+        private set
+
+    /** The snap towards [target], while one runs; the spring may not take it below 0. */
+    private val spring = Animatable(initialWidth).apply { updateBounds(lowerBound = 0f) }
+    private var springing by mutableStateOf(false)
 
     /** The window's width in dp, to keep the other pane room. */
     private var total by mutableFloatStateOf(0f)
@@ -43,43 +52,64 @@ internal class PaneDivider(
     /** Where the finger puts the divider, which may be inside the magnet. */
     private var dragTo = 0f
 
-    val folded: Boolean get() = width.targetValue == 0f
+    private var dragging by mutableStateOf(false)
 
-    val current: Dp get() = width.value.dp
+    /** Whether the panes follow the finger or a snap now, rather than moving somewhere new. */
+    val moving: Boolean get() = dragging || springing
+
+    val folded: Boolean get() = target == 0f
+
+    val current: Dp get() = (if (springing) spring.value else target).dp
 
     private val maxWidth: Float get() = if (total > 0f) maxOf(MinPaneWidth.value, total * MAX_FRACTION) else Float.MAX_VALUE
 
     fun measured(totalWidth: Dp) {
         total = totalWidth.value
         // A window that got narrower takes the pane along.
-        if (width.targetValue > maxWidth) scope.launch { width.snapTo(maxWidth) }
+        if (target > maxWidth) target = maxWidth
     }
 
     fun dragStarted() {
-        dragTo = width.targetValue
+        dragging = true
+        dragTo = target
     }
 
     /** Moves the divider by [delta] dp; returns true when that snapped the pane shut or open. */
     fun drag(delta: Float): Boolean {
         dragTo = (dragTo + delta).coerceIn(0f, maxWidth)
-        val target = when {
+        val next = when {
             dragTo >= MinPaneWidth.value -> dragTo
             canFold -> 0f
             else -> MinPaneWidth.value
         }
-        val snapped = (target == 0f) != folded
-        scope.launch { if (snapped || width.isRunning) width.animateTo(target, MagnetSpring) else width.snapTo(target) }
+        val snapped = (next == 0f) != folded
+        // Out of the magnet the pane sticks to the finger; a snap, and the finger after it until
+        // the snap has caught up, goes through the spring.
+        if (snapped || springing) springTo(next) else target = next
         return snapped
     }
 
     fun dragStopped() {
-        if (!folded) openWidth = width.targetValue
+        dragging = false
+        if (!folded) openWidth = target
     }
 
     /** Folds the pane away, or brings it back at the width it had. */
     fun toggle() {
-        val target = if (folded) openWidth.coerceIn(MinPaneWidth.value, maxWidth) else 0f
-        scope.launch { width.animateTo(target, MagnetSpring) }
+        springTo(if (folded) openWidth.coerceIn(MinPaneWidth.value, maxWidth) else 0f)
+    }
+
+    private fun springTo(to: Float) {
+        val from = current.value
+        val running = springing
+        springing = true
+        target = to
+        scope.launch {
+            // A snap already running turns towards the new target, keeping its speed.
+            if (!running) spring.snapTo(from)
+            spring.animateTo(to, MagnetSpring)
+            springing = false
+        }
     }
 
     companion object {
@@ -104,7 +134,7 @@ internal fun rememberPaneDivider(key: Any, canFold: Boolean): PaneDivider {
         key,
         canFold,
         saver = listSaver(
-            save = { listOf(it.width.targetValue, it.openWidth) },
+            save = { listOf(it.target, it.openWidth) },
             restore = { (width, open) -> PaneDivider(scope, canFold, width, open) },
         ),
     ) {

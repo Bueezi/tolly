@@ -22,11 +22,17 @@ import javax.inject.Singleton
         SyncStateEntity::class,
         CalendarItemEntity::class,
         GradeEntity::class,
+        WatchProgressEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
     // Keep downloads across upgrades: dropping that table would orphan the files on disk.
-    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4)],
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4),
+        AutoMigration(from = 4, to = 5),
+    ],
 )
 abstract class TollyDatabase : RoomDatabase() {
     abstract fun courseDao(): CourseDao
@@ -37,6 +43,7 @@ abstract class TollyDatabase : RoomDatabase() {
     abstract fun maintenanceDao(): MaintenanceDao
     abstract fun calendarDao(): CalendarDao
     abstract fun gradeDao(): GradeDao
+    abstract fun watchProgressDao(): WatchProgressDao
 }
 
 @Module
@@ -58,4 +65,5 @@ object DatabaseModule {
     @Provides fun maintenanceDao(db: TollyDatabase) = db.maintenanceDao()
     @Provides fun calendarDao(db: TollyDatabase) = db.calendarDao()
     @Provides fun gradeDao(db: TollyDatabase) = db.gradeDao()
+    @Provides fun watchProgressDao(db: TollyDatabase) = db.watchProgressDao()
 }

@@ -2,12 +2,11 @@ package be.tolly.core.designsystem.component
 
 import android.annotation.SuppressLint
 import android.graphics.Color as AndroidColor
-import android.os.Build
-import android.view.View
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -23,18 +22,24 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import be.tolly.core.designsystem.theme.LocalGlass
+import be.tolly.core.designsystem.theme.keepOutOfGlass
 
 /**
  * Renders Blackboard HTML (announcements, Ultra documents) in a locked-down WebView: no JavaScript,
  * no file access, colours taken from the Material theme and every link handed to [onLinkClick].
  * Ultra-hosted images are fetched through [resourceLoader] so the WebView needs no session cookies.
  * A link of class `tolly-file`, holding an `<svg>` icon and a `<span>` name, is drawn as a file
- * button like the outlined file chips elsewhere.
+ * button like the outlined file chips elsewhere. A long press on a link goes to [onLinkLongClick],
+ * which returns whether it took it (a file's options, say).
+ *
+ * The text keeps its size: content wider than the screen (a wide table, a fixed-width block from
+ * Word) scrolls sideways instead of zooming the whole page out until it can't be read.
  *
  * With the glass look the screen's content is recorded for the glass bars and drawn again,
  * blurred, in an offscreen layer. WebView's GPU drawing can't go into such a layer (on Vulkan the
- * renderer aborts, crashing the app), so there the WebView draws in software, into a bitmap the
- * glass can blur like any other content.
+ * renderer aborts, crashing the app), and drawn in software instead its text comes out squashed,
+ * so the WebView stays out of those recordings ([keepOutOfGlass]); the screen that shows it passes
+ * `TollyScaffold(recordContent = false)`.
  */
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -42,6 +47,7 @@ fun HtmlContent(
     html: String,
     onLinkClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onLinkLongClick: ((String) -> Boolean)? = null,
     baseUrl: String? = null,
     contentPadding: PaddingValues = PaddingValues(16.dp),
     resourceLoader: ((String) -> WebResourceResponse?)? = null,
@@ -51,7 +57,7 @@ fun HtmlContent(
     val layoutDirection = LocalLayoutDirection.current
     val currentOnLinkClick by rememberUpdatedState(onLinkClick)
     val currentLoader by rememberUpdatedState(resourceLoader)
-    val layerType = if (LocalGlass.current && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) View.LAYER_TYPE_SOFTWARE else View.LAYER_TYPE_NONE
+    val currentOnLinkLongClick by rememberUpdatedState(onLinkLongClick)
 
     val glass = LocalGlass.current
     val document = remember(html, colors, contentPadding, layoutDirection, density.fontScale, glass) {
@@ -69,6 +75,10 @@ fun HtmlContent(
         )
     }
 
+    if (!keepOutOfGlass()) {
+        Box(modifier)
+        return
+    }
     AndroidView(
         modifier = modifier,
         factory = { context ->
@@ -79,10 +89,17 @@ fun HtmlContent(
                     allowFileAccess = false
                     allowContentAccess = false
                     blockNetworkLoads = false
-                    loadWithOverviewMode = true
+                    loadWithOverviewMode = false
                     useWideViewPort = false
                     builtInZoomControls = true
                     displayZoomControls = false
+                }
+                setOnLongClickListener {
+                    val hit = hitTestResult
+                    val url = hit.extra.takeIf {
+                        hit.type == WebView.HitTestResult.SRC_ANCHOR_TYPE || hit.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+                    }
+                    url != null && currentOnLinkLongClick?.invoke(url) == true
                 }
                 webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -96,7 +113,6 @@ fun HtmlContent(
             }
         },
         update = { webView ->
-            if (webView.layerType != layerType) webView.setLayerType(layerType, null)
             webView.settings.textZoom = (density.fontScale * 100).toInt()
             if (webView.tag != document) {
                 webView.tag = document

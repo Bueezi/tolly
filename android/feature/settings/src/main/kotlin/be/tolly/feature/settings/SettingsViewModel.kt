@@ -12,6 +12,7 @@ import be.tolly.core.data.LogExporter
 import be.tolly.core.data.PreferencesRepository
 import be.tolly.core.data.download.DownloadRepository
 import be.tolly.core.data.notifications.MailNotifier
+import be.tolly.core.model.FileViewer
 import be.tolly.core.model.ThemeMode
 import be.tolly.core.model.User
 import be.tolly.core.model.UserPreferences
@@ -71,6 +72,8 @@ class SettingsViewModel @Inject constructor(
     fun setThemeMode(mode: ThemeMode) = launch { preferencesRepository.setThemeMode(mode) }
     fun setDynamicColor(enabled: Boolean) = launch { preferencesRepository.setDynamicColor(enabled) }
     fun setShowCommunities(show: Boolean) = launch { preferencesRepository.setShowCommunities(show) }
+
+    fun setFileViewer(viewer: FileViewer) = launch { preferencesRepository.setFileViewer(viewer) }
     fun setShowPastCourses(show: Boolean) = launch { preferencesRepository.setShowPastCourses(show) }
 
     fun setCopyToDownloads(enabled: Boolean) = launch {

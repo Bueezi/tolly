@@ -1,15 +1,21 @@
 package be.tolly.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,8 +27,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,17 +55,50 @@ import org.json.JSONObject
 /**
  * Outlook on the web, for the KU Leuven mailbox. Microsoft's sign-in hands over to the KU Leuven
  * one, which the WebView usually still holds, so it often opens signed in. The page is kept while
- * the user is on other tabs (see [MailWebView]), so coming back doesn't load Outlook again.
+ * the user is on other tabs (see [MailWebView]), so coming back doesn't load Outlook again; when
+ * the unread count went up meanwhile, the inbox loads again to show the new mail. Outlook's attach
+ * button opens Android's file picker.
  */
 @Composable
 internal fun MailScreen(mail: MailWebView, unread: Int?, email: String?) {
     val context = LocalContext.current
     val webView = mail.get(context, email)
     BackHandler(enabled = mail.canGoBack) { webView.goBack() }
+    LaunchedEffect(unread) { mail.unreadChanged(unread) }
+    // The page waits for its files until it gets an answer, even "none": without one, its attach
+    // button does nothing the next time.
+    val waiting = remember { arrayOfNulls<ValueCallback<Array<Uri>>>(1) }
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val data = result.data
+        val files = if (result.resultCode != Activity.RESULT_OK || data == null) {
+            null
+        } else {
+            data.clipData?.let { clip -> Array(clip.itemCount) { clip.getItemAt(it).uri } } ?: data.data?.let { arrayOf(it) }
+        }
+        waiting[0]?.onReceiveValue(files)
+        waiting[0] = null
+    }
+    DisposableEffect(mail) {
+        mail.chooseFiles = { intent, callback ->
+            waiting[0]?.onReceiveValue(null)
+            waiting[0] = callback
+            try {
+                picker.launch(intent)
+                true
+            } catch (_: ActivityNotFoundException) {
+                waiting[0] = null
+                false
+            }
+        }
+        onDispose {
+            mail.chooseFiles = null
+            waiting[0]?.onReceiveValue(null)
+            waiting[0] = null
+        }
+    }
     TollyScaffold(
         recordContent = false,
         topBar = {
-            // A large title like the other tabs'. Outlook scrolls inside the WebView, so it stays open.
             TollyTopBar(
                 title = { Text(stringResource(R.string.nav_mail)) },
                 refreshing = mail.loading && mail.shown,
@@ -107,6 +149,15 @@ internal class MailWebView {
         private set
 
     /**
+     * Opens the file picker for Outlook's attach button and hands what was picked to the callback;
+     * false when it can't. Set while the Mail tab is on screen.
+     */
+    var chooseFiles: ((Intent, ValueCallback<Array<Uri>>) -> Boolean)? = null
+
+    /** The unread count when the page last caught up with it. */
+    private var knownUnread: Int? = null
+
+    /**
      * The view, made the first time. Outlook opens with the mail domain of the user's [email] as its
      * realm, so Microsoft goes straight on to the KU Leuven sign-in instead of asking for an address.
      */
@@ -148,6 +199,13 @@ internal class MailWebView {
             override fun onProgressChanged(view: WebView, newProgress: Int) {
                 loading = newProgress < 100
             }
+
+            override fun onShowFileChooser(view: WebView, callback: ValueCallback<Array<Uri>>, params: FileChooserParams): Boolean {
+                val choose = chooseFiles ?: return false
+                val intent = params.createIntent()
+                if (params.mode == FileChooserParams.MODE_OPEN_MULTIPLE) intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                return choose(intent, callback)
+            }
         }
         val realm = email?.substringAfter('@', "")?.takeIf { it.isNotBlank() } ?: DEFAULT_REALM
         val first = pendingUrl ?: ToledoPortal.OUTLOOK_URL
@@ -179,6 +237,25 @@ internal class MailWebView {
         }
     }
 
+    /**
+     * Shows the inbox again, loaded afresh for mail that just came in (a new-mail notification was
+     * tapped). Outlook in a background tab doesn't always catch up by itself. A mail being written
+     * is left alone.
+     */
+    fun refreshInbox() {
+        val existing = view ?: return
+        if (pendingDraft != null || existing.url?.contains("/compose") == true) return
+        existing.loadUrl(ToledoPortal.OUTLOOK_URL)
+    }
+
+    /** The unread count is [count] now: more than the page last saw means new mail to load. */
+    fun unreadChanged(count: Int?) {
+        if (count == null) return
+        val before = knownUnread
+        knownUnread = count
+        if (before != null && count > before) refreshInbox()
+    }
+
     private companion object {
         const val DEFAULT_REALM = "kuleuven.be"
         const val COMPOSE_PATH = "inbox/compose/new"
@@ -194,6 +271,10 @@ internal class MailWebView {
  * Fills in Outlook's new-mail form with [draft], typing into its fields (Outlook's editor only
  * notices typed text) and attaching the file through the form's own file field. Waits up to 20
  * seconds for the form; nothing is sent, the user reads the mail over and sends it.
+ *
+ * The file goes in once: on a slow phone its upload takes a while before Outlook lists it, and
+ * putting it in again then attached it twice or more. Only when nothing shows it after half a
+ * minute (the form wasn't ready for it) does it go in a second time.
  */
 private fun fillDraftScript(draft: MailDraft): String {
     fun js(value: String?) = if (value == null) "null" else JSONObject.quote(value)
@@ -221,10 +302,15 @@ private fun fillDraftScript(draft: MailDraft): String {
     type(body, draft.body);
     if (draft.file != null) setTimeout(function () { attach(0); }, 1500); else window.__tollyDraft = false;
   }
-  // The form takes the file only once it has settled; the file's name in the form shows it did.
+  // The form takes the file only once it has settled; the file's name in the form shows it did
+  // (Outlook may shorten the name, so its start is enough).
+  function attached() {
+    var mark = draft.fileName.substring(0, 9);
+    return document.body.innerText.indexOf(mark) >= 0 ||
+      document.querySelector('[title*="' + mark + '"], [aria-label*="' + mark + '"]') != null;
+  }
   function attach(attempt) {
-    var shown = draft.fileName.replace(/\.txt${'$'}/, '');
-    if (document.body.innerText.indexOf(shown) >= 0 || attempt >= 5) {
+    if (attached() || attempt >= 2) {
       window.__tollyDraft = false;
       return;
     }
@@ -235,7 +321,16 @@ private fun fillDraftScript(draft: MailDraft): String {
       input.files = files.files;
       input.dispatchEvent(new Event('change', { bubbles: true }));
     }
-    setTimeout(function () { attach(attempt + 1); }, 1500);
+    wait(attempt, 0);
+  }
+  function wait(attempt, ticks) {
+    if (attached()) {
+      window.__tollyDraft = false;
+    } else if (ticks < 60) {
+      setTimeout(function () { wait(attempt, ticks + 1); }, 500);
+    } else {
+      attach(attempt + 1);
+    }
   }
   fill();
 })();

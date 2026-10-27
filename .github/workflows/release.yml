@@ -51,6 +51,24 @@ jobs:
           echo "name=$name" >> "$GITHUB_OUTPUT"
           echo "code=$((major * 1000000 + minor * 1000 + patch))" >> "$GITHUB_OUTPUT"
 
+      # What's new in this version, for the GitHub release and Google Play:
+      # fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt (at most 500 characters).
+      - name: Find the changelog
+        id: changelog
+        run: |
+          file="fastlane/metadata/android/en-US/changelogs/${{ steps.version.outputs.code }}.txt"
+          if [ -f "$file" ]; then
+            echo "file=$file" >> "$GITHUB_OUTPUT"
+            mkdir -p "$RUNNER_TEMP/whatsnew"
+            for dir in fastlane/metadata/android/*/; do
+              locale="$(basename "$dir")"
+              notes="$dir/changelogs/${{ steps.version.outputs.code }}.txt"
+              if [ -f "$notes" ]; then cp "$notes" "$RUNNER_TEMP/whatsnew/whatsnew-$locale"; fi
+            done
+          else
+            echo "::warning::No changelog in $file: the release only gets GitHub's generated notes, and Play none."
+          fi
+
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
@@ -107,8 +125,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           tag="v${{ steps.version.outputs.name }}"
+          # The changelog comes first, GitHub's list of commits and contributors under it.
+          notes=()
+          if [ -n "${{ steps.changelog.outputs.file }}" ]; then notes=(--notes-file "${{ steps.changelog.outputs.file }}"); fi
           gh release create "$tag" "tolly-${{ steps.version.outputs.name }}.apk" \
-            --target "$GITHUB_SHA" --title "Tolly ${{ steps.version.outputs.name }}" --generate-notes
+            --target "$GITHUB_SHA" --title "Tolly ${{ steps.version.outputs.name }}" --generate-notes "${notes[@]}"
 
       # Kept for uploading by hand (Google Play's first upload has to be done in the Play Console).
       - name: Keep the AAB
@@ -143,6 +164,7 @@ jobs:
           tracks: alpha
           status: completed
           mappingFile: android/app/build/outputs/mapping/release/mapping.txt
+          whatsNewDirectory: ${{ steps.changelog.outputs.file && format('{0}/whatsnew', runner.temp) || '' }}
 
       - name: Remove the signing key
         if: always()

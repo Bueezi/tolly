@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -246,8 +247,10 @@ private fun LookCard(
             )
             .padding(8.dp),
     ) {
+        // Both previews are drawn at the same size, whatever each look's rows take, and the
+        // summary keeps room for three lines, so the two cards are equally tall.
         TollyTheme(preferences.copy(glass = glass)) {
-            LookPreview(Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).clearAndSetSemantics {}.drawnAtWidth(PreviewWidth))
+            LookPreview(Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).clearAndSetSemantics {}.drawnAt(PreviewWidth, PreviewHeight))
         }
         Row(Modifier.padding(start = 8.dp, end = 4.dp, top = 12.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
@@ -257,6 +260,7 @@ private fun LookCard(
             summary,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            minLines = 3,
             modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
         )
     }
@@ -265,7 +269,7 @@ private fun LookCard(
 /** A few of the app's own parts, in whichever look the theme around it has; it doesn't react to touch. */
 @Composable
 private fun LookPreview(modifier: Modifier = Modifier) {
-    Column(modifier.background(Tolly.colors.screen).padding(vertical = 12.dp)) {
+    Column(modifier.background(Tolly.colors.screen).padding(vertical = 12.dp).fillMaxHeight()) {
         Text(
             stringResource(R.string.nav_courses),
             style = MaterialTheme.typography.headlineSmall,
@@ -296,13 +300,14 @@ private fun LookPreview(modifier: Modifier = Modifier) {
     }
 }
 
-/** How wide a [LookPreview] is laid out, like a small phone, before it is shrunk to fit its card. */
+/** How big a [LookPreview] is laid out, like a small phone, before it is shrunk to fit its card. */
 private val PreviewWidth = 300.dp
+private val PreviewHeight = 268.dp
 
-/** Lays this out [width] wide, whatever room it gets, and scales it to fill the width it was given. */
-private fun Modifier.drawnAtWidth(width: Dp): Modifier = layout { measurable, constraints ->
+/** Lays this out [width] by [height], whatever room it gets, and scales it to fill the width it was given. */
+private fun Modifier.drawnAt(width: Dp, height: Dp): Modifier = layout { measurable, constraints ->
     val laidOut = width.roundToPx()
-    val placeable = measurable.measure(Constraints.fixedWidth(laidOut))
+    val placeable = measurable.measure(Constraints.fixed(laidOut, height.roundToPx()))
     val scale = constraints.maxWidth / laidOut.toFloat()
     layout(constraints.maxWidth, (placeable.height * scale).roundToInt()) {
         placeable.placeWithLayer(0, 0) {
@@ -332,7 +337,7 @@ private fun StyleStep(state: SetupUiState, viewModel: SetupViewModel) {
                 onCheckedChange = viewModel::setShakeToSwitchLook,
             )
         },
-        // The glass look has its own (iOS) colours.
+        // The glass look has its own colours.
         if (supportsDynamicColor && !glass) {
             { position ->
                 SwitchRow(

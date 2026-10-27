@@ -25,6 +25,7 @@ class AuthRepository @Inject constructor(
     private val timetable: TimetableRepository,
     private val customizations: CourseCustomizationRepository,
     private val highlights: HighlightRepository,
+    private val watchProgress: WatchProgressRepository,
     private val newsNotifier: NewsNotifier,
     private val mailNotifier: MailNotifier,
     @ApplicationScope private val appScope: CoroutineScope,
@@ -51,12 +52,13 @@ class AuthRepository @Inject constructor(
             downloads.deleteAll()
             preferences.clearAccountData()
         }
-        // Names, colours and marks are kept through signing out and in again, not for someone else.
+        // Names, colours, marks and watched recordings are kept through signing out and in again, not for someone else.
         val lastUser = preferences.lastUserId()
         if (lastUser == DEMO_USER_ID) maintenanceDao.clearCourseCache()
         if (lastUser != null && lastUser != user.id) {
             customizations.clearAll()
             highlights.clearAll()
+            watchProgress.clearAll()
         }
         preferences.setLastUserId(user.id)
         sessionManager.completeSignIn(user)

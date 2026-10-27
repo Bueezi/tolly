@@ -2,8 +2,14 @@ package be.tolly.core.designsystem.theme
 
 import android.os.Build
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -79,11 +85,42 @@ val glassSpec: GlassSpec?
 
 /**
  * Records the app's content as what the floating tab bar refracts. Put it on everything but the
- * tab bar itself (a backdrop can't contain what draws it). Does nothing without the glass look.
+ * tab bar itself (a backdrop can't contain what draws it). Does nothing without the glass look,
+ * nor while something on screen must stay out of the recording ([keepOutOfGlass]).
  */
 fun Modifier.glassBackdropSource(): Modifier = composed {
     val spec = LocalGlassSpec.current ?: return@composed this
+    if ((LocalUnrecordedContent.current?.count ?: 0) > 0) return@composed this
     layerBackdrop(spec.backdrop)
+}
+
+/** How many things on screen keep the tab bar's glass from recording the app ([keepOutOfGlass]). */
+@Stable
+class UnrecordedContent internal constructor() {
+    internal var count by mutableIntStateOf(0)
+}
+
+/** Set by TollyTheme, so the count outlives switching looks and themes. */
+val LocalUnrecordedContent = staticCompositionLocalOf<UnrecordedContent?> { null }
+
+/**
+ * For content that must never be drawn into the glass's offscreen recordings: a WebView. Drawn
+ * there, its GPU drawing crashes the renderer on Vulkan, and drawn in software instead its text
+ * comes out squashed. While this is composed the tab bar's glass doesn't record the app and
+ * refracts the bare screen, as on the Mail tab; the screen's own top bar needs
+ * `TollyScaffold(recordContent = false)`. Returns whether the content may be drawn yet: from the
+ * frame after the recording stopped, so it is never in one.
+ */
+@Composable
+fun keepOutOfGlass(): Boolean {
+    val content = LocalUnrecordedContent.current ?: return true
+    var ready by remember { mutableStateOf(false) }
+    DisposableEffect(content) {
+        content.count++
+        ready = true
+        onDispose { content.count-- }
+    }
+    return ready
 }
 
 /**

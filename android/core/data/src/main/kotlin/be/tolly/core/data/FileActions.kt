@@ -7,6 +7,7 @@ import be.tolly.core.model.Download
 import be.tolly.core.model.DownloadRequest
 import be.tolly.core.model.DownloadStatus
 import be.tolly.core.model.EmbeddedFile
+import be.tolly.core.model.FileViewer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -105,6 +106,11 @@ class FileActions @Inject constructor(
     }
 
     fun viewIntent(download: Download): Intent? = downloads.viewIntent(download)
+
+    /** Where the user wants files to open; null until they picked. */
+    suspend fun fileViewer(): FileViewer? = preferences.preferences.first().fileViewer
+
+    suspend fun setFileViewer(viewer: FileViewer) = preferences.setFileViewer(viewer)
 
     fun shareIntent(download: Download): Intent? = downloads.shareIntent(download)
 

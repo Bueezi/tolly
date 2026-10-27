@@ -115,7 +115,8 @@ internal fun FeedbackSheet(
             FeedbackKind.OTHER -> R.string.feedback_kind_other
         },
     )
-    // The first line of the message names the issue; the mail subject is sorted by kind.
+    // The mail's subject only says what kind of feedback it is: everything the user wrote goes in
+    // its text. A GitHub issue needs a title of its own, which the first line gives.
     val firstLine = message.trim().lineSequence().firstOrNull().orEmpty().take(80)
     TollySheet(onDismissRequest = onDismiss) {
         Column(
@@ -180,7 +181,7 @@ internal fun FeedbackSheet(
                 TollySwitch(checked = attachLogs, onCheckedChange = null)
             }
             Button(
-                onClick = { onSend("Tolly: $kindLabel" + if (firstLine.isNotEmpty()) " – $firstLine" else "", message, attachLogs) },
+                onClick = { onSend("Tolly: $kindLabel", message, attachLogs) },
                 enabled = message.isNotBlank(),
                 modifier = Modifier.fillMaxWidth().height(48.dp),
             ) {

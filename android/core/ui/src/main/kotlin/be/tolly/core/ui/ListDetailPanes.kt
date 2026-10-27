@@ -8,9 +8,11 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.SeekableTransitionState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.rememberTransition
+import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -217,14 +219,17 @@ private fun <T> SidePanes(
     val haptics = LocalHapticFeedback.current
     val direction = if (LocalLayoutDirection.current == LayoutDirection.Ltr) 1f else -1f
     val toggleLabel = stringResource(if (collapsed) R.string.action_show_list else R.string.action_hide_list)
+    // While the divider moves, the panes follow it exactly: their own spring on top of the finger
+    // (or of the divider's snap) made them trail behind and wobble.
+    val bounds: FiniteAnimationSpec<IntRect> = if (divider.moving) PaneFollow else PaneBounds
 
     CompositionLocalProvider(LocalListPaneToggle provides toggle.takeIf { canFold }) {
         ListDetailPaneScaffold(
             directive = navigator.scaffoldDirective,
             scaffoldState = navigator.scaffoldState,
-            listPane = { AnimatedPane(boundsAnimationSpec = PaneBounds) { list(key) } },
-            detailPane = { AnimatedPane(boundsAnimationSpec = PaneBounds) { detail(key) } },
-            extraPane = extra?.let { pane -> { AnimatedPane(boundsAnimationSpec = PaneBounds) { pane(key) } } },
+            listPane = { AnimatedPane(boundsAnimationSpec = bounds) { list(key) } },
+            detailPane = { AnimatedPane(boundsAnimationSpec = bounds) { detail(key) } },
+            extraPane = extra?.let { pane -> { AnimatedPane(boundsAnimationSpec = bounds) { pane(key) } } },
             modifier = modifier.onSizeChanged { divider.measured(with(density) { it.width.toDp() }) },
             paneExpansionState = expansion,
             paneExpansionDragHandle = {
@@ -388,6 +393,8 @@ private fun timeAt(progress: Float): Float {
  * How panes move to new bounds. The library's default spring overshoots, so a pane folding shut
  * briefly got a negative width, and measuring that crashes ("width and height must be >= 0").
  */
+private val PaneFollow = snap<IntRect>()
+
 private val PaneBounds = spring(
     dampingRatio = Spring.DampingRatioNoBouncy,
     stiffness = Spring.StiffnessMediumLow,

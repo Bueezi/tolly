@@ -1,5 +1,6 @@
 package be.tolly.core.network
 
+import be.tolly.core.auth.DemoMode
 import be.tolly.core.auth.SessionCookieJar
 import be.tolly.core.auth.SessionExpiredException
 import be.tolly.core.auth.SessionManager
@@ -22,7 +23,8 @@ class ReauthInterceptor @Inject constructor(
         val request = chain.request()
         if (request.url.host != UltraEndpoints.HOST) return chain.proceed(request)
         if (!cookieJar.hasCookies) {
-            sessionManager.get().markExpired()
+            // The demo has no session to lose (a note's images ask Toledo all the same).
+            if (!DemoMode.active) sessionManager.get().markExpired()
             throw SessionExpiredException()
         }
 

@@ -19,6 +19,7 @@ import kotlinx.serialization.json.jsonObject
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -59,6 +60,19 @@ class VideoRepository @Inject constructor(
      * this week's lesson leads.
      */
     suspend fun contentVideos(courseId: String): Result<ContentVideos> = dataCall(inDemo = { ContentVideos(emptyList(), emptyList()) }) {
+        findContentVideos(courseId).also { contentCache[courseId] = it }
+    }
+
+    /** What [contentVideos] found for the course last, while the app has been running. */
+    fun cachedContentVideos(courseId: String): ContentVideos? = contentCache[courseId]
+
+    /** What [galleryRecordings] found for the course last, while the app has been running. */
+    fun cachedGalleryRecordings(courseId: String): List<GalleryEntry>? = galleryCache[courseId]
+
+    private val contentCache = ConcurrentHashMap<String, ContentVideos>()
+    private val galleryCache = ConcurrentHashMap<String, List<GalleryEntry>>()
+
+    private suspend fun findContentVideos(courseId: String): ContentVideos {
         val live = LinkedHashMap<String, LiveLink>()
         val found = LinkedHashMap<String, Found>()
         val nodes = walk(courseId, parentId = null, path = emptyList(), Semaphore(WALK_CONCURRENCY))
@@ -69,7 +83,7 @@ class VideoRepository @Inject constructor(
             pins(text).forEach { pin -> live.getOrPut(pin) { LiveLink(pin, title) } }
             kalturaEntries(text).forEach { id -> found.getOrPut(id) { Found(id, title, path.firstOrNull(), node.modified ?: 0L) } }
         }
-        ContentVideos(live.values.toList(), arrange(found.values.toList()))
+        return ContentVideos(live.values.toList(), arrange(found.values.toList()))
     }
 
     /** A recording as the walk found it, before [arrange] names and orders it. */
@@ -111,12 +125,12 @@ class VideoRepository @Inject constructor(
 
     /** The lesson recordings in the course's Kaltura gallery, newest first. */
     suspend fun galleryRecordings(courseId: String): Result<List<GalleryEntry>> = dataCall(inDemo = { emptyList() }) {
-        gallery.entries(courseId) ?: throw DataException(DataError.NOT_AVAILABLE)
+        (gallery.entries(courseId) ?: throw DataException(DataError.NOT_AVAILABLE)).also { galleryCache[courseId] = it }
     }
 
     internal companion object {
         const val MAX_DEPTH = 6
-        const val WALK_CONCURRENCY = 6
+        const val WALK_CONCURRENCY = 8
         const val LIVE_API = "https://icts-p-toledo-streaming-video-live-backend.cloud.icts.kuleuven.be/api/viewers/"
 
         private val pinLink = Regex("""livestream\.kuleuven\.be/?[^\s"'<>]*?[?&](?:amp;)?pin=(\d{4,10})""", RegexOption.IGNORE_CASE)

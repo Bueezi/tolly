@@ -115,7 +115,7 @@ fun OfflineContent(state: OfflineUiState, actions: OfflineActions) {
     TollyScaffold(
         topBar = {
             TollyTopBar(
-                large = false,
+                detail = true,
                 title = { Text(stringResource(R.string.offline_title)) },
                 subtitle = {
                     Text(

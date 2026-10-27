@@ -5,6 +5,8 @@ import be.tolly.core.auth.KuLoket
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -30,6 +32,12 @@ class TimetableRepository @Inject constructor(
 
     /** When looking the feed up last failed; looking again right away would fail the same way. */
     @Volatile private var lookupFailedAt = 0L
+
+    /**
+     * One lookup at a time: right after signing in the prefetch and the agenda's first refresh both
+     * want the feed, and the agenda should wait for the prefetch's answer rather than look again.
+     */
+    private val lookup = Mutex()
 
     /** The student number is looked up (with the feed) at most once per run when it's missing. */
     @Volatile private var askedStudentNumber = false
@@ -64,22 +72,27 @@ class TimetableRepository @Inject constructor(
     suspend fun prefetchFeed() {
         if (preferences.timetableFeed() == null || preferences.studentNumber() == null) {
             lookupFailedAt = 0
-            findFeed()
+            findFeed(reuse = false)
         }
     }
 
-    private suspend fun findFeed(): String? {
-        if (System.currentTimeMillis() - lookupFailedAt < RETRY_LOOKUP_MS) return null
+    /**
+     * Asks KU Loket for the feed (and the student number). With [reuse], a feed found while this
+     * waited for another lookup is taken instead. A failed lookup isn't repeated for a while.
+     */
+    private suspend fun findFeed(reuse: Boolean = true): String? = lookup.withLock {
+        if (reuse) preferences.timetableFeed()?.let { return@withLock it }
+        if (System.currentTimeMillis() - lookupFailedAt < RETRY_LOOKUP_MS) return@withLock null
         val student = kuLoket.student()
         student?.studentNumber?.let { preferences.setStudentNumber(it) }
         val url = student?.feedUrl
         if (url == null) {
             lookupFailedAt = System.currentTimeMillis()
-            return null
+            return@withLock null
         }
         lookupFailedAt = 0
         preferences.setTimetableFeed(url)
-        return url
+        url
     }
 
     private sealed interface Feed {
@@ -119,6 +132,6 @@ class TimetableRepository @Inject constructor(
 
     private companion object {
         const val TAG = "TollyTimetable"
-        const val RETRY_LOOKUP_MS = 30 * 60 * 1000L
+        const val RETRY_LOOKUP_MS = 10 * 60 * 1000L
     }
 }

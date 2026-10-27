@@ -21,6 +21,7 @@ import be.tolly.core.model.CourseNaming
 import be.tolly.core.model.Highlight
 import be.tolly.core.model.UserPreferences
 import be.tolly.core.ui.Refresher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -48,7 +49,7 @@ data class CourseListUiState(
 
 @HiltViewModel
 class CourseListViewModel @Inject constructor(
-    courseRepository: CourseRepository,
+    private val courseRepository: CourseRepository,
     private val preferencesRepository: PreferencesRepository,
     private val sync: SyncRepository,
     private val customization: CourseCustomizationRepository,
@@ -83,7 +84,19 @@ class CourseListViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CourseListUiState())
 
     init {
-        refresher.refresh { sync.refreshIfStale() }
+        refresher.refresh {
+            var result = sync.refreshIfStale()
+            // Until a first refresh worked there is nothing to show. Right after signing in a slow
+            // phone's first try can fail (KU Loket signs in at the same time), so it tries again
+            // by itself rather than leave the user an empty list to pull.
+            var tries = 1
+            while (result.isFailure && courseRepository.lastSynced() == null && tries < FIRST_SYNC_TRIES) {
+                delay(FIRST_SYNC_RETRY_MS * tries)
+                result = sync.refreshAll()
+                tries++
+            }
+            result
+        }
     }
 
     fun refresh() = refresher.refresh { sync.refreshAll() }
@@ -115,6 +128,9 @@ class CourseListViewModel @Inject constructor(
             code?.contains(q, ignoreCase = true) == true
 
     private companion object {
+        const val FIRST_SYNC_TRIES = 3
+        const val FIRST_SYNC_RETRY_MS = 3_000L
+
         /** The user's own order first, then everything they didn't place, by name. */
         val userOrder: Comparator<Course> =
             compareBy<Course, Int?>(nullsLast()) { it.position }.thenBy { it.displayName.lowercase() }

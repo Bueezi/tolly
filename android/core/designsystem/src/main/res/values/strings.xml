@@ -337,6 +337,11 @@
     <string name="video_live_loading">Searching for livestream links in the course…</string>
     <string name="video_recordings_none">No recordings yet.</string>
     <string name="video_recordings_loading">Loading the recordings…</string>
+    <string name="video_recordings_searching">Looking through the course for more…</string>
+    <string name="video_watched">Watched</string>
+    <string name="video_minutes_left">%1$d min left</string>
+    <string name="video_progress_clear">Clear watch progress</string>
+    <string name="video_progress_cleared">Watch progress cleared</string>
     <string name="video_offline">You\'re offline.</string>
     <string name="video_unavailable">Couldn\'t load this. Pull down to try again.</string>
     <string name="video_live_pin">PIN %1$s</string>
@@ -434,7 +439,7 @@
     <string name="setup_step">Step %1$d of %2$d</string>
     <string name="setup_look_title">Choose your look</string>
     <string name="setup_look_body">You can change all of this later in Settings.</string>
-    <string name="setup_look_material">Material You</string>
+    <string name="setup_look_material">Material</string>
     <string name="setup_look_material_summary">Android\'s own look, in your wallpaper\'s colors</string>
     <string name="setup_look_pick_body">Tap one to try it. You can switch later in Settings.</string>
     <string name="setup_look_glass_short">With a floating glass tab bar</string>
@@ -442,6 +447,20 @@
     <string name="setup_notifications_title">Notifications</string>
     <string name="setup_notifications_body">Tolly can notify you about new announcements in your courses and new KU Leuven mail.</string>
     <string name="setup_finish">Continue to sign in</string>
+
+    <!-- Where files open -->
+    <string name="viewer_choice_title">Where should files open?</string>
+    <string name="viewer_choice_body">PDFs, pictures and text files can open right here in Tolly. You can change this later in Settings.</string>
+    <string name="viewer_in_app">In Tolly</string>
+    <string name="viewer_in_app_summary">Quick, without leaving the app</string>
+    <string name="viewer_external">In another app</string>
+    <string name="viewer_external_summary">Your PDF reader, gallery or editor</string>
+    <string name="settings_file_viewer">Open files</string>
+    <string name="settings_file_viewer_summary">PDFs, pictures and text. Other files always open in another app.</string>
+    <string name="settings_file_viewer_external">Other app</string>
+    <string name="viewer_open_externally">Open in another app</string>
+    <string name="viewer_failed">This file can\'t be shown here.</string>
+    <string name="viewer_page">Page %1$d of %2$d</string>
 
     <!-- Long press on a file -->
     <string name="action_open_with">Open with…</string>
@@ -530,5 +549,7 @@
     <!-- One-time notices (app's NoticeSheet), by number. -->
     <string name="notice_1_title">New in Tolly</string>
     <string name="notice_1_body">• Notifications for new KU Leuven mail: turn them on in Settings, under Notifications.\n• Videos keep playing in a small window when you leave the app, and livestreams keep playing with the screen off.\n• Hide the unread counts on the News and Mail tabs, in Settings.\n• Downloading a course for offline use and finding its videos are much faster.</string>
+    <string name="notice_2_title">New in Tolly 0.17</string>
+    <string name="notice_2_body">• Videos continue where you left off, and recordings show how much you watched.\n• Open PDFs, pictures and text files in Tolly or in another app.\n• Attach files to mail, screenshots in feedback too.\n• Titles stay in the top bar, so lists get more room.\n• Smoother panes on tablets; long press a file in a note for its options.\n• Closing a video\'s small window brings you back to Tolly.\n• Notes read properly in Liquid Glass, and the first sign-in loads everything by itself.</string>
     <string name="notice_dismiss">Got it</string>
 </resources>

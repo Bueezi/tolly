@@ -64,9 +64,11 @@ fun AnnouncementPane(
 
     TollyScaffold(
         snackbarHostState = snackbarHostState,
+        // The page is a WebView, which stays out of the glass's recordings (see HtmlContent).
+        recordContent = false,
         topBar = {
             TollyTopBar(
-                large = false,
+                detail = true,
                 title = { Text(announcement?.courseName.orEmpty(), maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 navigationIcon = { PaneNavigationIcon(navigation, onNavigate) },
                 actions = {

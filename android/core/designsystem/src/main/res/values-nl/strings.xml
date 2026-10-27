@@ -335,6 +335,11 @@
     <string name="video_live_loading">Links naar livestreams zoeken in het vak…</string>
     <string name="video_recordings_none">Nog geen opnames.</string>
     <string name="video_recordings_loading">Opnames laden…</string>
+    <string name="video_recordings_searching">Het vak wordt doorzocht naar meer…</string>
+    <string name="video_watched">Bekeken</string>
+    <string name="video_minutes_left">Nog %1$d min</string>
+    <string name="video_progress_clear">Kijkvoortgang wissen</string>
+    <string name="video_progress_cleared">Kijkvoortgang gewist</string>
     <string name="video_offline">Je bent offline.</string>
     <string name="video_unavailable">Kon dit niet laden. Trek omlaag om opnieuw te proberen.</string>
     <string name="video_live_pin">Pincode %1$s</string>
@@ -432,7 +437,7 @@
     <string name="setup_step">Stap %1$d van %2$d</string>
     <string name="setup_look_title">Kies je stijl</string>
     <string name="setup_look_body">Je kunt dit later allemaal aanpassen in de instellingen.</string>
-    <string name="setup_look_material">Material You</string>
+    <string name="setup_look_material">Material</string>
     <string name="setup_look_material_summary">De eigen stijl van Android, in de kleuren van je achtergrond</string>
     <string name="setup_look_pick_body">Tik op een stijl om hem te proberen. Je kunt later wisselen in de instellingen.</string>
     <string name="setup_look_glass_short">Met een zwevende glazen tabbalk</string>
@@ -440,6 +445,20 @@
     <string name="setup_notifications_title">Meldingen</string>
     <string name="setup_notifications_body">Tolly kan je een melding sturen bij nieuwe aankondigingen in je vakken en bij nieuwe mail van KU Leuven.</string>
     <string name="setup_finish">Doorgaan naar aanmelden</string>
+
+    <!-- Waar bestanden openen -->
+    <string name="viewer_choice_title">Waar wil je bestanden openen?</string>
+    <string name="viewer_choice_body">Pdf\'s, afbeeldingen en tekstbestanden kunnen meteen hier in Tolly openen. Je kunt dit later wijzigen in de instellingen.</string>
+    <string name="viewer_in_app">In Tolly</string>
+    <string name="viewer_in_app_summary">Snel, zonder de app te verlaten</string>
+    <string name="viewer_external">In een andere app</string>
+    <string name="viewer_external_summary">Je pdf-lezer, galerij of editor</string>
+    <string name="settings_file_viewer">Bestanden openen</string>
+    <string name="settings_file_viewer_summary">Pdf\'s, afbeeldingen en tekst. Andere bestanden openen altijd in een andere app.</string>
+    <string name="settings_file_viewer_external">Andere app</string>
+    <string name="viewer_open_externally">Openen in een andere app</string>
+    <string name="viewer_failed">Dit bestand kan hier niet getoond worden.</string>
+    <string name="viewer_page">Pagina %1$d van %2$d</string>
 
     <!-- Long press on a file -->
     <string name="action_open_with">Openen met…</string>
@@ -525,5 +544,7 @@
     <!-- One-time notices (app's NoticeSheet), by number. -->
     <string name="notice_1_title">Nieuw in Tolly</string>
     <string name="notice_1_body">• Meldingen voor nieuwe KU Leuven-mail: zet ze aan in Instellingen, onder Meldingen.\n• Video\'s spelen verder in een klein venster wanneer je de app verlaat, en livestreams spelen door met het scherm uit.\n• Verberg het aantal ongelezen items op de tabbladen Nieuws en Mail via Instellingen.\n• Een vak downloaden voor offline gebruik en de video\'s ervan zoeken gaat veel sneller.</string>
+    <string name="notice_2_title">Nieuw in Tolly 0.17</string>
+    <string name="notice_2_body">• Video\'s gaan verder waar je stopte, en opnames tonen hoeveel je zag.\n• Open pdf\'s, afbeeldingen en tekstbestanden in Tolly of een andere app.\n• Voeg bestanden toe aan mails, ook schermafbeeldingen bij feedback.\n• Titels staan in de bovenbalk: meer ruimte voor lijsten.\n• Vlottere panelen op tablets; houd een bestand in een notitie ingedrukt.\n• Sluit je het kleine videovenster, dan kom je terug in Tolly.\n• Notities zijn goed leesbaar in Liquid Glass, en na het aanmelden laadt alles vanzelf.</string>
     <string name="notice_dismiss">Begrepen</string>
 </resources>

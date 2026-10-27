@@ -1,5 +1,6 @@
 package be.tolly.video
 
+import android.app.ActivityManager
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
 import android.content.Intent
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -26,16 +28,25 @@ import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import dagger.hilt.android.AndroidEntryPoint
+import be.tolly.MainActivity
 import be.tolly.TollyActivity
+import be.tolly.core.data.WatchProgressRepository
 import be.tolly.core.designsystem.theme.TollyTheme
 import be.tolly.core.model.UserPreferences
+import be.tolly.core.ui.EXTRA_VIDEO_KEY
 import be.tolly.core.ui.EXTRA_VIDEO_LIVE
 import be.tolly.core.ui.EXTRA_VIDEO_TITLE
 import be.tolly.core.ui.EXTRA_VIDEO_WEB_URL
 import be.tolly.core.ui.openInBrowser
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-/** What the player shows: the stream, its name and where it is on the web. */
-private data class Video(val url: String, val title: String, val webUrl: String?, val live: Boolean)
+/**
+ * What the player shows: the stream, its name and where it is on the web; [key] names a recording
+ * whose progress is kept.
+ */
+private data class Video(val url: String, val title: String, val webUrl: String?, val live: Boolean, val key: String?)
 
 /**
  * Plays a lesson recording or a livestream (HLS) in the app, with Tolly's own controls in the
@@ -46,9 +57,14 @@ private data class Video(val url: String, val title: String, val webUrl: String?
  * the screen off or the app in the background ([PlaybackService]), for following a livestream on
  * the way to class. The player runs in a task of its own (see the manifest), so picture-in-picture
  * takes only the video along, and opening another video replaces this one.
+ *
+ * A recording continues where the user left it ([WatchProgressRepository]); the position is kept
+ * every few seconds while it plays, when it pauses and when the player closes.
  */
 @AndroidEntryPoint
 class PlayerActivity : TollyActivity() {
+    @Inject lateinit var watchProgress: WatchProgressRepository
+
     private var player: ExoPlayer? = null
     private var session: MediaSession? = null
     private var video by mutableStateOf<Video?>(null)
@@ -78,9 +94,23 @@ class PlayerActivity : TollyActivity() {
         play(first, position = savedInstanceState?.getLong(POSITION) ?: 0L)
         exo.setPlaybackSpeed(savedInstanceState?.getFloat(SPEED) ?: 1f)
         exo.addListener(object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) = updatePictureInPicture()
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                updatePictureInPicture()
+                if (!isPlaying) saveProgress()
+            }
+
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_ENDED) saveProgress()
+            }
+
             override fun onVideoSizeChanged(videoSize: VideoSize) = updatePictureInPicture()
         })
+        lifecycleScope.launch {
+            while (true) {
+                delay(SAVE_EVERY_MS)
+                if (player?.isPlaying == true) saveProgress()
+            }
+        }
         // The notification brings this screen back.
         val reopen = Intent(this, PlayerActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
         session = MediaSession.Builder(this, exo)
@@ -114,6 +144,7 @@ class PlayerActivity : TollyActivity() {
         val next = videoOf(intent) ?: return
         // A recreation (or process death) restores this video, not the first one.
         setIntent(intent)
+        saveProgress()
         play(next, position = 0L)
     }
 
@@ -124,10 +155,32 @@ class PlayerActivity : TollyActivity() {
             .setUri(next.url)
             .setMediaMetadata(MediaMetadata.Builder().setTitle(next.title).build())
             .build()
-        // A livestream joins at the live edge; a recording continues where it was (after a rotation).
-        if (next.live) exo.setMediaItem(item) else exo.setMediaItem(item, position)
-        exo.prepare()
-        exo.playWhenReady = true
+        if (next.live) {
+            // A livestream joins at the live edge.
+            exo.setMediaItem(item)
+            exo.prepare()
+            exo.playWhenReady = true
+            return
+        }
+        // A recording continues where it was: after the process was gone, from the saved state,
+        // else where the user left it last time (unless they watched it to the end).
+        lifecycleScope.launch {
+            val from = if (position > 0 || next.key == null) position else watchProgress.get(next.key)?.takeUnless { it.finished }?.position ?: 0L
+            if (video != next) return@launch
+            exo.setMediaItem(item, from)
+            exo.prepare()
+            exo.playWhenReady = true
+        }
+    }
+
+    /** Keeps how far the recording got, for opening it again and the Video tab's progress bars. */
+    private fun saveProgress() {
+        val exo = player ?: return
+        val shown = video ?: return
+        val key = shown.key ?: return
+        if (shown.live || exo.currentMediaItem?.localConfiguration?.uri?.toString() != shown.url) return
+        val duration = exo.duration.takeIf { it != C.TIME_UNSET && it > 0 } ?: return
+        watchProgress.save(key, if (exo.playbackState == Player.STATE_ENDED) duration else exo.currentPosition, duration)
     }
 
     private fun videoOf(intent: Intent?): Video? {
@@ -137,6 +190,7 @@ class PlayerActivity : TollyActivity() {
             title = intent.getStringExtra(EXTRA_VIDEO_TITLE).orEmpty(),
             webUrl = intent.getStringExtra(EXTRA_VIDEO_WEB_URL),
             live = intent.getBooleanExtra(EXTRA_VIDEO_LIVE, false),
+            key = intent.getStringExtra(EXTRA_VIDEO_KEY),
         )
     }
 
@@ -174,7 +228,7 @@ class PlayerActivity : TollyActivity() {
         // picture-in-picture, in either order; the sound would otherwise go on with nothing to show.
         // Expanding it back resumes the activity instead.
         if (!isInPictureInPictureMode) {
-            if (lifecycle.currentState == Lifecycle.State.CREATED) finish() else leftPictureInPicture = true
+            if (lifecycle.currentState == Lifecycle.State.CREATED) closedFromPictureInPicture() else leftPictureInPicture = true
         }
     }
 
@@ -186,7 +240,23 @@ class PlayerActivity : TollyActivity() {
     // No pause in onStop: the sound goes on in the background, until the video is closed.
     override fun onStop() {
         super.onStop()
-        if (leftPictureInPicture) finish()
+        saveProgress()
+        if (leftPictureInPicture) closedFromPictureInPicture()
+    }
+
+    /**
+     * The picture-in-picture window was closed: the video is done, and Tolly comes back where it
+     * was (the course's video tab, say), as when the player closes with its own X, rather than
+     * leaving the user on the home screen.
+     */
+    private fun closedFromPictureInPicture() {
+        leftPictureInPicture = false
+        runCatching {
+            val tasks = getSystemService(ActivityManager::class.java).appTasks
+            val main = tasks.firstOrNull { it.taskInfo?.baseIntent?.component?.className == MainActivity::class.java.name }
+            main?.moveToFront()
+        }
+        finish()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -214,6 +284,7 @@ class PlayerActivity : TollyActivity() {
     }
 
     override fun onDestroy() {
+        saveProgress()
         session?.let {
             PlaybackService.stop(this, it)
             it.release()
@@ -227,5 +298,6 @@ class PlayerActivity : TollyActivity() {
     private companion object {
         const val POSITION = "position"
         const val SPEED = "speed"
+        const val SAVE_EVERY_MS = 5_000L
     }
 }

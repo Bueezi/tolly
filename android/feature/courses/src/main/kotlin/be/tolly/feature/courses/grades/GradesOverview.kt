@@ -134,7 +134,7 @@ fun GradesOverviewPane(navigation: PaneNavigation, onNavigate: () -> Unit) {
     TollyScaffold(
         topBar = {
             TollyTopBar(
-                large = false,
+                detail = true,
                 title = { Text(stringResource(R.string.course_tab_grades)) },
                 navigationIcon = { PaneNavigationIcon(navigation, onNavigate) },
                 actions = {
