@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -62,6 +63,12 @@ internal suspend fun <T> runHiddenWebView(
                 // Never hand off to other apps (e.g. the authenticator) from the background.
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean =
                     request.url.scheme?.startsWith("http") != true
+
+                // The renderer died (Android took its memory): no answer, rather than the app going down with it.
+                override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                    finish(null)
+                    return true
+                }
             }
             cont.invokeOnCancellation { handler.post { finish(null) } }
             webView.loadUrl(url)

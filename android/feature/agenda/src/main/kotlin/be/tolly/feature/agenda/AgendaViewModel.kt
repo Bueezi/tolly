@@ -83,6 +83,7 @@ class AgendaViewModel @Inject constructor(
     /** The Mondays of the weeks fetched since the app started; the list's weeks count too. */
     private val loadedWeeks = mutableSetOf<LocalDate>()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val listItems = today.flatMapLatest { day ->
         repository.observe(day.startMillis(), day.plusWeeks(WEEKS).startMillis())
     }
@@ -133,11 +134,16 @@ class AgendaViewModel @Inject constructor(
         if (mode.value == AgendaMode.LIST) refreshList() else refreshWeek(selectedDate.value.weekStart())
     }
 
+    /**
+     * Fetches whole weeks around the list's [WEEKS] weeks: the Week view counts these weeks as
+     * loaded, so the days of this week before today and those after the list's end must be in.
+     */
     private fun refreshList() {
-        val day = today.value
+        val monday = today.value.weekStart()
+        val weeks = WEEKS + 1
         refresher.refresh {
-            repository.refresh(day.startMillis(), day.plusWeeks(WEEKS).startMillis()).also { result ->
-                if (result.isSuccess) repeat(WEEKS.toInt() + 1) { loadedWeeks.add(day.weekStart().plusWeeks(it.toLong())) }
+            repository.refresh(monday.startMillis(), monday.plusWeeks(weeks).startMillis()).also { result ->
+                if (result.isSuccess) repeat(weeks.toInt()) { loadedWeeks.add(monday.plusWeeks(it.toLong())) }
             }
         }
     }

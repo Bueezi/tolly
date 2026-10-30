@@ -7,6 +7,7 @@ import android.net.Uri
 import android.util.Log
 import android.view.ViewGroup
 import android.webkit.ConsoleMessage
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -35,6 +36,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -152,61 +155,72 @@ private fun LoginWebView(
     onUrl: (String) -> Unit,
     onUltraReached: () -> Unit,
 ) {
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = { context ->
-            val debuggable = context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
-            if (debuggable) WebView.setWebContentsDebuggingEnabled(true)
-            WebView(context).apply {
-                configureForLogin()
-                if (debuggable) Log.d(TAG, "user agent ${settings.userAgentString}")
-                webChromeClient = object : WebChromeClient() {
-                    override fun onProgressChanged(view: WebView, newProgress: Int) = onProgress(newProgress / 100f)
+    // A renderer the view loses (Android took its memory, or it crashed) gets a new view, which
+    // starts the sign-in again.
+    var renderer by remember { mutableIntStateOf(0) }
+    key(renderer) {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                val debuggable = context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+                if (debuggable) WebView.setWebContentsDebuggingEnabled(true)
+                WebView(context).apply {
+                    configureForLogin()
+                    if (debuggable) Log.d(TAG, "user agent ${settings.userAgentString}")
+                    webChromeClient = object : WebChromeClient() {
+                        override fun onProgressChanged(view: WebView, newProgress: Int) = onProgress(newProgress / 100f)
 
-                    override fun onConsoleMessage(message: ConsoleMessage): Boolean {
-                        if (debuggable) Log.d(TAG, "console ${message.messageLevel()}: ${message.message()}")
-                        return super.onConsoleMessage(message)
-                    }
-                }
-                webViewClient = object : WebViewClient() {
-                    override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
-                        if (debuggable) Log.d(TAG, "page started ${url?.substringBefore('?')}")
-                        url?.let(onUrl)
-                        if (UltraEndpoints.isLoginComplete(url)) {
-                            view.stopLoading()
-                            onUltraReached()
+                        override fun onConsoleMessage(message: ConsoleMessage): Boolean {
+                            if (debuggable) Log.d(TAG, "console ${message.messageLevel()}: ${message.message()}")
+                            return super.onConsoleMessage(message)
                         }
                     }
+                    webViewClient = object : WebViewClient() {
+                        override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
+                            if (debuggable) Log.d(TAG, "page started ${url?.substringBefore('?')}")
+                            url?.let(onUrl)
+                            if (UltraEndpoints.isLoginComplete(url)) {
+                                view.stopLoading()
+                                onUltraReached()
+                            }
+                        }
 
-                    override fun onPageFinished(view: WebView, url: String?) {
-                        if (debuggable) Log.d(TAG, "page finished ${url?.substringBefore('?')}")
-                        if (UltraEndpoints.isLoginComplete(url)) onUltraReached()
-                        if (UltraEndpoints.isIdentityProvider(url)) view.evaluateJavascript(CHECK_REMEMBER_DEVICE, null)
-                    }
+                        override fun onPageFinished(view: WebView, url: String?) {
+                            if (debuggable) Log.d(TAG, "page finished ${url?.substringBefore('?')}")
+                            if (UltraEndpoints.isLoginComplete(url)) onUltraReached()
+                            if (UltraEndpoints.isIdentityProvider(url)) view.evaluateJavascript(CHECK_REMEMBER_DEVICE, null)
+                        }
 
-                    override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
-                        if (debuggable) Log.w(TAG, "load error ${error.errorCode} ${error.description} for ${request.url.toString().substringBefore('?')}")
-                    }
+                        override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+                            if (debuggable) Log.w(TAG, "load error ${error.errorCode} ${error.description} for ${request.url.toString().substringBefore('?')}")
+                        }
 
-                    override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
-                        if (debuggable) Log.w(TAG, "http ${response.statusCode} for ${request.url.toString().substringBefore('?')}")
-                    }
+                        override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
+                            if (debuggable) Log.w(TAG, "http ${response.statusCode} for ${request.url.toString().substringBefore('?')}")
+                        }
 
-                    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                        val uri = request.url
-                        if (debuggable) Log.d(TAG, "navigate ${uri.scheme}://${uri.host}${uri.path}")
-                        return view.context.handleWebViewLink(uri)
+                        override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                            val uri = request.url
+                            if (debuggable) Log.d(TAG, "navigate ${uri.scheme}://${uri.host}${uri.path}")
+                            return view.context.handleWebViewLink(uri)
+                        }
+
+                        // Not handling this takes the whole app down with the renderer.
+                        override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                            renderer++
+                            return true
+                        }
                     }
+                    layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    onCreated(this)
+                    // Load only once the view has its real size: recent WebView versions fix CSS `vh`
+                    // to the size at load time, and the IdP's full-height layout would collapse to 0px.
+                    doOnLayout { loadUrl(UltraEndpoints.LOGIN_URL) }
                 }
-                layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                onCreated(this)
-                // Load only once the view has its real size: recent WebView versions fix CSS `vh`
-                // to the size at load time, and the IdP's full-height layout would collapse to 0px.
-                doOnLayout { loadUrl(UltraEndpoints.LOGIN_URL) }
-            }
-        },
-        onRelease = { it.destroy() },
-    )
+            },
+            onRelease = { it.destroy() },
+        )
+    }
 }
 
 private const val TAG = "TollyLogin"

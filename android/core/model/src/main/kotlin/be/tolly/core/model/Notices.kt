@@ -12,7 +12,7 @@ package be.tolly.core.model
  */
 object Notices {
     /** The newest notice; 0 would mean there is none. */
-    const val LATEST = 2
+    const val LATEST = 3
 
     sealed interface Decision {
         data class Show(val id: Int) : Decision

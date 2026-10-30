@@ -63,9 +63,7 @@ class AnnouncementRepository @Inject constructor(
 
     /** Marks an announcement as read inside the app only; nothing is sent to Toledo. */
     suspend fun markReadLocally(announcement: Announcement) {
-        if (announcement.isRead) return
-        announcementDao.setReadLocally(listOf(announcement.id), true)
-        courseDao.setUnreadAnnouncements(announcement.courseId, announcementDao.unreadCount(announcement.courseId))
+        if (!announcement.isRead) setRead(announcement, read = true)
     }
 
     /**
@@ -74,7 +72,7 @@ class AnnouncementRepository @Inject constructor(
      */
     suspend fun markAllReadLocally(courseIds: Collection<String>): List<String> {
         val ids = courseIds.chunked(MAX_SQL_ARGS).flatMap { announcementDao.unreadIds(it) }
-        setReadLocally(ids, read = true)
+        updateReadState(ids) { announcementDao.setReadLocally(it, true) }
         return ids
     }
 
@@ -87,8 +85,6 @@ class AnnouncementRepository @Inject constructor(
 
     suspend fun toggleHighlight(announcement: Announcement, highlight: Highlight) =
         highlightRepository.toggle(HighlightTarget.ANNOUNCEMENT, announcement.id, highlight)
-
-    private suspend fun setReadLocally(ids: List<String>, read: Boolean) = updateReadState(ids) { announcementDao.setReadLocally(it, read) }
 
     private suspend fun updateReadState(ids: List<String>, update: suspend (List<String>) -> Unit) {
         if (ids.isEmpty()) return

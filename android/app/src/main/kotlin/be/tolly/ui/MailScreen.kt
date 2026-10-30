@@ -9,6 +9,7 @@ import android.net.Uri
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -31,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -125,14 +127,17 @@ internal fun MailScreen(mail: MailWebView, unread: Int?, email: String?) {
         },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).padding(bottom = LocalBottomBarInset.current)) {
-            AndroidView(
-                factory = {
-                    // The same view each time the tab is shown: it has to leave the previous one first.
-                    (webView.parent as? ViewGroup)?.removeView(webView)
-                    webView
-                },
-                modifier = Modifier.fillMaxSize(),
-            )
+            // A new view (after the old one lost its renderer) takes the old one's place.
+            key(webView) {
+                AndroidView(
+                    factory = {
+                        // The same view each time the tab is shown: it has to leave the previous one first.
+                        (webView.parent as? ViewGroup)?.removeView(webView)
+                        webView
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
             // Outlook's sign-in hops through a few pages before it draws anything: until then the
             // view is blank white.
             if (!mail.shown) LoadingState(Modifier.fillMaxSize().background(Tolly.colors.screen))
@@ -142,7 +147,8 @@ internal fun MailScreen(mail: MailWebView, unread: Int?, email: String?) {
 
 /** The Mail tab's WebView, made once and kept for as long as the app's screen is. */
 internal class MailWebView {
-    private var view: WebView? = null
+    /** State, so the Mail tab makes a new view once [drop] let go of this one. */
+    private var view by mutableStateOf<WebView?>(null)
     var canGoBack by mutableStateOf(false)
         private set
 
@@ -201,6 +207,14 @@ internal class MailWebView {
             // The Authenticator, mailto: and other apps' links leave the WebView.
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean =
                 view.context.handleWebViewLink(request.url)
+
+            // The renderer is gone (Android took its memory while Outlook sat in the background, or it
+            // crashed): this view is dead, and not letting go of it would take the app down. The tab
+            // makes a new one, which loads Outlook again.
+            override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                drop(view)
+                return true
+            }
         }
         webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, newProgress: Int) {
@@ -273,6 +287,15 @@ internal class MailWebView {
     fun destroy() {
         view?.destroy()
         view = null
+    }
+
+    private fun drop(dead: WebView) {
+        (dead.parent as? ViewGroup)?.removeView(dead)
+        dead.destroy()
+        if (view === dead) view = null
+        canGoBack = false
+        loading = true
+        shown = false
     }
 }
 

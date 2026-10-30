@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.URLUtil
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -37,6 +38,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -138,6 +141,8 @@ private fun BrowserScreen(
     var currentUrl by remember { mutableStateOf(startUrl) }
     var progress by remember { mutableFloatStateOf(0f) }
     var canGoBack by remember { mutableStateOf(false) }
+    // Each renderer the view loses to Android taking its memory gets a new view on the same page.
+    var renderer by remember { mutableIntStateOf(0) }
     val host = remember(currentUrl) { Uri.parse(currentUrl).host.orEmpty() }
 
     BackHandler(enabled = canGoBack) { webView?.goBack() }
@@ -177,63 +182,72 @@ private fun BrowserScreen(
             }
         },
     ) { padding ->
-        AndroidView(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .consumeWindowInsets(padding)
-                .imePadding(),
-            factory = { context ->
-                WebView(context).apply {
-                    // Without these Compose gives the view WRAP_CONTENT, and WebView then lays the page
-                    // out in a viewport 0px high: Ultra's panels (height: 100%, 100dvh) collapse to grey.
-                    layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                    with(settings) {
-                        javaScriptEnabled = true // Ultra is a JavaScript app
-                        domStorageEnabled = true
-                        allowFileAccess = false
-                        allowContentAccess = false
-                        setSupportMultipleWindows(false) // target=_blank opens here
-                        builtInZoomControls = true
-                        displayZoomControls = false
-                        // Same as the sign-in: on tablets the IdP would otherwise offer a QR code if it asks to sign in again.
-                        userAgentString = mobileUserAgent(userAgentString)
-                    }
-                    // Embedded tools (e.g. lecture recordings) run on other hosts and need their cookies.
-                    CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
-                    webChromeClient = object : WebChromeClient() {
-                        override fun onProgressChanged(view: WebView, newProgress: Int) {
-                            progress = newProgress / 100f
+        key(renderer) {
+            AndroidView(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .consumeWindowInsets(padding)
+                    .imePadding(),
+                factory = { context ->
+                    WebView(context).apply {
+                        // Without these Compose gives the view WRAP_CONTENT, and WebView then lays the page
+                        // out in a viewport 0px high: Ultra's panels (height: 100%, 100dvh) collapse to grey.
+                        layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                        with(settings) {
+                            javaScriptEnabled = true // Ultra is a JavaScript app
+                            domStorageEnabled = true
+                            allowFileAccess = false
+                            allowContentAccess = false
+                            setSupportMultipleWindows(false) // target=_blank opens here
+                            builtInZoomControls = true
+                            displayZoomControls = false
+                            // Same as the sign-in: on tablets the IdP would otherwise offer a QR code if it asks to sign in again.
+                            userAgentString = mobileUserAgent(userAgentString)
                         }
+                        // Embedded tools (e.g. lecture recordings) run on other hosts and need their cookies.
+                        CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
+                        webChromeClient = object : WebChromeClient() {
+                            override fun onProgressChanged(view: WebView, newProgress: Int) {
+                                progress = newProgress / 100f
+                            }
 
-                        override fun onReceivedTitle(view: WebView, newTitle: String?) {
-                            title = newTitle.orEmpty()
+                            override fun onReceivedTitle(view: WebView, newTitle: String?) {
+                                title = newTitle.orEmpty()
+                            }
+
+                            override fun onShowFileChooser(
+                                view: WebView,
+                                callback: ValueCallback<Array<Uri>>,
+                                params: FileChooserParams,
+                            ): Boolean = onChooseFiles(callback, params)
                         }
+                        webViewClient = object : WebViewClient() {
+                            override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
+                                url?.let { currentUrl = it }
+                                canGoBack = view.canGoBack()
+                            }
 
-                        override fun onShowFileChooser(
-                            view: WebView,
-                            callback: ValueCallback<Array<Uri>>,
-                            params: FileChooserParams,
-                        ): Boolean = onChooseFiles(callback, params)
-                    }
-                    webViewClient = object : WebViewClient() {
-                        override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
-                            url?.let { currentUrl = it }
-                            canGoBack = view.canGoBack()
+                            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean =
+                                view.context.handleWebViewLink(request.url)
+
+                            // Not handling this takes the whole app down with the renderer. A page that
+                            // crashed it would only crash it again, so then the browser closes.
+                            override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                                if (detail.didCrash()) onClose() else renderer++
+                                return true
+                            }
                         }
-
-                        override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean =
-                            view.context.handleWebViewLink(request.url)
+                        setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
+                            onDownload(url, userAgent, contentDisposition, mimeType)
+                        }
+                        // Load after the first layout: pages sized with vh units collapse when loaded at 0x0.
+                        doOnLayout { loadUrl(currentUrl) }
+                        webView = this
                     }
-                    setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
-                        onDownload(url, userAgent, contentDisposition, mimeType)
-                    }
-                    // Load after the first layout: pages sized with vh units collapse when loaded at 0x0.
-                    doOnLayout { loadUrl(startUrl) }
-                    webView = this
-                }
-            },
-            onRelease = { it.destroy() },
-        )
+                },
+                onRelease = { it.destroy() },
+            )
+        }
     }
 }

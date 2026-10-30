@@ -9,7 +9,6 @@ import be.tolly.core.network.UltraApi
 import be.tolly.core.network.collectAllPages
 import be.tolly.core.network.dto.GradeColumnDto
 import be.tolly.core.network.dto.GradeDto
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
@@ -51,12 +50,12 @@ class GradeRepository @Inject constructor(
         val columns = listColumns(courseId) ?: grades.mapNotNull { grade -> column(courseId, grade.columnId) }
         val byColumn = grades.associateBy { it.columnId }
         val visible = columns.filter { it.availability?.available != "No" }
+        // Then grades of columns not known at all; a hidden column's grade stays hidden.
         val entities = visible.mapIndexed { index, column -> entity(courseId, column, byColumn[column.id], index) } +
-            grades.filter { grade -> visible.none { it.id == grade.columnId } }
+            grades.filter { grade -> columns.none { it.id == grade.columnId } }
                 .mapIndexed { index, grade -> entity(courseId, null, grade, visible.size + index) }
         gradeDao.replaceForCourse(courseId, entities.filter { it.name != null || it.displayGrade != null })
     }
-
 
     private companion object {
         const val CONCURRENCY = 4
@@ -71,8 +70,6 @@ class GradeRepository @Inject constructor(
 
     private suspend fun column(courseId: String, columnId: String): GradeColumnDto? = try {
         api.gradeColumn(courseId, columnId)
-    } catch (e: CancellationException) {
-        throw e
     } catch (e: HttpException) {
         if (e.isSessionError()) throw e
         null

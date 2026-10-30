@@ -1,0 +1,7 @@
+• Send feedback with screenshots and files, also through Outlook.
+• Phones in landscape get a side bar for the tabs.
+• Zoomed PDFs and pictures move with one finger.
+• Deadlines include course events still to come.
+• Mails written from Tolly attach their files once and go back to the inbox after sending.
+• Tolly no longer closes when Android needs a page's memory.
+• The Week view shows the days before today, and hidden grades stay hidden.
