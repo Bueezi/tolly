@@ -111,7 +111,9 @@ private const val PRESSED_SCALE = 0.97f
  * starting at [separatorStart].
  *
  * With [onClick] the row is clickable; long clicks give the system's long-press haptic.
- * A [highlight] colour tints the row and marks its leading edge (see [highlightColor]).
+ * A [highlight] colour tints the row and marks its leading edge (see [highlightColor]); a
+ * different [tint] keeps the mark but tints the row in its own colour, for a row that is
+ * highlighted and also stands out for another reason.
  */
 fun Modifier.groupItem(
     position: ItemPosition,
@@ -124,6 +126,7 @@ fun Modifier.groupItem(
     separatorStart: Dp = GroupDefaults.separatorStart(),
     highlight: Color = Color.Unspecified,
     onClickLabel: String? = null,
+    tint: Color = highlight,
 ): Modifier = composed {
     // Inside [SwipeActions] the row's frame (margin, gap and corners) is already there.
     val framed = LocalInGroupFrame.current
@@ -140,7 +143,7 @@ fun Modifier.groupItem(
     val separator = colors.separator
     val background = when {
         selected -> colors.groupSelected
-        highlight.isSpecified -> highlight.copy(alpha = HighlightTint).compositeOver(colors.group)
+        tint.isSpecified -> tint.copy(alpha = HighlightTint).compositeOver(colors.group)
         else -> colors.group
     }
     this

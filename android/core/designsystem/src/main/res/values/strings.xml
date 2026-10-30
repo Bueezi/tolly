@@ -24,6 +24,10 @@
     <string name="feedback_hint">What would you like to tell us?</string>
     <string name="feedback_attach_logs">Attach logs</string>
     <string name="feedback_attach_logs_summary">Helps track down bugs. Passwords and sign-in details are left out.</string>
+    <string name="feedback_add_files">Add screenshots or files</string>
+    <string name="feedback_remove_file">Remove %1$s</string>
+    <string name="feedback_files_too_big">Too big to send: the files can be 20 MB together</string>
+    <string name="feedback_file_failed">That file couldn\'t be added</string>
     <string name="feedback_send">Send by email</string>
     <string name="feedback_clear">Clear draft</string>
     <string name="feedback_github">Open a public GitHub issue instead</string>
@@ -248,6 +252,8 @@
     <string name="settings_glass_summary">A floating glass tab bar and glass buttons over the content</string>
     <string name="settings_shake_look">Shake to switch look</string>
     <string name="settings_shake_look_summary">Shake the phone to switch between Liquid Glass and Material</string>
+    <string name="shake_switched_glass">Liquid Glass is on. Shake again to switch back.</string>
+    <string name="shake_switched_material">Material is on. Shake again to switch back.</string>
     <string name="settings_glass_tier_liquid">On this phone: Liquid Glass with blur and refraction.</string>
     <string name="settings_glass_tier_blur">On this phone: blurred glass. Refraction needs Android 13.</string>
     <string name="settings_glass_tier_tint">On this phone: frosted glass, without blur. Blur needs Android 12.</string>

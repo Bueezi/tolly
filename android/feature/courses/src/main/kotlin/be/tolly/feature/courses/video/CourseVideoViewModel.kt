@@ -14,6 +14,7 @@ import be.tolly.core.data.VideoRepository
 import be.tolly.core.data.WatchProgressRepository
 import be.tolly.core.data.toDataError
 import be.tolly.core.model.WatchProgress
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,6 +68,9 @@ class CourseVideoViewModel @AssistedInject constructor(
 
     private var loaded = false
 
+    /** The lookup under way; a new one (pulling to refresh) replaces it. */
+    private var lookup: Job? = null
+
     /** Looks both lists up, the first time the tab is shown (going through the folders takes a while). */
     fun load() {
         if (loaded) return
@@ -84,7 +88,8 @@ class CourseVideoViewModel @AssistedInject constructor(
         } else {
             VideoList.Loading
         }
-        viewModelScope.launch {
+        lookup?.cancel()
+        lookup = viewModelScope.launch {
             // The gallery and the course's content are looked up side by side; a recording can be in
             // either (or both, then once), and either one failing still shows what the other found.
             // Either can take long (the gallery opens in a hidden web page and, for a course without

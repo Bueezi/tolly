@@ -25,6 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class LogExporter @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val feedbackFiles: FeedbackFiles,
 ) {
     private val crashDir: File get() = File(context.filesDir, "crashes")
     private val exportDir: File get() = File(context.cacheDir, "logs")
@@ -45,7 +46,9 @@ class LogExporter @Inject constructor(
 
     /** Creates the log file and returns a share intent for it. */
     suspend fun export(): Intent {
-        val (uri, name) = writeLog()
+        val log = writeLog()
+        val uri = context.fileProviderUri(log)
+        val name = log.name
         val send = Intent(Intent.ACTION_SEND)
             .setType("text/plain")
             .putExtra(Intent.EXTRA_STREAM, uri)
@@ -55,25 +58,26 @@ class LogExporter @Inject constructor(
     }
 
     /**
-     * An e-mail to the developer with [subject] and [body], and the log attached when
-     * [attachLogs]. Mail apps ignore attachments on a `mailto:` intent, so the mail is a send
-     * intent aimed at the apps that handle `mailto:` (a chooser among them if there are several);
-     * that way it doesn't end up in a chat by mistake. Without a mail app, [EXTRA_FALLBACK] holds
-     * the share sheet for the same mail.
+     * An e-mail to the developer with [subject] and [body], the log attached when [attachLogs]
+     * and the user's [files] (see [FeedbackFiles]). Mail apps ignore attachments on a `mailto:`
+     * intent, so the mail is a send intent aimed at the apps that handle `mailto:` (a chooser
+     * among them if there are several); that way it doesn't end up in a chat by mistake. Without
+     * a mail app, [EXTRA_FALLBACK] holds the share sheet for the same mail.
      */
-    suspend fun feedbackEmail(to: String, subject: String, body: String, attachLogs: Boolean): Intent {
+    suspend fun feedbackEmail(to: String, subject: String, body: String, attachLogs: Boolean, files: List<String>): Intent {
         val text = body.trimEnd() + "\n\n--\n" + header().substringBeforeLast('\n')
-        val log = if (attachLogs) writeLog().first else null
-        fun send(): Intent = Intent(Intent.ACTION_SEND).apply {
+        val log = if (attachLogs) context.fileProviderUri(writeLog()) else null
+        val streams = listOfNotNull(log) + withContext(Dispatchers.IO) { files.filter { File(it).isFile } }.map(feedbackFiles::uri)
+        fun send(): Intent = Intent(if (streams.size > 1) Intent.ACTION_SEND_MULTIPLE else Intent.ACTION_SEND).apply {
             type = "message/rfc822"
             putExtra(Intent.EXTRA_EMAIL, arrayOf(to))
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, text)
-            if (log != null) {
-                putExtra(Intent.EXTRA_STREAM, log)
+            if (streams.isNotEmpty()) {
+                if (streams.size > 1) putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(streams)) else putExtra(Intent.EXTRA_STREAM, streams.single())
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 // The read grant travels with the ClipData.
-                clipData = ClipData.newRawUri(null, log)
+                clipData = ClipData.newRawUri(null, streams.first()).apply { streams.drop(1).forEach { addItem(ClipData.Item(it)) } }
             }
         }
         val mailApps = context.packageManager
@@ -93,23 +97,21 @@ class LogExporter @Inject constructor(
 
     /**
      * A feedback mail written in Outlook on the web: [body] with the app and device under it, and
-     * with [attachLogs] the log as a file of its own (its name and text), as a mail app gets it.
+     * the files a mail app gets: with [attachLogs] the log, and the user's [files].
      */
-    suspend fun feedbackMail(body: String, attachLogs: Boolean): FeedbackMail = withContext(Dispatchers.IO) {
+    suspend fun feedbackMail(body: String, attachLogs: Boolean, files: List<String>): FeedbackMail = withContext(Dispatchers.IO) {
+        val log = if (attachLogs) writeLog().let { MailAttachment(it.name, "text/plain", it.path) } else null
         FeedbackMail(
             text = body.trimEnd() + "\n\n--\n" + header().substringBeforeLast('\n'),
-            logName = if (attachLogs) "tolly-log-${stamp(System.currentTimeMillis())}.txt" else null,
-            log = if (attachLogs) logText() else null,
+            attachments = listOfNotNull(log) + feedbackFiles.attachments(files),
         )
     }
 
-    /** Writes the log file and returns its shareable uri and name. */
-    private suspend fun writeLog(): Pair<Uri, String> = withContext(Dispatchers.IO) {
+    /** Writes the log file, in place of the one before. */
+    private suspend fun writeLog(): File = withContext(Dispatchers.IO) {
         exportDir.mkdirs()
         exportDir.listFiles()?.forEach { it.delete() }
-        val file = File(exportDir, "tolly-log-${stamp(System.currentTimeMillis())}.txt")
-        file.writeText(logText())
-        context.fileProviderUri(file) to file.name
+        File(exportDir, "tolly-log-${stamp(System.currentTimeMillis())}.txt").apply { writeText(logText()) }
     }
 
     /** The log: the app and device, the saved crashes, and the app's log lines since it started. */
@@ -157,5 +159,5 @@ class LogExporter @Inject constructor(
     }
 }
 
-/** A feedback mail's [text], and the log to attach ([logName], [log]) if the user left it on. */
-class FeedbackMail(val text: String, val logName: String?, val log: String?)
+/** A feedback mail's [text] and its [attachments]: the log if the user left it on, and their files. */
+class FeedbackMail(val text: String, val attachments: List<MailAttachment>)

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -33,6 +34,8 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -47,6 +50,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -66,6 +70,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowSizeClass
 import be.tolly.MainUiState
 import be.tolly.MainViewModel
 import be.tolly.core.auth.AuthState
@@ -94,6 +99,7 @@ import be.tolly.feature.courses.CoursesRoute
 import be.tolly.feature.login.LoginScreen
 import be.tolly.feature.login.WelcomeScreen
 import be.tolly.feature.settings.SetupScreen
+import kotlinx.coroutines.launch
 
 private enum class TopLevel(
     val label: Int,
@@ -136,11 +142,21 @@ fun TollyApp(state: MainUiState, viewModel: MainViewModel) {
             AuthState.SignedOut -> SignedOutFlow(setupDone = state.preferences.setupDone, onDemo = viewModel::startDemo)
             is AuthState.SignedIn -> {
                 val haptics = LocalHapticFeedback.current
+                // A shake can come by accident, so a message says what changed and how to undo it.
+                val messages = remember { SnackbarHostState() }
+                val scope = rememberCoroutineScope()
+                val glassOn = stringResource(R.string.shake_switched_glass)
+                val materialOn = stringResource(R.string.shake_switched_material)
                 ShakeEffect(enabled = state.preferences.shakeToSwitchLook) {
                     haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                    val glass = !state.preferences.glass
                     viewModel.toggleGlass()
+                    scope.launch {
+                        messages.currentSnackbarData?.dismiss()
+                        messages.showSnackbar(if (glass) glassOn else materialOn)
+                    }
                 }
-                MainScaffold(sessionValid = auth.sessionValid, user = auth.user, viewModel = viewModel)
+                MainScaffold(sessionValid = auth.sessionValid, user = auth.user, viewModel = viewModel, messages = messages)
             }
         }
     }
@@ -169,7 +185,7 @@ private fun SignedOutFlow(setupDone: Boolean, onDemo: () -> Unit) {
 }
 
 @Composable
-private fun MainScaffold(sessionValid: Boolean, user: User, viewModel: MainViewModel) {
+private fun MainScaffold(sessionValid: Boolean, user: User, viewModel: MainViewModel, messages: SnackbarHostState) {
     // The Courses tab is home: another tab sits on it, so back returns there, and a course opened
     // from the agenda sits on the agenda.
     var stack by rememberSaveable(saver = listSaver(save = { it.value }, restore = { mutableStateOf(it) })) {
@@ -242,9 +258,13 @@ private fun MainScaffold(sessionValid: Boolean, user: User, viewModel: MainViewM
     }
     CompositionLocalProvider(LocalRequestSignIn provides requestSignIn, LocalOpenMailDraft provides openMailDraft) {
         val glass = LocalGlass.current
-        val adaptiveType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo())
+        val adaptiveInfo = currentWindowAdaptiveInfo()
         // Phones get a floating bar that content scrolls under: Liquid Glass's tab bar, or a pill
-        // like ObtainX's in Material. Wider windows keep the navigation rail.
+        // like ObtainX's in Material. Wider windows keep the navigation rail, a phone on its side
+        // too: the library gives a low window a bar, which then takes height that is short already.
+        val wide = adaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+        val adaptiveType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
+            .let { if (wide && it == NavigationSuiteType.NavigationBar) NavigationSuiteType.NavigationRail else it }
         val floating = adaptiveType == NavigationSuiteType.NavigationBar
         val labels = TopLevel.entries.map { stringResource(it.label) }
         NavigationSuiteScaffold(
@@ -352,6 +372,14 @@ private fun MainScaffold(sessionValid: Boolean, user: User, viewModel: MainViewM
                         TollyTabLabel(stringResource(destination.label))
                     }
                 }
+                // App-wide messages, such as the shake's; screens show their own in their scaffold.
+                SnackbarHost(
+                    messages,
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .windowInsetsPadding(WindowInsets.navigationBars)
+                        .padding(bottom = barSpace),
+                )
             }
         }
     }

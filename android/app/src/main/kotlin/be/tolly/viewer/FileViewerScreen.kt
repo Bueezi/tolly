@@ -120,7 +120,7 @@ private fun PdfView(uri: Uri, padding: PaddingValues, failed: @Composable () -> 
     when {
         document == null -> LoadingState()
         pdf == null || pdf.pageSizes.isEmpty() -> failed()
-        else -> Zoomable {
+        else -> Zoomable(panVertically = false) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 // Sharp enough to zoom in a little before the pages get soft.
                 val renderWidth = (constraints.maxWidth * RENDER_SCALE).toInt().coerceAtMost(MAX_RENDER_WIDTH)
@@ -163,7 +163,7 @@ private fun ImageView(uri: Uri, padding: PaddingValues, failed: @Composable () -
     when {
         image == null -> LoadingState()
         bitmap == null -> failed()
-        else -> Zoomable {
+        else -> Zoomable(panVertically = true) {
             Image(bitmap, contentDescription = null, modifier = Modifier.fillMaxSize().padding(padding), contentScale = ContentScale.Fit)
         }
     }
@@ -210,11 +210,12 @@ private fun TextView(uri: Uri, padding: PaddingValues, failed: @Composable () ->
 }
 
 /**
- * Pinch to zoom (up to [MAX_ZOOM]) and move around with two fingers; one finger still scrolls
- * what is inside. A double tap zooms in, or back out.
+ * Pinch to zoom (up to [MAX_ZOOM]) and move around with two fingers. Zoomed in, one finger moves
+ * sideways too, and up and down when [panVertically]; otherwise it scrolls what is inside (a
+ * PDF's pages). A double tap zooms in, or back out.
  */
 @Composable
-private fun Zoomable(content: @Composable () -> Unit) {
+private fun Zoomable(panVertically: Boolean, content: @Composable () -> Unit) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     var size by remember { mutableStateOf(IntSize.Zero) }
@@ -237,6 +238,12 @@ private fun Zoomable(content: @Composable () -> Unit) {
                             scale = (scale * event.calculateZoom()).coerceIn(1f, MAX_ZOOM)
                             offset = clamp(offset + event.calculatePan())
                             event.changes.forEach { if (it.positionChanged()) it.consume() }
+                        } else if (scale > 1f) {
+                            // After the content's own scrolling, which takes only up-and-down moves
+                            // (and consumes them), so the finger's sideways move is read regardless.
+                            val change = event.changes.singleOrNull { it.pressed } ?: continue
+                            val move = change.position - change.previousPosition
+                            offset = clamp(offset + Offset(move.x, if (panVertically) move.y else 0f))
                         }
                     } while (event.changes.any { it.pressed })
                 }

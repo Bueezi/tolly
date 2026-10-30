@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import be.tolly.core.auth.AuthState
 import be.tolly.core.data.AuthRepository
+import be.tolly.core.data.FeedbackFiles
 import be.tolly.core.data.LogExporter
 import be.tolly.core.data.PreferencesRepository
 import be.tolly.core.data.download.DownloadRepository
@@ -45,6 +46,7 @@ class SettingsViewModel @Inject constructor(
     private val downloadRepository: DownloadRepository,
     private val logExporter: LogExporter,
     private val mailNotifier: MailNotifier,
+    private val feedbackFiles: FeedbackFiles,
 ) : ViewModel() {
     private val launches = Channel<Intent>(Channel.BUFFERED)
 
@@ -116,16 +118,34 @@ class SettingsViewModel @Inject constructor(
 
     fun exportLogs() = launch { launches.send(logExporter.export()) }
 
-    /** Opens the user's mail app with their feedback to the developer, with the log if they agreed. */
-    fun sendFeedback(subject: String, message: String, attachLogs: Boolean) = launch {
-        launches.send(logExporter.feedbackEmail(FEEDBACK_EMAIL, subject, message, attachLogs))
+    /** Opens the user's mail app with their feedback to the developer, with the log if they agreed and their [files]. */
+    fun sendFeedback(subject: String, message: String, attachLogs: Boolean, files: List<String>) = launch {
+        launches.send(logExporter.feedbackEmail(FEEDBACK_EMAIL, subject, message, attachLogs, files))
     }
 
     /** A feedback mail for Outlook on the web, handed to [onReady] (see [LogExporter.feedbackMail]). */
-    fun feedbackMail(subject: String, message: String, attachLogs: Boolean, onReady: (MailDraft) -> Unit) = launch {
-        val mail = logExporter.feedbackMail(message, attachLogs)
-        onReady(MailDraft(FEEDBACK_EMAIL, subject, mail.text, mail.logName, mail.log))
+    fun feedbackMail(subject: String, message: String, attachLogs: Boolean, files: List<String>, onReady: (MailDraft) -> Unit) = launch {
+        val mail = logExporter.feedbackMail(message, attachLogs, files)
+        onReady(MailDraft(FEEDBACK_EMAIL, subject, mail.text, mail.attachments))
     }
+
+    /**
+     * Copies the picked [uris] in for the feedback (see [FeedbackFiles.add]), after the draft's
+     * [current] files, handing each to [onAdded]; [onTooBig] and [onFailed] tell about those that
+     * couldn't come.
+     */
+    fun addFeedbackFiles(uris: List<Uri>, current: () -> List<String>, onAdded: (String) -> Unit, onTooBig: () -> Unit, onFailed: () -> Unit) = launch {
+        when (feedbackFiles.add(uris, current, onAdded)) {
+            FeedbackFiles.Problem.TOO_BIG -> onTooBig()
+            FeedbackFiles.Problem.FAILED -> onFailed()
+            null -> Unit
+        }
+    }
+
+    /** Throws away copies no draft holds any more, keeping the draft's [current] ones. */
+    fun tidyFeedbackFiles(current: () -> List<String>) = launch { feedbackFiles.tidy(current) }
+
+    fun removeFeedbackFiles(paths: List<String>) = launch { paths.forEach { feedbackFiles.remove(it) } }
 
     /** Opens a new GitHub issue in the browser, prefilled; it is public, so no log goes with it. */
     fun openIssue(title: String, message: String, versionName: String) = launch {

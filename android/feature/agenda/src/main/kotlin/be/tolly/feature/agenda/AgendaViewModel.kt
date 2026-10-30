@@ -9,7 +9,6 @@ import be.tolly.core.data.PreferencesRepository
 import be.tolly.core.data.TimeEditRepository
 import be.tolly.core.data.TimetableGroups
 import be.tolly.core.model.AgendaItem
-import be.tolly.core.model.AgendaItemKind
 import be.tolly.core.model.GroupSession
 import be.tolly.core.ui.RefreshState
 import be.tolly.core.ui.Refresher
@@ -111,7 +110,8 @@ class AgendaViewModel @Inject constructor(
             mode = shownMode,
             selectedDate = selected,
             gridDays = data.grid.groupBy { it.dayOf() }.mapValues { (_, dayItems) -> dayItems.sortedBy { it.start } },
-            deadlinesThisWeek = data.list.count { it.kind == AgendaItemKind.DEADLINE && it.start < weekEnd },
+            // As on the Deadlines page, which counts course events still to come.
+            deadlinesThisWeek = System.currentTimeMillis().let { now -> data.list.count { it.isDue(now) && it.start < weekEnd } },
             loading = data.list.isEmpty() && data.grid.isEmpty() && data.synced == null && !data.refresh.loaded,
             refreshing = data.refresh.refreshing,
             error = data.refresh.error,

@@ -22,6 +22,10 @@
     <string name="feedback_hint">Wat wil je ons laten weten?</string>
     <string name="feedback_attach_logs">Logbestand meesturen</string>
     <string name="feedback_attach_logs_summary">Helpt om bugs op te sporen. Wachtwoorden en aanmeldgegevens worden weggelaten.</string>
+    <string name="feedback_add_files">Screenshots of bestanden toevoegen</string>
+    <string name="feedback_remove_file">%1$s verwijderen</string>
+    <string name="feedback_files_too_big">Te groot om te versturen: de bestanden mogen samen 20 MB zijn</string>
+    <string name="feedback_file_failed">Dat bestand kon niet toegevoegd worden</string>
     <string name="feedback_send">Versturen via e-mail</string>
     <string name="feedback_clear">Concept wissen</string>
     <string name="feedback_github">Liever een openbaar GitHub-issue aanmaken</string>
@@ -246,6 +250,8 @@
     <string name="settings_glass_summary">Een zwevende glazen tabbalk en glazen knoppen boven de inhoud</string>
     <string name="settings_shake_look">Schudden om van stijl te wisselen</string>
     <string name="settings_shake_look_summary">Schud met je telefoon om te wisselen tussen Liquid Glass en Material</string>
+    <string name="shake_switched_glass">Liquid Glass staat aan. Schud opnieuw om terug te wisselen.</string>
+    <string name="shake_switched_material">Material staat aan. Schud opnieuw om terug te wisselen.</string>
     <string name="settings_glass_tier_liquid">Op deze telefoon: Liquid Glass met vervaging en lichtbreking.</string>
     <string name="settings_glass_tier_blur">Op deze telefoon: matglas met vervaging. Lichtbreking vereist Android 13.</string>
     <string name="settings_glass_tier_tint">Op deze telefoon: matglas zonder vervaging. Vervaging vereist Android 12.</string>

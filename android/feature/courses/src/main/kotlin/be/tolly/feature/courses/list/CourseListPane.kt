@@ -48,6 +48,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -298,6 +299,8 @@ private fun CourseRow(
         course.academicYear?.takeIf { showYear }?.let(CourseNaming::formatAcademicYear),
         if (!course.available) stringResource(R.string.courses_unavailable) else null,
     ).joinToString(" · ")
+    val highlight = course.highlight?.let(::highlightColor) ?: Color.Unspecified
+    val inClass = if (classNow?.prominent == true) MaterialTheme.colorScheme.primary else Color.Unspecified
     TollyListItem(
         modifier = modifier.groupItem(
             position,
@@ -306,10 +309,9 @@ private fun CourseRow(
             onLongClick = onLongClick,
             onLongClickLabel = stringResource(R.string.action_customize),
             separatorStart = GroupDefaults.separatorStart(44.dp),
-            highlight = when {
-                classNow?.prominent == true -> MaterialTheme.colorScheme.primary
-                else -> course.highlight?.let(::highlightColor) ?: Color.Unspecified
-            },
+            // In class, the row is tinted in the primary colour; a highlight still marks its edge.
+            highlight = highlight.takeOrElse { inClass },
+            tint = inClass.takeOrElse { highlight },
         ),
         leading = { CourseAvatar(name = course.displayName, seed = course.id, icon = course.icon, color = course.color) },
         headline = { Text(course.displayName, maxLines = 2, overflow = TextOverflow.Ellipsis) },

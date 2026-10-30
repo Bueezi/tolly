@@ -102,6 +102,9 @@ fun YouList(
     var showFeedback by rememberSaveable { mutableStateOf(false) }
     val feedbackDraft = rememberFeedbackDraft()
     val openMailDraft = LocalOpenMailDraft.current
+    val context = LocalContext.current
+    // Copies of a draft that was lost (the app was closed meanwhile) are thrown away.
+    LaunchedEffect(feedbackDraft) { viewModel.tidyFeedbackFiles { feedbackDraft.files.toList() } }
     val versionName = rememberVersionName()
     val snackbarHostState = remember { SnackbarHostState() }
     val copy = rememberCopyToClipboard(snackbarHostState)
@@ -193,20 +196,30 @@ fun YouList(
     if (showFeedback) {
         FeedbackSheet(
             draft = feedbackDraft,
-            onSend = { subject, message, attachLogs ->
+            onSend = { subject, message, attachLogs, files ->
                 showFeedback = false
                 // In the Mail tab's Outlook, already signed in to the KU Leuven mailbox; without
-                // one, the user's mail app. Either way the log goes as a file.
+                // one, the user's mail app. Either way the log and the files go as attachments.
                 if (openMailDraft != null) {
-                    viewModel.feedbackMail(subject, message, attachLogs, onReady = openMailDraft)
+                    viewModel.feedbackMail(subject, message, attachLogs, files, onReady = openMailDraft)
                 } else {
-                    viewModel.sendFeedback(subject, message, attachLogs)
+                    viewModel.sendFeedback(subject, message, attachLogs, files)
                 }
             },
             onOpenIssue = { title, message ->
                 showFeedback = false
                 viewModel.openIssue(title, message, versionName)
             },
+            onPickFiles = { uris ->
+                viewModel.addFeedbackFiles(
+                    uris,
+                    current = { feedbackDraft.files.toList() },
+                    onAdded = { feedbackDraft.files.add(it) },
+                    onTooBig = { Toast.makeText(context, R.string.feedback_files_too_big, Toast.LENGTH_LONG).show() },
+                    onFailed = { Toast.makeText(context, R.string.feedback_file_failed, Toast.LENGTH_SHORT).show() },
+                )
+            },
+            onRemoveFiles = viewModel::removeFeedbackFiles,
             onDismiss = { showFeedback = false },
         )
     }

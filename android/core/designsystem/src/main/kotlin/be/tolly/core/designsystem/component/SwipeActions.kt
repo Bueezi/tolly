@@ -113,6 +113,9 @@ fun SwipeActions(
     // The spring back of the last swipe, which a new swipe on the row must stop, or it would keep
     // pulling the row back to rest under the finger and the swipe would end short of its threshold.
     var springBack by remember { mutableStateOf<Job?>(null) }
+    // The action a released row shows while it springs back. Running it often swaps the row's
+    // actions (highlight becomes unhighlight), and the new one mustn't flash up on the way back.
+    var released by remember { mutableStateOf<SwipeAction?>(null) }
     val armed by remember { derivedStateOf { width > 0 && abs(pull) >= width * SWIPE_THRESHOLD } }
     LaunchedEffect(armed) { if (armed) haptics.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate) }
 
@@ -134,6 +137,7 @@ fun SwipeActions(
                     val drag = awaitHorizontalTouchSlopOrCancellation(down.id) { change, overSlop ->
                         if (allowed(overSlop)) {
                             springBack?.cancel()
+                            released = null
                             change.consume()
                             pull = overSlop
                         }
@@ -145,15 +149,16 @@ fun SwipeActions(
                         pull = if (next == 0f || allowed(next)) next else 0f
                         change.consume()
                     }
-                    val released = pull
+                    val end = pull
+                    val action = if (end > 0) currentRightward else if (end < 0) currentLeftward else null
+                    released = action
                     // A short, quick flick counts as well as a long, slow pull.
                     val flung = abs(velocity.calculateVelocity().x) >= FLICK_VELOCITY.dp.toPx() &&
-                        released * velocity.calculateVelocity().x > 0 && abs(released) >= width * FLICK_MIN_PULL
-                    if (lifted && width > 0 && (abs(released) >= width * SWIPE_THRESHOLD || flung)) {
-                        (if (released > 0) currentRightward else currentLeftward)?.onSwipe?.invoke()
-                    }
+                        end * velocity.calculateVelocity().x > 0 && abs(end) >= width * FLICK_MIN_PULL
+                    if (lifted && width > 0 && (abs(end) >= width * SWIPE_THRESHOLD || flung)) action?.onSwipe?.invoke()
                     springBack = scope.launch {
-                        animate(released, 0f, animationSpec = spring(stiffness = Spring.StiffnessMediumLow)) { value, _ -> pull = value }
+                        animate(end, 0f, animationSpec = spring(stiffness = Spring.StiffnessMediumLow)) { value, _ -> pull = value }
+                        released = null
                     }
                 }
             }
@@ -167,9 +172,10 @@ fun SwipeActions(
             },
     ) {
         val action = when {
+            pull == 0f -> null
+            released != null -> released
             pull > 0f -> rightwardAction
-            pull < 0f -> leftwardAction
-            else -> null
+            else -> leftwardAction
         }
         val iconScale by animateFloatAsState(if (armed) 1.15f else 0.85f, label = "swipe icon")
         // A rightwards pull uncovers the left edge, which is the start edge only in LTR.

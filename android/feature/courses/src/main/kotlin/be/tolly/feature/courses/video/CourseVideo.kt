@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -75,7 +74,6 @@ internal fun CourseVideo(courseId: String, active: Boolean, snackbarHostState: S
     val recordings by viewModel.recordings.collectAsStateWithLifecycle()
     val progress by viewModel.progress.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val haptics = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
     val cleared = stringResource(R.string.video_progress_cleared)
     val undo = stringResource(R.string.action_undo)
@@ -119,7 +117,6 @@ internal fun CourseVideo(courseId: String, active: Boolean, snackbarHostState: S
             val clear: (GalleryEntry) -> (() -> Unit)? = { entry ->
                 progress[entry.entryId]?.let { watched ->
                     {
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.clearProgress(entry)
                         scope.launch {
                             snackbarHostState.currentSnackbarData?.dismiss()

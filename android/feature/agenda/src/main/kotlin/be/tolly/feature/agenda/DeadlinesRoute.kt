@@ -43,11 +43,12 @@ import be.tolly.core.designsystem.component.groupItem
 import be.tolly.core.designsystem.component.relativeTime
 import be.tolly.core.designsystem.component.scrollingContentPadding
 import be.tolly.core.model.AgendaItem
+import be.tolly.core.model.AgendaItemKind
 import be.tolly.core.ui.ListMessageState
 import be.tolly.core.ui.RefreshErrorBanner
 import be.tolly.core.ui.withHaptic
 
-/** The agenda's Deadlines page: gradable items that are due soon, overdue ones first, by how soon. */
+/** The agenda's Deadlines page: gradable items and course events coming up, overdue ones first, by how soon. */
 @Composable
 fun DeadlinesRoute(
     /** Shows a course in the Courses tab. */
@@ -130,11 +131,14 @@ private fun DeadlineGroup.title() = when (this) {
 @Composable
 private fun DeadlineRow(item: AgendaItem, overdue: Boolean, position: ItemPosition, onClick: (() -> Unit)?, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val due = remember(item.start) {
+    val event = item.kind == AgendaItemKind.EVENT
+    val allDay = remember(item) { item.isAllDay() }
+    val due = remember(item.start, allDay) {
         DateUtils.formatDateTime(
             context,
             item.start,
-            DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_NO_YEAR or DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_SHOW_TIME,
+            DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_NO_YEAR or DateUtils.FORMAT_ABBREV_ALL or
+                if (allDay) 0 else DateUtils.FORMAT_SHOW_TIME,
         )
     }
     TollyListItem(
@@ -151,7 +155,7 @@ private fun DeadlineRow(item: AgendaItem, overdue: Boolean, position: ItemPositi
         headline = { Text(item.title, maxLines = 2, overflow = TextOverflow.Ellipsis, fontWeight = FontWeight.SemiBold) },
         supporting = {
             Text(
-                listOfNotNull(item.calendarName?.takeIf { it != item.title }, stringResource(R.string.agenda_due) + " " + due).joinToString(" · "),
+                listOfNotNull(item.calendarName?.takeIf { it != item.title }, if (event) due else stringResource(R.string.agenda_due) + " " + due).joinToString(" · "),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )

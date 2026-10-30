@@ -1,5 +1,6 @@
 package be.tolly.feature.agenda
 
+import android.text.format.DateUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +31,10 @@ data class DeadlinesUiState(
     val error: DataError? = null,
 )
 
-/** The gradable items due from [OVERDUE_DAYS] days ago to [WEEKS] weeks ahead, grouped by how soon. */
+/**
+ * What is due from [OVERDUE_DAYS] days ago to [WEEKS] weeks ahead, grouped by how soon: gradable
+ * items, and course events still to come (see [isComing]).
+ */
 @HiltViewModel
 class DeadlinesViewModel @Inject constructor(
     private val repository: AgendaRepository,
@@ -43,12 +47,12 @@ class DeadlinesViewModel @Inject constructor(
     val uiState: StateFlow<DeadlinesUiState> = today.flatMapLatest { day ->
         combine(repository.observe(from(day), until(day)), repository.observeLastSynced(), refresher.state) { items, synced, refresh ->
             val now = System.currentTimeMillis()
-            val deadlines = items.filter { it.kind == AgendaItemKind.DEADLINE }.sortedBy { it.start }
+            val deadlines = items.filter { it.isDue(now) }.sortedBy { it.start }
             val tomorrow = day.plusDays(1).startMillis()
             val weekEnd = day.plusDays(7).startMillis()
             val groups = deadlines.groupBy {
                 when {
-                    it.start < now -> DeadlineGroup.OVERDUE
+                    it.start < now && it.kind == AgendaItemKind.DEADLINE -> DeadlineGroup.OVERDUE
                     it.start < tomorrow -> DeadlineGroup.TODAY
                     it.start < weekEnd -> DeadlineGroup.THIS_WEEK
                     else -> DeadlineGroup.LATER
@@ -56,7 +60,7 @@ class DeadlinesViewModel @Inject constructor(
             }
             DeadlinesUiState(
                 groups = DeadlineGroup.entries.mapNotNull { group -> groups[group]?.let { group to it } },
-                count = deadlines.count { it.start >= now },
+                count = deadlines.count { it.start >= now || it.kind == AgendaItemKind.EVENT },
                 loading = items.isEmpty() && synced == null && !refresh.loaded,
                 refreshing = refresh.refreshing,
                 error = refresh.error,
@@ -93,3 +97,23 @@ class DeadlinesViewModel @Inject constructor(
         const val WEEKS = 12L
     }
 }
+
+/** A gradable item, or a course event still to come: what the Deadlines page lists. */
+internal fun AgendaItem.isDue(now: Long): Boolean = kind == AgendaItemKind.DEADLINE || isComing(now)
+
+/**
+ * A course event that hasn't ended and isn't a class. Toledo's activity stream lists course events
+ * under "Upcoming" with the due items, and many courses only put their deadlines, tests and
+ * presentations in the calendar as events. Some put their lectures there too, which the agenda
+ * shows already and which aren't due.
+ */
+internal fun AgendaItem.isComing(now: Long): Boolean {
+    if (kind != AgendaItemKind.EVENT || classSession.containsMatchIn(title)) return false
+    val ends = end?.takeIf { it > start } ?: (start + if (isAllDay()) DateUtils.DAY_IN_MILLIS else 0)
+    return ends >= now
+}
+
+private val classSession = Regex(
+    """\b(hoorcollege|werkcollege|oefenzitting|oefenzittingen|practicum|labo|lecture|lectures)\b""",
+    RegexOption.IGNORE_CASE,
+)
