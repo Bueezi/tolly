@@ -1,0 +1,577 @@
+---
+// Step 1 of /alpha, shown tap by tap: a drawn phone plays through the Google Groups screens
+// (Join group, Join group again in the box, joined) next to the same steps in words. Most people
+// got stuck here: the group's page says "You don't have permission" (its messages are for
+// members), which reads like a dead end, and the Join button is easy to miss above it. The
+// screens are drawn, not screenshots, so they follow the site's language and theme; the list
+// works on its own without the animation or without JavaScript. On a phone only the current step
+// shows under the drawing, with dots to move between them.
+import { strings, type Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = strings(lang).alpha.guide;
+const s = t.screen;
+---
+
+<div class="guide" aria-label={t.label} role="group">
+  <div class="phone-col">
+    <div class="phone" aria-hidden="true">
+      <div class="screen on">
+        <div class="bar">
+          <span class="menu"></span>
+          <span class="app"><span class="people"></span>{s.app}</span>
+          <span class="avatar small"></span>
+        </div>
+        <div class="page">
+          <b class="group">Tolly Alpha</b>
+          <span class="pill blue target">{s.join}</span>
+          <span class="blocked"></span>
+          <b class="center">{s.noAccess}</b>
+          <span class="line w80 center"></span>
+          <span class="line w60 center"></span>
+        </div>
+      </div>
+
+      <div class="screen">
+        <div class="bar">
+          <span class="menu"></span>
+          <span class="app"><span class="people"></span>{s.app}</span>
+          <span class="avatar small"></span>
+        </div>
+        <div class="page dim">
+          <b class="group">Tolly Alpha</b>
+          <span class="pill blue">{s.join}</span>
+        </div>
+        <div class="dialog">
+          <b>{s.join}</b>
+          <span class="field"></span>
+          <span class="field"></span>
+          <span class="line w70"></span>
+          <span class="line w50"></span>
+          <div class="actions">
+            <span class="text-btn">{s.cancel}</span>
+            <span class="pill blue target">{s.join}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen">
+        <div class="bar">
+          <span class="menu"></span>
+          <span class="app"><span class="people"></span>{s.app}</span>
+          <span class="avatar small"></span>
+        </div>
+        <div class="page">
+          <b class="group">Tolly Alpha</b>
+          <span class="joined"><span class="tick"></span>{s.joined}</span>
+          <span class="line w90"></span>
+          <span class="line w70"></span>
+          <span class="line w80"></span>
+        </div>
+      </div>
+    </div>
+    <div class="controls" hidden>
+      <div class="pager">
+        {t.steps.map((step, i) => <button type="button" data-frame={i} aria-label={step.title} />)}
+      </div>
+      <button class="playback" type="button" data-pause={t.pause} data-play={t.play}>{t.pause}</button>
+    </div>
+  </div>
+
+  <ol class="taps">
+    {
+      t.steps.map((step, i) => (
+        <li>
+          <button type="button" class="tap-step" data-frame={i} aria-current={i === 0 ? "step" : undefined}>
+            <span class="dot" aria-hidden="true">{i + 1}</span>
+            <span class="words">
+              <b>{step.title}</b>
+              <span>{step.body}</span>
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="sign-in">{t.signIn}</p>
+</div>
+
+<script>
+  // Plays the screens in turn while the guide is on screen. Tapping a step shows its screen and
+  // pauses; with reduced motion nothing plays by itself.
+  const FRAME_MS = 3200;
+  document.querySelectorAll<HTMLElement>(".guide").forEach((guide) => {
+    const screens = [...guide.querySelectorAll<HTMLElement>(".screen")];
+    const items = [...guide.querySelectorAll<HTMLElement>(".taps li")];
+    const steps = [...guide.querySelectorAll<HTMLButtonElement>("button[data-frame]")];
+    const playback = guide.querySelector<HTMLButtonElement>(".playback")!;
+    const controls = guide.querySelector<HTMLElement>(".controls")!;
+    const motionOk = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+    let frame = 0;
+    let playing = motionOk;
+    let visible = false;
+    let timer: number | undefined;
+
+    const show = (i: number) => {
+      frame = i;
+      screens.forEach((el, j) => el.classList.toggle("on", j === i));
+      items.forEach((el, j) => el.classList.toggle("on", j === i));
+      steps.forEach((el) =>
+        Number(el.dataset.frame) === i ? el.setAttribute("aria-current", "step") : el.removeAttribute("aria-current"),
+      );
+    };
+    const schedule = () => {
+      window.clearTimeout(timer);
+      if (playing && visible) timer = window.setTimeout(() => (show((frame + 1) % screens.length), schedule()), FRAME_MS);
+    };
+    const setPlaying = (value: boolean) => {
+      playing = value;
+      playback.textContent = value ? playback.dataset.pause! : playback.dataset.play!;
+      guide.dataset.playing = String(value);
+      schedule();
+    };
+
+    guide.dataset.js = "";
+    controls.hidden = false;
+    show(0);
+    setPlaying(playing);
+    steps.forEach((step) =>
+      step.addEventListener("click", () => {
+        show(Number(step.dataset.frame));
+        setPlaying(false);
+      }),
+    );
+    playback.addEventListener("click", () => {
+      if (!playing) show((frame + 1) % screens.length);
+      setPlaying(!playing);
+    });
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      schedule();
+    }, { threshold: 0.4 }).observe(guide);
+  });
+</script>
+
+<style>
+  .guide {
+    --g-blue: #1a73e8;
+    --ink: color-mix(in srgb, var(--text) 82%, transparent);
+    --skeleton: color-mix(in srgb, var(--text) 11%, transparent);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 24px;
+    margin-top: 6px;
+  }
+
+  .sign-in {
+    grid-column: 2;
+    margin: 0;
+    padding-left: 12px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* The phone */
+  .phone-col {
+    grid-row: span 2;
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    gap: 10px;
+  }
+  .phone {
+    position: relative;
+    width: 196px;
+    aspect-ratio: 9 / 16;
+    border-radius: 30px;
+    border: 7px solid #1c1c26;
+    background: var(--surface);
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 18px 36px -18px rgb(20 20 70 / 0.45);
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .screen.on {
+    opacity: 1;
+    visibility: visible;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .screen {
+      transition:
+        opacity 0.35s ease,
+        visibility 0s linear 0.35s;
+    }
+    .screen.on {
+      transition: opacity 0.35s ease;
+    }
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 18px 10px 8px;
+  }
+  .menu {
+    width: 12px;
+    height: 9px;
+    border-block: 2px solid var(--ink);
+    position: relative;
+  }
+  .menu::after {
+    content: "";
+    position: absolute;
+    inset: 1.5px 0 auto;
+    height: 2px;
+    background: var(--ink);
+  }
+  .app {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: auto;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .people {
+    width: 15px;
+    height: 11px;
+    border-radius: 6px 6px 3px 3px;
+    background:
+      radial-gradient(circle at 30% 30%, var(--g-blue) 2.6px, transparent 3px),
+      radial-gradient(circle at 72% 30%, var(--g-blue) 2.6px, transparent 3px),
+      linear-gradient(var(--g-blue), var(--g-blue)) bottom / 100% 45% no-repeat;
+    opacity: 0.85;
+  }
+  .pill {
+    display: inline-block;
+    justify-self: start;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+  .pill.blue {
+    background: var(--g-blue);
+    color: #fff;
+  }
+  .avatar {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--brand-gradient);
+  }
+  .avatar.small {
+    width: 20px;
+    height: 20px;
+  }
+
+  .page {
+    display: grid;
+    align-content: start;
+    gap: 9px;
+    padding: 8px 12px;
+  }
+  .page.dim {
+    opacity: 0.35;
+  }
+  .group {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 2px;
+  }
+  .center {
+    justify-self: center;
+    text-align: center;
+  }
+  .blocked {
+    justify-self: center;
+    width: 34px;
+    height: 34px;
+    margin-top: 22px;
+    border-radius: 50%;
+    border: 3px solid var(--skeleton);
+    background: linear-gradient(45deg, transparent 45%, var(--skeleton) 45% 55%, transparent 55%);
+  }
+  .line {
+    display: block;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--skeleton);
+  }
+  .w50 { width: 50%; }
+  .w60 { width: 60%; }
+  .w70 { width: 70%; }
+  .w80 { width: 80%; }
+  .w90 { width: 90%; }
+
+
+  .dialog {
+    position: absolute;
+    inset: auto 8px 22px;
+    display: grid;
+    gap: 9px;
+    padding: 12px;
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 12px 30px -8px rgb(0 0 0 / 0.4);
+  }
+  .dialog b {
+    font-size: 13px;
+  }
+  .field {
+    height: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px var(--skeleton) inset;
+  }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .text-btn {
+    padding: 5px 6px;
+    color: var(--g-blue);
+    font-weight: 700;
+    font-size: 10.5px;
+  }
+
+  .joined {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px 4px 6px;
+    border-radius: 999px;
+    background: color-mix(in srgb, #1e8e3e 16%, transparent);
+    color: color-mix(in srgb, #1e8e3e 70%, var(--text));
+    font-weight: 700;
+  }
+  .tick {
+    position: relative;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #1e8e3e;
+  }
+  .tick::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 2px;
+    width: 3px;
+    height: 6px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    rotate: 45deg;
+  }
+
+  /* The finger: a ring that lands on the thing to tap, and the thing dips as it's pressed. */
+  .target {
+    position: relative;
+  }
+  .target::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border-radius: 50%;
+    background: rgb(91 91 240 / 0.35);
+    box-shadow:
+      0 0 0 3px rgb(255 255 255 / 0.9),
+      0 0 0 5px var(--brand-1);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .guide[data-js] .target::after {
+      opacity: 0;
+    }
+    .guide[data-js] .screen.on .target::after {
+      animation: finger 3.2s ease both;
+    }
+    .guide[data-js] .screen.on .target {
+      animation: press 3.2s ease both;
+    }
+    /* Paused on a step, the finger stays on its target. */
+    .guide[data-playing="false"] .screen.on .target::after {
+      animation-name: finger-stay;
+    }
+  }
+  @keyframes finger {
+    0%, 22% { opacity: 0; transform: translate(26px, 34px) scale(1.4); }
+    42% { opacity: 1; transform: none; }
+    52% { opacity: 1; transform: scale(0.75); }
+    62%, 84% { opacity: 1; transform: none; }
+    100% { opacity: 0; transform: none; }
+  }
+  @keyframes finger-stay {
+    0%, 22% { opacity: 0; transform: translate(26px, 34px) scale(1.4); }
+    42% { opacity: 1; transform: none; }
+    52% { opacity: 1; transform: scale(0.75); }
+    62%, 100% { opacity: 1; transform: none; }
+  }
+  @keyframes press {
+    0%, 46% { transform: none; filter: none; }
+    52% { transform: scale(0.94); filter: brightness(0.85); }
+    60%, 100% { transform: none; filter: none; }
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .controls[hidden] {
+    display: none;
+  }
+  .pager {
+    display: none;
+    gap: 2px;
+  }
+  .pager button {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+  .pager button::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--skeleton);
+    transition:
+      width 0.25s ease,
+      background-color 0.25s ease;
+  }
+  .pager button[aria-current]::before {
+    width: 18px;
+    background: var(--brand-1);
+  }
+  .playback {
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-text);
+    background: none;
+    border: 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .playback:hover {
+    background: var(--accent-soft);
+  }
+
+  /* The steps in words */
+  .taps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 4px;
+  }
+  .tap-step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 14px;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+  .tap-step:hover {
+    background: var(--surface-2);
+  }
+  .guide[data-js] .tap-step[aria-current] {
+    background: var(--accent-soft);
+  }
+  .dot {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    margin-top: 1px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+  .guide[data-js] .tap-step[aria-current] .dot {
+    background: var(--brand-gradient);
+    color: #fff;
+  }
+  .words {
+    display: grid;
+    gap: 2px;
+  }
+  .words span {
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.45;
+  }
+
+  /* On a phone the drawn phone sits above the steps. */
+  @media (max-width: 640px) {
+    .guide {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .phone-col {
+      grid-row: auto;
+    }
+    .sign-in {
+      grid-column: 1;
+    }
+    .guide[data-js] .pager {
+      display: flex;
+    }
+    .guide[data-js] .taps li:not(.on) {
+      display: none;
+    }
+    .guide[data-js] .tap-step {
+      min-height: 8.6em;
+      align-content: start;
+    }
+  }
+</style>

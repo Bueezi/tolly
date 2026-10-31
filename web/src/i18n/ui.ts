@@ -120,7 +120,7 @@ const en = {
     steps: [
       {
         title: "Join the testers group",
-        body: "Open the group and tap Join group. Being in it is what lets your account into the test.",
+        body: "Being in the group is what lets your account into the test. It takes two taps on Join group:",
         button: "Join the group",
       },
       {
@@ -134,6 +134,24 @@ const en = {
         button: "Open in Google Play",
       },
     ],
+    guide: {
+      label: "How to join the group, tap by tap",
+      pause: "Pause",
+      play: "Play",
+      steps: [
+        { title: "Tap Join group", body: "At the top, by the group's name. The page says you don't have permission: ignore that, it's only about the group's messages." },
+        { title: "Tap Join group again", body: "A box opens with a few options. Leave them as they are and tap Join group at the bottom." },
+        { title: "You're in", body: "That's it. Come back here for step 2." },
+      ],
+      signIn: "No Join group button? Then you're not signed in: tap Sign in at the top right, with the Google account that's on your phone.",
+      screen: {
+        app: "Groups",
+        noAccess: "No permission",
+        join: "Join group",
+        cancel: "Cancel",
+        joined: "Joined",
+      },
+    },
     stay: {
       title: "Please stay for two weeks",
       body: "Google only lets Tolly go public after at least 12 testers have stayed in the test for 14 days in a row, so please don't leave the group or the test before then.",
@@ -259,7 +277,7 @@ const nl: typeof en = {
     steps: [
       {
         title: "Word lid van de testgroep",
-        body: "Open de groep en tik op Lid worden van groep. Daarmee krijgt je account toegang tot de test.",
+        body: "Als lid van de groep krijgt je account toegang tot de test. Het vraagt twee tikken op Lid worden van groep:",
         button: "Groep openen",
       },
       {
@@ -273,6 +291,24 @@ const nl: typeof en = {
         button: "Openen in Google Play",
       },
     ],
+    guide: {
+      label: "Zo word je lid van de groep, tik per tik",
+      pause: "Pauzeren",
+      play: "Afspelen",
+      steps: [
+        { title: "Tik op Lid worden van groep", body: "Bovenaan, bij de naam van de groep. De pagina zegt dat je geen toegang hebt: negeer dat, het gaat alleen over de berichten van de groep." },
+        { title: "Tik nog eens op Lid worden van groep", body: "Er opent een venster met wat opties. Laat ze zoals ze zijn en tik onderaan op Lid worden van groep." },
+        { title: "Je bent lid", body: "Klaar. Kom hier terug voor stap 2." },
+      ],
+      signIn: "Geen knop Lid worden van groep? Dan ben je niet ingelogd: tik rechtsboven op Inloggen, met het Google-account op je telefoon.",
+      screen: {
+        app: "Groups",
+        noAccess: "Geen toegang",
+        join: "Lid worden van groep",
+        cancel: "Annuleren",
+        joined: "Lid geworden",
+      },
+    },
     stay: {
       title: "Blijf alsjeblieft twee weken lid",
       body: "Google laat Tolly pas openbaar toe nadat minstens 12 testers 14 dagen achter elkaar in de test zijn gebleven. Verlaat de groep of de test dus alsjeblieft niet eerder.",

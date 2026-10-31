@@ -1,7 +1,10 @@
 ---
 // The closed test's sign-up page (tolly.be/alpha): the three steps that make a Google account a
-// tester, each with its own button. Shared by alpha.astro and nl/alpha.astro; kept out of search.
+// tester, each with its own button. The first, joining the group, is where people got stuck, so
+// it plays through the taps (JoinGuide) before its button. Shared by alpha.astro and
+// nl/alpha.astro; kept out of search.
 import Icon, { type IconName } from "./Icon.astro";
+import JoinGuide from "./JoinGuide.astro";
 import Logo from "./Logo.astro";
 import { links, strings, type Lang } from "../i18n/ui";
 
@@ -29,12 +32,13 @@ const targets: { href: string; icon: IconName }[] = [
   <ol class="steps">
     {
       t.steps.map((step, i) => (
-        <li class="step">
+        <li class:list={["step", { guided: i === 0 }]}>
           <span class="number" aria-hidden="true">{i + 1}</span>
           <div class="text">
             <h2>{step.title}</h2>
             <p>{step.body}</p>
           </div>
+          {i === 0 && <JoinGuide lang={lang} />}
           <a class:list={["btn", i === 0 ? "btn-primary" : "btn-secondary"]} href={targets[i].href} rel="noopener">
             <Icon name={targets[i].icon} size={20} />
             {step.button}
@@ -88,6 +92,22 @@ const targets: { href: string; icon: IconName }[] = [
       0 0 0 1px var(--border) inset,
       var(--shadow-card);
   }
+  /* The guided step: the taps under its text, then the button. */
+  .guided {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    row-gap: 14px;
+  }
+  .guided .number {
+    margin-top: -6px;
+  }
+  .guided > :global(.guide) {
+    grid-column: 2;
+  }
+  .guided .btn {
+    grid-column: 2;
+    justify-self: start;
+  }
   .number {
     display: grid;
     place-items: center;
@@ -136,7 +156,8 @@ const targets: { href: string; icon: IconName }[] = [
     .step {
       grid-template-columns: auto 1fr;
     }
-    .step .btn {
+    .step .btn,
+    .guided > :global(.guide) {
       grid-column: 1 / -1;
       width: 100%;
     }
