@@ -18,7 +18,9 @@ Everything below is about the Android app unless it says otherwise.
 ## Build and run
 
 Every Gradle command runs in `android/` and needs JDK 21 and the Android SDK (platform 37,
-build-tools 37.0.0) with `ANDROID_HOME` set:
+build-tools 37.0.0) with `ANDROID_HOME` set. On the PCs (NixOS) `flake.nix` has them, the emulator and
+Android Studio, pinned by `flake.lock`; the dotfiles' app-menu entry starts Studio in it (`nix develop
+--profile`, so the daily garbage collection keeps it):
 
 ```bash
 cd android

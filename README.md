@@ -46,7 +46,8 @@ alpha test on Google Play at [tolly.be/alpha](https://tolly.be/alpha).
 
 ## Building
 
-Building requires JDK 21 and the Android SDK (Platform 37, Build-Tools 37.0.0). In `android/`:
+Building requires JDK 21 and the Android SDK (Platform 37, Build-Tools 37.0.0). On Nix, `nix develop`
+gives both, plus the emulator and Android Studio. In `android/`:
 
 ```bash
 ./gradlew assembleDebug
